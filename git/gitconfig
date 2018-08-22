@@ -1,0 +1,35 @@
+[core]
+    pager = less -+X
+[credential]
+    helper = store
+[user]
+    name = Naïm Favier
+    email = fnaim42@gmail.com
+[color "status"]
+    added = green bold
+    changed = red bold
+    untracked = red bold
+[color "diff"]
+    meta = cyan bold
+    new = green bold
+    old = red bold
+[alias]
+    i = init
+    s = status
+    d = diff
+    dh = diff HEAD
+    b = branch
+    a = add
+    aa = add .
+    au = add -u
+    c = "!git commit --allow-empty-message -m \"$*\" #"
+    ca = "!git commit --allow-empty-message -am \"$*\" #"
+    co = checkout
+    r = reset
+    p = push
+    pl = pull
+    cl = clone
+    l = log --graph --oneline
+    la = log --graph --oneline --all
+    cn = config
+    cng = config --global

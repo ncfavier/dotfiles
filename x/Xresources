@@ -1,0 +1,67 @@
+! colors
+*color0:        _color0
+*color1:        _color1
+*color2:        _color2
+*color3:        _color3
+*color4:        _color4
+*color5:        _color5
+*color6:        _color6
+*color7:        _color7
+*color8:        _color8
+*color9:        _color9
+*color10:       _color10
+*color11:       _color11
+*color12:       _color12
+*color13:       _color13
+*color14:       _color14
+*color15:       _color15
+*background:    _background
+*foreground:    _foreground
+*cursorColor:   _foreground
+accent:         _accent
+
+! fonts
+*font: _font
+Xft.antialias: 1
+Xft.hinting: 1
+Xft.hintstyle: hintslight
+Xft.autohint: 0
+Xft.rgba: rgb
+Xft.lcdfilter: lcddefault
+
+! URxvt
+URxvt.depth: 32
+URxvt.cursorBlink: 1
+URxvt.internalBorder: 16
+URxvt.scrollBar: 0
+URxvt.iso14755: false
+URxvt.perl-ext-common: default,-searchable-scrollback,selection-to-clipboard,matcher,vtwheel
+URxvt.url-launcher: xdg-open
+URxvt.matcher.button: 1
+URxvt.urgentOnBell: 1
+URxvt.saveLines: 10000
+URxvt.scrollTtyOutput: false
+URxvt.scrollWithBuffer: true
+URxvt.scrollTtyKeypress: true
+URxvt.skipBuiltinGlyphs: true
+URxvt.colorUL: _color14
+URxvt.keysym.Control-Up: \033[1;5A
+URxvt.keysym.Control-Down: \033[1;5B
+URxvt.keysym.Control-Left: \033[1;5D
+URxvt.keysym.Control-Right: \033[1;5C
+
+! rofi
+rofi.modi: run,drun,window,ssh
+rofi.sidebar-mode: true
+rofi.lines: 12
+rofi.width: 300
+rofi.sort: true
+rofi.matching: fuzzy
+rofi.padding: 16
+rofi.font: lucy tewi 8
+rofi.color-normal: #00000000, _foreground, #00000000, _color5, _foreground
+rofi.color-active: #00000000, _color5, #00000000, _color5, _foreground
+rofi.color-urgent: #00000000, _color1, #00000000, _color1, _background
+rofi.color-window: _background, _color5, #00000000
+rofi.kb-mode-next: Super+space,Control+Tab
+rofi.kb-mode-previous: Super+Shift+space,Control+ISO_Left_Tab

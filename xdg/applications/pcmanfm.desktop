@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Icon=system-file-manager
+Name=File Manager PCManFM
+Name[fr]=Gestionnaire de fichiers PCManFM
+GenericName=File Manager
+GenericName[fr]=Gestionnaire de fichiers
+Comment=Browse the file system and manage the files
+Comment[fr]=Parcourir le système de fichiers et gérer les fichiers
+Categories=System;FileTools;FileManager;Utility;Core;GTK;
+Exec=pcmanfm -n %U
+StartupNotify=true
+Terminal=false
+MimeType=inode/directory;

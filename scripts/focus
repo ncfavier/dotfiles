@@ -1,0 +1,56 @@
+#!/bin/bash
+#
+# focus - focus bspwm windows by class, instance name or title
+
+class=
+instance=
+name=
+
+while (( $# )); do
+    case $1 in
+        -c|--class)
+            shift
+            class=$1
+            ;;
+        -i|--instance)
+            shift
+            instance=$1
+            ;;
+        -n|--name)
+            shift
+            name=$1
+            ;;
+        *)
+            class=$1
+            ;;
+    esac
+    shift
+done
+
+history=()
+seen=()
+
+while read -r node; do
+    [[ ${seen[$node]} ]] && continue
+    history+=("$node")
+    seen[$node]=1
+done < <(bspc wm -d | jq '.focusHistory | reverse | .[].nodeId | select(. > 0)')
+
+for (( i = ${#history[@]} - 1; i >= 0; i-- )) do
+    node=${history[i]}
+    if [[ $class ]]; then
+        value=$(bspc query -T -n "$node" | jq -r ".client.className")
+        [[ ${value,,} == ${class,,} ]] || continue
+    fi
+    if [[ $instance ]]; then
+        value=$(bspc query -T -n "$node" | jq -r ".client.instanceName")
+        [[ ${value,,} == ${instance,,} ]] || continue
+    fi
+    if [[ $name ]]; then
+        value=$(xtitle "$node")
+        [[ ${value,,} == ${name,,} ]] || continue
+    fi
+    exec bspc node "$node" -f
+done
+
+exit 1

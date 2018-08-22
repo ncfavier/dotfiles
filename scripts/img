@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# img - view images using feh
+
+[[ -f ~/.theme ]] && . ~/.theme
+
+file=$1
+[[ $file == */* ]] || file=./$file
+
+feh -. -g 810x500 -B "$background" --start-at "$file" -- "${file%/*}"

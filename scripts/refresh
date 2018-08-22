@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# refresh - refresh various configurations on the fly
+
+shopt -s extglob
+
+[[ -f ~/.theme ]] && . ~/.theme
+
+(( $# )) || set -- xresources sxhkd bspwm terminals
+
+for e do
+    case $e in
+        xresources)
+            defines=()
+            for symbol in color{0..15} background foreground accent font; do
+                defines+=("-D_$symbol=${!symbol}")
+            done
+            xrdb "${defines[@]}" ~/.Xresources
+            ;;
+        sxhkd)
+            pkill -usr1 -x sxhkd &
+            ;;
+        bspwm)
+            ~/.config/bspwm/bspwmrc &
+            ;;
+        terminals)
+            sequences=
+            for i in {0..15}; do
+                color=color$i
+                sequences+="\\e]4;$i;${!color}\\e\\\\"
+            done
+            sequences+="\\e]10;$foreground\\e\\\\"
+            sequences+="\\e]11;$background\\e\\\\"
+            sequences+="\\e]708;$background\\e\\\\"
+            sequences+="\\e]12;$foreground\\e\\\\"
+            sequences+="\\e]50;$font\\e\\\\"
+
+            for term in /dev/pts/*([0-9]); do
+                [[ -w $term ]] && printf %b "$sequences" > "$term"
+            done
+            ;;
+        *)
+            printf 'Invalid option %s\n' "$e" >&2
+            ;;
+    esac
+done

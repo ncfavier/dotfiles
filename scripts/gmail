@@ -1,0 +1,112 @@
+#!/bin/bash
+#
+# gmail - get unread mail count
+
+die() {
+    printf '%s\n' "$@"
+    exit 1
+} >&2
+
+request() until curl -sS "$@"; do sleep 10; done
+
+authorize() {
+    xdg-open "$auth_uri?scope=$scope&response_type=code&redirect_uri=$redirect_uri&client_id=$client_id" &
+
+    read -r method target protocol < <(
+        nc -l -p "$port" -N <<< $'HTTP/2.0 200 OK\n\n<h1>:)</h1>\n'
+    )
+
+    IFS='?' read -r path query <<< "$target"
+    IFS='&' read -ra query_parts <<< "$query"
+
+    declare -A parameters
+    for parameter in "${query_parts[@]}"; do
+        IFS='=' read -r key value <<< "$parameter"
+        parameters[$key]=$value
+    done <<< "$query"
+
+    [[ ${parameters[code]} ]] || die "Authorization failed."
+
+    {
+        IFS= read -r access_token
+        IFS= read -r refresh_token
+    } < <(
+        request \
+            -d code="${parameters[code]}" \
+            -d client_id="$client_id" \
+            -d client_secret="$client_secret" \
+            -d redirect_uri="$redirect_uri" \
+            -d grant_type=authorization_code \
+            "$token_uri" |
+        jq -r '.access_token, .refresh_token'
+    )
+
+    printf '%s\n' "$refresh_token" > "$refresh_token_file"
+}
+
+get_access_token() {
+    IFS= read -r access_token < <(
+        request \
+            -d refresh_token="$refresh_token" \
+            -d client_id="$client_id" \
+            -d client_secret="$client_secret" \
+            -d grant_type=refresh_token \
+            "$token_uri" |
+        jq -r '.access_token'
+    )
+}
+
+port=4242
+scope='https://www.googleapis.com/auth/gmail.readonly'
+
+format=${1:-'%s\n'}
+
+gmail_dir=~/.gmail
+credentials_file=$gmail_dir/client_secret.json
+refresh_token_file=$gmail_dir/refresh_token
+
+refresh_token=
+access_token=
+
+{
+    IFS= read -r client_id || exit 1
+    IFS= read -r client_secret
+    IFS= read -r auth_uri
+    IFS= read -r token_uri
+    IFS= read -r redirect_uri
+    redirect_uri+=:$port
+} < <(
+    jq -r '.installed |
+        .client_id,
+        .client_secret,
+        .auth_uri,
+        .token_uri,
+        (.redirect_uris[] | select(contains("localhost")))' \
+        "$credentials_file"
+)
+
+[[ -r $refresh_token_file ]] && refresh_token=$(< "$refresh_token_file")
+
+[[ $refresh_token ]] || authorize
+
+[[ $access_token ]] || get_access_token
+
+while true; do
+    response=$(
+        request \
+            -G -H "Authorization: Bearer $access_token" \
+            -d labelIds=UNREAD \
+            https://www.googleapis.com/gmail/v1/users/me/messages
+    )
+
+    if jq -e .error > /dev/null <<< "$response"; then
+        get_access_token
+        continue
+    fi
+
+    result=$(jq -r .resultSizeEstimate <<< "$response")
+
+    printf "$format" "$result"
+
+    sleep 1m
+done

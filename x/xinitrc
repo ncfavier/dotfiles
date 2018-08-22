@@ -1,0 +1,32 @@
+# X settings
+setxkbmap -option grp:shifts_toggle,compose:menu fr,us,ru oss,,
+[[ -f ~/.Xmodmap ]] && xmodmap ~/.Xmodmap
+numlockx
+xset -b
+xset r rate 250
+xsetroot -cursor_name left_ptr
+refresh xresources
+
+# Key bindings
+sxhkd &
+
+# Wallpaper
+[[ -x ~/.fehbg ]] && { ~/.fehbg & }
+
+# Compositing manager
+compton -b &
+
+# Blue light filter
+redshift &
+
+# rofi fav list
+rofl &
+
+# xkcd watcher
+xkcd &
+
+# Window manager
+bspwm
+
+# Cleanup
+killall -q bar

@@ -1,0 +1,11 @@
+set colored-completion-prefix On
+set colored-stats On
+set completion-display-width 0
+set mark-symlinked-directories On
+set show-all-if-ambiguous On
+
+"\e[1;5D": backward-word
+"\e[1;5C": forward-word
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\er": "\C-asudo \C-e"

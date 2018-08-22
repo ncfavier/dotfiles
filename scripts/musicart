@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# musicart - display the current playing song's album art
+
+current=$(mpc current -f %file%)
+
+[[ $current ]] || exit
+
+cover=$(mktemp --suffix .png) || exit 1
+trap 'rm -f -- "$cover"' exit
+
+ffmpeg -loglevel error -nostdin -y -i "$(xdg-user-dir MUSIC)/$current" -map 0:v:0 "$cover" || exit
+
+feh -g 300x300 -- "$cover"

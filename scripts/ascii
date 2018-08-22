@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# ascii - displays ascii art
+
+shopt -s nullglob
+
+files=(~/.ascii/"$1"*)
+(( ${#files[@]} )) || exit 1
+
+sed 's/^/    /' "${files[RANDOM % ${#files[@]}]}"

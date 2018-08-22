@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# brightness - control the backlight
+
+backlights=(/sys/class/backlight/*)
+backlight=${backlights[0]}
+
+max_brightness=$(< "$backlight/max_brightness")
+brightness=$(< "$backlight/brightness")
+brightness=$(( (brightness+1)*100/max_brightness ))
+
+if [[ $# == 0 ]]; then
+    echo "$brightness"
+else
+    [[ $1 == [-+]* ]] && brightness=$(( brightness $1 )) || brightness=$1
+    (( brightness < 0 )) && brightness=0
+    (( brightness > 100 )) && brightness=100
+    printf '%s' "$(( brightness*max_brightness/100 ))" > "$backlight/brightness"
+fi

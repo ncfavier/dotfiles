@@ -1,0 +1,44 @@
+#!/bin/bash
+
+[[ -f ~/.theme ]] && . ~/.theme
+
+# General config
+bspc config focused_border_color "$accent"
+bspc config normal_border_color "$background"
+bspc config presel_feedback_color "$accent"
+bspc config border_width "$border_width"
+bspc config window_gap "$window_gap"
+bspc config borderless_monocle true
+bspc config gapless_monocle true
+bspc config initial_polarity second_child
+bspc config pointer_action1 move
+bspc config pointer_action2 resize_side
+bspc config pointer_action3 resize_corner
+
+# Desktops
+bspc monitor -d 1 2 3 4 5 6 web chat files
+bspc desktop web -l monocle
+bspc config -d chat left_padding 150
+bspc config -d chat right_padding 150
+
+# Rules
+bspc rule -r '*:*'
+for class in feh mpv Gimp Gimp-2.10 File-roller Deluge Fcitx-config-gtk3 \
+             Lxappearance Pavucontrol URxvt:info URxvt:wifi Rofi Qemu-system-x86_64; do
+    bspc rule -a "$class" state=floating
+done
+bspc rule -a Firefox desktop=web follow=on
+bspc rule -a URxvt:chat desktop=chat follow=on
+bspc rule -a URxvt:music desktop=music follow=on
+bspc rule -a Pcmanfm desktop=files follow=on
+bspc rule -a URxvt:editor desktop=any.!occupied follow=on
+bspc rule -a teeworlds state=fullscreen
+[[ -x ~/.config/bspwm/rules ]] && bspc config external_rules_command ~/.config/bspwm/rules
+
+# Bar
+killall -q bar
+bar &
+
+# Notification manager
+killall -q dunst
+dunst &

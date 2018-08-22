@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# upload - upload files to the web
+
+source=$1
+
+if [[ ! $source || $source == - ]]; then
+    source=$(mktemp) || exit 1
+    trap 'rm -f -- "$source"' exit
+    cat > "$source"
+    printf -v basename 'stdin-%(%F-%T)T.txt' -1
+else
+    source=$(realpath "$source")
+    [[ -r $source ]] || exit 1
+    basename=${source##*/}
+fi
+
+destination=${2:-$basename}
+
+host=up.v3lo.pw
+url=$(jq -nr --arg host "$host" --arg destination "$destination" '"https://\($host)/\($destination | @uri )"')
+
+if [[ $source = ~/sync/*/* ]]; then
+    source=${source#~/sync/}
+    ssh "$host" bash -s "${source@Q}" "${destination@Q}" <<< 'install -m 644 ~/sync/"$1" ~/sync/uploads/"$2"'
+else
+    install -m 644 "$source" ~/sync/uploads/"$destination" || exit 1
+    ssh "$host" bash -s "${destination@Q}" <<< 'until [[ -f ~/sync/uploads/$1 ]]; do sleep 0.2; done'
+fi
+
+echo "$url" | tee >(clip)
+
+if [[ $(dunstify -t 10000 -A open,open -i network-server "uploaded $basename" "to $url") == open ]]; then
+    xdg-open "$url" &
+fi &

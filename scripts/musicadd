@@ -1,0 +1,132 @@
+#!/bin/bash
+#
+# musicadd - automate the downloading, splitting, editing and tagging of mp3 files
+
+shopt -s nullglob
+
+die() {
+    (( $# > 0 )) && printf '%s\n' "$1" >&2
+    exit 1
+}
+
+ask() {
+    local prompt=$1 default=${2:-y} yn
+    [[ ${default,,} == y* ]] && prompt+=" [Y/n]" || prompt+=" [y/N]"
+    read -rp "$prompt " -n 1 yn
+    if [[ $yn ]]; then echo; else yn=$default; fi
+    [[ ${yn,,} == y* ]]
+}
+
+[[ -t 0 ]] || die "Not a terminal."
+
+destdir=$(xdg-user-dir MUSIC)
+cover_maxsize=800
+
+tmpdir=$(mktemp --tmpdir -d music-XXX) || die "Could not create temporary directory."
+trap 'rm -r -- "$tmpdir"' exit
+
+srcs=("$@")
+(( ${#srcs[@]} > 0 )) || read -ep "Source URLs/paths? " -a srcs
+
+files=()
+
+for src in "${srcs[@]}"; do
+    srcdir=$(mktemp --tmpdir="$tmpdir" -d src-XXX)
+
+    if [[ $src =~ ^[[:alpha:]]+:// ]]; then
+        echo "Downloading audio files from $src..."
+        youtube-dl --ignore-config -x --audio-format mp3 -o "$srcdir/%(title)s.%(ext)s" "$src" || die "Failed to download audio files."
+        printf '\a' # bell!
+    elif [[ -r $src ]]; then
+        cp_or_mv=cp
+        [[ ${src%/*} -ef $destdir ]] && cp_or_mv=mv
+        "$cp_or_mv" -t "$srcdir" -- "$src"
+    else
+        die "File not found or not readable: $src"
+    fi
+
+    for srcfile in "$srcdir"/*; do
+        basename=${srcfile##*/}
+        editedfiles=()
+
+        if ask "Edit file $basename with Audacity?"; then
+            editdir=$(mktemp --tmpdir="$tmpdir" -d "${basename%.*}-XXX")
+            echo "Please save the resulting file(s) under: $editdir"
+            echo "Starting Audacity..."
+            audacity "$srcfile" &> /dev/null
+            editedfiles=("$editdir"/*.mp3)
+        fi
+
+        if (( ${#editedfiles[@]} > 0 )); then
+            files+=("${editedfiles[@]}")
+        else
+            files+=("$srcfile")
+        fi
+    done
+done
+
+(( ${#files[@]} > 0 )) || die "No files given."
+
+read -ep "Artist? " artist
+read -ep "Album? [$artist] " album
+album=${album:-$artist}
+read -ep "Album cover? " src
+
+reuse_cover=
+if [[ $src == @ ]]; then
+    reuse_cover=1
+    src=
+fi
+
+cover=
+if [[ $src ]]; then
+    cover=$(mktemp --tmpdir="$tmpdir" cover-XXX)
+
+    if [[ $src =~ ^[[:alpha:]]+:// ]]; then
+        echo "Downloading album cover..."
+        curl -fsSL "$src" > "$cover" || die "Failed to download album cover."
+    elif [[ -r $src ]]; then
+        cp -- "$src" "$cover"
+    else
+        die "Album cover not found or not readable."
+    fi
+
+    echo "Resizing album cover..."
+    convert "$cover" -resize "${cover_maxsize}x${cover_maxsize}>" "$cover"
+fi
+
+use_tracks=
+ask "Use track numbers?" && use_tracks=true
+
+i=0
+for file in "${files[@]}"; do
+    title=
+    track=
+    basename=${file##*/}
+    echo "File: $basename ($(( ++i ))/${#files[@]})"
+    read -ep "Title? " title
+    [[ $use_tracks ]] && read -ep "Track number? " -i "$i" track
+
+    for tag in artist album title track; do
+        target=_
+        [[ ${!tag} == @ ]] && target=$tag
+        IFS= read -rd '' "$target"
+    done < <(ffprobe -loglevel error -show_format -print_format json "$file" |
+             jq -r '.format.tags | [(.artist, .album, .title, .track) + "\u0000"] | add')
+
+    echo "Adding file to music directory..."
+    ffmpeg -nostdin -loglevel error \
+        -i "$file" \
+        ${cover:+-i "$cover"} \
+        -map 0:a ${reuse_cover:+-map 0:v:0} ${cover:+-map 1} \
+        -c copy -fflags +bitexact -id3v2_version 3 \
+        -map_metadata -1 \
+        -metadata artist="$artist" \
+        -metadata album="$album" \
+        -metadata title="$title" \
+        ${track:+-metadata track="$track"} \
+        -metadata:s:v:0 comment='Cover (front)' \
+        "$destdir/${artist//\//-} - ${album//\//-} - ${track:+${track//\//-} - }${title//\//-}.mp3"
+done
+
+echo "Done!"

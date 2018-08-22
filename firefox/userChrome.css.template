@@ -1,0 +1,191 @@
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+
+:root {
+    --bg: {{ "$background" }};
+    --bg-hover: hsla(0, 100%, 100%, .1);
+    --bg-active: hsla(0, 100%, 100%, .15);
+    --fg: {{ "$foreground" }};
+    --fg-inactive: {{ "$color7" }};
+    --green: {{ "$color2" }};
+    --blue: {{ "$color4" }};
+    --font: "lucy tewi", "Biwidth", "EmojiOne Color", "fixed";
+    --font-size: 12px;
+}
+
+@-moz-document url(chrome://browser/content/browser.xul) {
+    :root {
+        --toolbar-non-lwt-bgcolor: var(--bg) !important;
+        --toolbar-non-lwt-bgimage: none !important;
+        --toolbar-non-lwt-textcolor: var(--fg) !important;
+        --tabs-border-color: transparent !important;
+    }
+
+    toolbar {
+        --tab-min-height: 28px !important;
+        --tabs-border-color: transparent !important;
+        --tabs-top-border-width: 0px !important;
+        --toolbarbutton-hover-background: var(--bg-hover) !important;
+        --toolbarbutton-active-background: var(--bg-active) !important;
+        --toolbarbutton-border-radius: 0px !important;
+        --backbutton-background: transparent !important;
+        --backbutton-border-color: transparent !important;
+    }
+
+    #tabbrowser-tabs {
+        background: var(--toolbar-bgcolor) !important;
+    }
+
+    .tabbrowser-tab {
+        color: var(--fg-inactive) !important;
+        font-family: var(--font) !important;
+        font-size: var(--font-size) !important;
+    }
+
+    .tabbrowser-tab[fadein]:not([pinned="true"]) {
+        max-width: 100% !important;
+    }
+
+    .tabbrowser-tab::after,
+    .tabbrowser-tab::before {
+        border: none !important;
+    }
+
+    .tabbrowser-tab[visuallyselected="true"] {
+        color: var(--fg) !important;
+    }
+
+    /*.tabbrowser-tab[visuallyselected="true"]::before {
+        --width: 75%;
+        content: "";
+        position: absolute;
+        left: calc((100% - var(--width)) / 2);
+        bottom: 0;
+        width: var(--width);
+        height: 1px;
+        border-bottom: 1px solid var(--blue) !important;
+        opacity: 1 !important;
+    }*/
+
+    .tab-throbber[progress]::before {
+        fill: var(--blue) !important;
+    }
+
+    .tab-icon-image {
+        margin-inline-end: 10px !important;
+        margin-top: 0px !important;
+    }
+
+    .tab-background,
+    .tab-line {
+        display: none !important;
+    }
+
+    .tabbrowser-tab:not(:hover) .tab-close-button {
+        display: none !important;
+    }
+
+    .tabs-newtab-button {
+        fill: var(--fg) !important;
+    }
+
+    #nav-bar {
+        color: var(--fg) !important;
+    }
+
+    #back-button {
+        padding: 0px !important;
+    }
+
+    #identity-box #connection-icon {
+        fill: var(--green) !important;
+    }
+
+    #urlbar[pageproxystate="valid"] > #identity-box.verifiedIdentity,
+    #urlbar[pageproxystate="valid"] > #identity-box.chromeUI,
+    #urlbar[pageproxystate="valid"] > #identity-box.extensionPage,
+    #urlbar-display-box {
+        border: none !important;
+    }
+
+    #identity-box.verifiedIdentity #identity-icon-labels {
+        margin-left: 5px !important;
+        color: var(--green) !important;
+    }
+
+    #urlbar {
+        background: var(--bg) !important;
+        color: var(--fg) !important;
+        font-family: var(--font) !important;
+        font-size: var(--font-size) !important;
+        border-color: transparent !important;
+        transition: border-color 0.1s ease-in-out;
+    }
+
+    #urlbar[focused="true"] {
+        border-color: var(--blue) !important;
+        transition: border-color 0.1s ease-in-out;
+    }
+
+    #urlbar *|*.textbox-input::-moz-placeholder {
+        color: transparent !important;
+    }
+
+    .urlbar-icon:hover:not([disabled]), .urlbar-icon-wrapper:hover:not([disabled]) {
+        background-color: var(--bg-hover) !important;
+    }
+
+    .urlbar-icon[open] {
+        background: var(--bg-active) !important;
+    }
+
+    #pageActionButton,
+    #pageActionSeparator {
+        display: none;
+    }
+
+    #PanelUI-button {
+        border: none !important;
+    }
+
+    .bookmark-item {
+        padding: 4px !important;
+    }
+
+    #navigator-toolbox::after {
+        border: none !important;
+    }
+
+    #PopupAutoCompleteRichResult {
+        background: var(--bg) !important;
+        color: var(--fg) !important;
+        font-family: var(--font) !important;
+        font-size: var(--font-size) !important;
+        border: none !important;
+    }
+
+    .autocomplete-richlistitem {
+        min-height: 25px !important;
+        color: var(--fg-inactive) !important;
+        font-family: var(--font) !important;
+        font-size: var(--font-size) !important;
+    }
+
+    .autocomplete-richlistitem[selected] {
+        background: transparent !important;
+        color: var(--fg) !important;
+    }
+
+    .autocomplete-richlistitem:hover {
+        background: var(--bg-hover) !important;
+    }
+
+    .ac-separator,
+    .ac-url,
+    .ac-action {
+        color: var(--blue) !important;
+    }
+
+    .search-one-offs {
+        display: none !important;
+    }
+}

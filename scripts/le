@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# le - focus or open various applications
+
+# If -n is given, always create a new instance
+if [[ $1 == -n ]]; then
+    focus() {
+        return 1
+    }
+    shift
+fi
+
+case $1 in
+    '')
+        printf '%s\n' "term" "chat" "text" "wifi" "info" "web" "mail" "files" "music" "video" "volume" "jap"
+        ;;
+    term|terminal)
+        urxvt &
+        ;;
+    chat|irc)
+        focus urxvt -i chat || { urxvt -name chat -e weechat & }
+        ;;
+    text|editor)
+        focus urxvt -n '* - vim' || { urxvt -name editor -e vim & }
+        ;;
+    wifi)
+        focus urxvt -i wifi || { urxvt -name wifi -title wifi -geometry 50x25 -e sudo wifi-menu -o & }
+        ;;
+    info|details)
+        BASH_STARTUP='details' urxvt -name info -geometry 24x18 &
+        ;;
+    web|browser)
+        focus firefox || { firefox & }
+        ;;
+    mail)
+        xdg-open 'https://mail.google.com/' &
+        ;;
+    files)
+        focus pcmanfm || { pcmanfm & }
+        ;;
+    music)
+        music &
+        ;;
+    video)
+        focus mpv
+        ;;
+    volume)
+        focus pavucontrol || { pavucontrol & }
+        ;;
+    jap|japanese)
+        pkill -x fcitx || { fcitx & }
+        ;;
+esac

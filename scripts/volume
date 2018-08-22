@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# volume - control the volume
+
+if [[ $# == 0 ]]; then
+    data=$(LC_ALL=C pactl list sinks)
+    volume=$(grep -i volume <<< "$data" | grep -oP '\d+(?=%)' | head -n 1)
+    mute=$(grep -i mute <<< "$data" | grep -oP 'no|yes')
+    echo "$volume:$mute"
+else
+    case $1 in
+        mute)
+            pactl set-sink-mute @DEFAULT_SINK@ 1;;
+        unmute)
+            pactl set-sink-mute @DEFAULT_SINK@ 0;;
+        toggle)
+            pactl set-sink-mute @DEFAULT_SINK@ toggle;;
+        *)
+            pactl set-sink-volume @DEFAULT_SINK@ "$1%";;
+    esac
+fi

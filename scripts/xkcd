@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# xkcd - watch for xkcd updates
+
+fetch() {
+    until response=$(curl -fsL "$1"); do
+        (( $? == 22 )) && return 1
+    done
+}
+
+xpath() {
+    xmllint --html --xpath "$1" - <<< "$response" 2>/dev/null
+}
+
+cache=~/.cache/xkcd
+latest=
+[[ -f $cache ]] && latest=$(< "$cache")
+
+if [[ ! $latest ]]; then
+    fetch https://xkcd.com
+    latest=$(xpath 'string((//a[@rel="prev"])[1]/@href)')
+    latest=${latest#*/} latest=${latest%%/*}
+    (( latest += 1 ))
+    echo "$latest" > "$cache"
+fi
+
+while true; do
+    while fetch "https://xkcd.com/$(( ++latest ))"; do
+        echo "$latest" > "$cache"
+        if [[ $(dunstify -t 10000 -A open,open -i star xkcd "$(xpath '//*[@id="ctitle"]/text()')") == open ]]; then
+            xdg-open "https://xkcd.com/$latest" &
+        fi &
+    done
+    sleep 1m
+done

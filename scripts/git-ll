@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# git-ll - lists files, highlighting tracked files
+
+highlight=$(tput bold; tput setaf 5)
+reset=$(tput sgr0)
+
+shopt -s nullglob
+shopt -s dotglob
+
+cd "$1" || exit 1
+
+for file in *; do
+    [[ -f $file ]] || continue
+    if git ls-files --error-unmatch "$file" &> /dev/null; then
+        echo "$highlight$file$reset"
+    else
+        echo "$file"
+    fi
+done

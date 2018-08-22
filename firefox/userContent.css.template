@@ -1,0 +1,87 @@
+:root {
+    --bg: {{ "$background" }};
+    --bg-hover: hsla(0, 100%, 100%, .1);
+    --bg-active: hsla(0, 100%, 100%, .15);
+    --fg: {{ "$foreground" }};
+    --fg-inactive: {{ "$color7" }};
+    --green: {{ "$color2" }};
+    --blue: {{ "$color4" }};
+    --font: "lucy tewi", "Biwidth", "EmojiOne Color", "fixed";
+    --font-size: 12px;
+}
+
+@media not print {
+    body {
+        background: var(--bg) !important;
+    }
+}
+
+@-moz-document url(about:home), url(about:newtab) {
+    html, body {
+        background: var(--bg) !important;
+        overflow-y: auto !important;
+    }
+
+    #onboarding-overlay-button {
+        display: none !important;
+    }
+
+    .prefs-pane-button {
+        display: none !important;
+    }
+}
+
+@-moz-document url(about:blank) {
+    html, body {
+        background: var(--bg) !important;
+    }
+}
+
+@-moz-document url-prefix(https://boards.4chan.org/) {
+    html, body {
+        max-width: 800px !important;
+        margin: auto !important;
+        background: var(--bg) !important;
+        color: var(--fg) !important;
+        font-family: Helvetica, sans-serif !important;
+    }
+
+    div#boardNavDesktop, div#boardNavDesktopFoot {
+        color: var(--fg-inactive) !important;
+    }
+
+    div#boardNavDesktop a, div#boardNavDesktopFoot a {
+        color: var(--fg) !important;
+    }
+
+    #bannerCnt {
+        border-color: var(--fg) !important;
+    }
+
+    div.post div.postInfo span.subject {
+        color: var(--green) !important;
+    }
+
+    div.reply {
+        background: var(--bg-hover) !important;
+        border: none !important;
+    }
+
+    div.pagelist {
+        background: var(--bg) !important;
+        color: var(--fg) !important;
+        border: none !important;
+    }
+
+    a, a:visited {
+        color: #00bcff !important;
+    }
+
+    a:hover, a:visited:hover {
+        color: #50ddff !important;
+    }
+
+    hr {
+        border: none !important;
+    }
+}

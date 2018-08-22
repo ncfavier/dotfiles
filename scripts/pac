@@ -1,0 +1,60 @@
+#!/bin/bash
+#
+# pac - keep track of installed packages
+
+ask() {
+    local prompt=$1 default=${2:-y} yn
+    [[ ${default,,} == y* ]] && prompt+=" [Y/n]" || prompt+=" [y/N]"
+    read -rp "$prompt " -n 1 yn
+    if [[ $yn ]]; then echo; else yn=$default; fi
+    [[ ${yn,,} == y* ]]
+}
+
+bold=$(tput bold)
+reset=$(tput sgr0)
+
+readarray -t packages_installed < <(pacman -Qqe)
+
+. ~/.packages
+[[ -r ~/.packages_local ]] && . ~/.packages_local
+packages_tracked=("${packages[@]}" "${packages_local[@]}")
+readarray -t -O "${#packages_tracked[@]}" packages_tracked < <(pacman -Qqg "${groups[@]}")
+
+only_installed=()
+only_tracked=()
+delimiter=$'\t'
+while read -r; do
+    [[ $REPLY == "$delimiter"* ]] &&
+        only_tracked+=("${REPLY:1}") ||
+        only_installed+=("$REPLY")
+done < <(
+    comm -3 --output-delimiter="$delimiter" \
+        <(printf '%s\n' "${packages_installed[@]}" | sort -u) \
+        <(printf '%s\n' "${packages_tracked[@]}" | sort -u)
+)
+
+if [[ ${#only_tracked[@]} != 0 ]]; then
+    echo "${bold}tracked only:$reset"
+    printf '\t%s\n' "${only_tracked[@]}"
+    if ask "${bold}install?$reset" n; then
+        yay -S "${only_tracked[@]}" || exit 1
+        only_tracked=()
+    fi
+    echo
+fi
+
+if [[ ${#only_installed[@]} != 0 ]]; then
+    echo "${bold}installed only:$reset"
+    printf '\t%s\n' "${only_installed[@]}"
+    if ask "${bold}uninstall?$reset" n; then
+        yay -Rncs "${only_installed[@]}" || exit 1
+        only_installed=()
+    fi
+    echo
+fi
+
+if [[ ${#only_installed[@]} != 0 || ${#only_tracked[@]} != 0 ]]; then
+    ask "${bold}edit .packages ?$reset" n && "$EDITOR" ~/.packages
+else
+    echo "${bold}packages in sync :)$reset"
+fi

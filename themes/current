@@ -1,0 +1,25 @@
+color0='#000521'
+color1='#ff0f99'
+color2='#00ffc9'
+color3='#ff0085'
+color4='#00bcff'
+color5='#ff0085'
+color6='#55fce8'
+color7='#92bcce'
+color8='#a8ebda'
+color9='#ff0f99'
+color10='#00ffc9'
+color11='#ff0085'
+color12='#00bcff'
+color13='#ff0085'
+color14='#55fce8'
+color15='#ffffff'
+
+background=$color15
+foreground=$color0
+accent=$color10
+
+font='xft:lucy tewi:pixelsize=11, xft:Biwidth:pixelsize=12, xft:Symbola'
+
+border_width=1
+window_gap=16

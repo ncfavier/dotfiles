@@ -1,0 +1,320 @@
+#!/bin/bash
+#
+# bar - lemonbar script
+
+shopt -s nullglob
+
+[[ -f ~/.theme ]] && . ~/.theme
+
+# Variables
+
+battery=(/sys/class/power_supply/BAT*)
+network_interface=$(iw dev | grep -oPm 1 '(?<=Interface ).*')
+home_ssid='NEUF_89B4'
+
+margin='  '
+
+# Functions
+
+escape() {
+    printf '%s\n' "${1//\%/%%\{\}}"
+}
+
+trunc() {
+    max_length=$1
+    text=$2
+    length=${#text}
+    (( length > max_length )) &&
+        text=${text::$(( max_length/2 ))}…${text:$(( length - (max_length - 1)/2 ))}
+    printf '%s\n' "$text"
+}
+
+icon_ramp() {
+    value=$1
+    shift
+    if [[ $1 == -u ]]; then
+        shift
+        index=$(( value*$#/100 + 1 ))
+        (( index > $# )) && index=$#
+        printf '%s\n' "${!index}"
+    else
+        while [[ $1 ]]; do
+            if [[ ! $2 || $value -le $2 ]]; then
+                printf '%s\n' "$1"
+                return
+            fi
+            shift 2
+        done
+    fi
+}
+
+print_time() {
+    local seconds=$1 minutes hours
+    (( minutes = seconds / 60, seconds %= 60 ))
+    (( hours = minutes / 60, minutes %= 60 ))
+    (( hours )) && printf '%02d:' "$hours"
+    printf '%02d:%02d\n' "$minutes" "$seconds"
+}
+
+# Set lemonbar to be just above the root window to prevent displaying over other windows
+xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
+
+#
+# Data feed
+#
+
+{
+
+    # Set up a builtin-only sleep function
+    exec {sleep_fd}<> <(:)
+    sleep() {
+        read -rt "${1:-0}" -u "$sleep_fd"
+    }
+
+    # Toggle the clock display format on USR1
+    trap 'echo Ctoggle' USR1
+
+    # Toggle the battery display format on USR2
+    trap 'echo Ptoggle' USR2
+
+    # Kill all child processes on exit
+    trap 'kill $(jobs -p) &> /dev/null' EXIT
+
+    # WM info
+    bspc subscribe report &
+
+    # Window title
+    xtitle -sf 'T%s\n' &
+
+    while true; do
+        # Clock
+        echo C
+
+        # Fcitx
+        fcitx-remote &> /dev/null && fcitx=on || fcitx=off
+        echo "I$fcitx"
+
+        sleep 1
+    done &
+
+    # Power
+    if [[ $battery ]]; then
+        while true; do
+            echo P
+            sleep 5
+        done &
+    fi
+
+    # Backlight
+    false && udevadm monitor -u -s backlight |
+    while true; do
+        echo "B$(brightness)"
+        read -r
+    done &
+
+    # Sound
+    stdbuf -oL alsactl monitor pulse |
+    grep --line-buffered -i master |
+    while true; do
+        echo "S$(volume)"
+        read -r
+    done &
+
+    # Network
+    ip -o monitor dev "$network_interface" |
+    grep --line-buffered -P "^\\d+:\\s+$network_interface" |
+    while true; do
+        ssid=$(iw dev "$network_interface" info | grep -oP '(?<=ssid\s).*')
+        echo "N${ssid/$home_ssid/home}"
+        read -r
+    done &
+
+    # Mail
+    gmail 'G%s\n' &
+
+    # Music
+    mpc idleloop player |
+    while true; do
+        echo M
+        read -r || sleep 10
+    done &
+
+    # Wait
+    until wait; do true; done
+
+} |
+
+#
+# Parser
+#
+
+while read -rn 1 event; do
+    case $event in
+        W) # is for WM
+            wm=
+            IFS=: read -ra parts
+            for part in "${parts[@]}"; do
+                type=${part::1}
+                item=${part:1}
+                if [[ ${type,,} == [fou] ]]; then
+                    desktop=$item
+                    item=$margin$desktop$margin
+                    item="%{A:bspc desktop -f $desktop:}%{A2:bspc node -d $desktop -f:}$item%{A}%{A}"
+                    [[ $desktop =~ ^[[:alpha:]]+$ ]] &&
+                        item="%{A3:le $desktop:}$item%{A}" ||
+                        item="%{A3:bspc desktop -f $desktop; le terminal:}$item%{A}"
+                    case $type in
+                        f|F) item="%{F$color7}$item%{F-}";;
+                        u|U) item="%{F$color5}$item%{F-}";;
+                    esac
+                    case $type in
+                        F|O|U) item="%{B$color8}%{T2}$item%{T-}%{B-}";;
+                    esac
+                    wm+=$item
+                fi
+            done
+            ;;
+        T) # is for title
+            read -r title
+            title=$(trunc 50 "$title")
+            title=$(escape "$title")
+            if [[ $title ]]; then
+                title="$margin $title$margin"
+                title="%{B$accent}%{T2}$title%{T-}%{B-}"
+                title="%{A:bspc node -t ~floating:}%{A2:bspc node -c:}%{A3:bspc desktop -l next:}$title%{A}%{A}%{A}"
+            fi
+            ;;
+        C) # is for clock
+            read -r toggle
+            if [[ $toggle == toggle ]]; then
+                (( long_clock ^= 1 ))
+            fi
+            if (( long_clock )) ; then
+                date_format="%a %-d %b %Y"
+                time_format="%H:%M:%S"
+            else
+                date_format="%a %-d"
+                time_format="%H:%M"
+            fi
+            printf -v clock "%($date_format %%{T2}$time_format%%{T-})T" -1
+            clock=$margin$clock$margin
+            clock="%{B$color8}$clock%{B-}"
+            clock="%{A:pkill -USR1 -P $$ -f $0 -o:}$clock%{A}"
+            ;;
+        P) # is for power
+            read -r toggle
+            if [[ $toggle == toggle ]]; then
+                (( long_battery ^= 1 ))
+            fi
+            status=$(< "$battery"/status)
+            (( percentage = $(< "$battery"/capacity) ))
+            (( percentage > 100 )) && (( percentage = 100 ))
+            icon=$(icon_ramp "$percentage" -u          )
+            [[ $status == Charging ]] && icon+=
+            [[ $status == Full ]] && icon=
+            power="$icon $percentage%"
+            if (( long_battery )); then
+                (( voltage = $(< "$battery"/voltage_now) / 1000 ))
+                if (( present_rate = $(< "$battery"/power_now) / voltage )); then
+                    (( remaining_capacity = $(< "$battery"/energy_now) / voltage ))
+                    if [[ $status == Charging ]]; then
+                        (( full_capacity = $(< "$battery"/energy_full) / voltage))
+                        (( seconds_left = 3600 * (full_capacity - remaining_capacity) / present_rate ))
+                    elif [[ $status == Discharging ]]; then
+                        (( seconds_left = 3600 * remaining_capacity / present_rate ))
+                    fi
+                fi
+                power+=" $status $(print_time "$seconds_left")"
+            fi
+            (( percentage <= 10 )) && [[ $status != Charging ]] && power="%{F$color1}$power%{F-}"
+            power=$margin$power$margin
+            power="%{A:pkill -USR2 -P $$ -f $0 -o:}%{A3:power:}$power%{A}%{A}"
+            ;;
+        B) # is for backlight
+            read -r percentage
+            brightness="$(icon_ramp "$percentage"  10  50 ) $percentage%"
+            brightness=$margin$brightness$margin
+            brightness="%{A4:brightness +2:}%{A5:brightness -2:}$brightness%{A}%{A}"
+            ;;
+        S) # is for sound
+            IFS=: read -r percentage mute
+            if [[ $mute == yes ]]; then
+                sound=
+            else
+                sound="$(icon_ramp "$percentage"  10  50 ) $percentage%"
+            fi
+            sound=$margin$sound$margin
+            sound="%{A:le volume:}%{A3:volume toggle:}%{A4:volume +2:}%{A5:volume -2:}$sound%{A}%{A}%{A}%{A}"
+            ;;
+        N) # is for network
+            read -r network
+            if [[ $network ]]; then
+                network=$(trunc 15 "$network")
+                network=$(escape "$network")
+                network=" $network"
+                network=$margin$network$margin
+                network="%{A:le wifi:}%{A3:sudo systemctl restart netctl-auto@$network_interface:}$network%{A}%{A}"
+            fi
+            ;;
+        G) # is for Gmail
+            mail=
+            read -r count
+            if (( count )); then
+                mail="%{F$color5}%{F-} $count"
+                mail=$margin$mail$margin
+                mail="%{A:le mail:}$mail%{A}"
+            fi
+            ;;
+        I) # is for input method
+            read -r status
+            if [[ $status == on ]]; then
+                im=" fcitx"
+                im=$margin$im$margin
+                im="%{A:fcitx-remote -t:}%{A2:le im:}%{A3:fcitx-configtool:}$im%{A}%{A}%{A}"
+            elif [[ $status == off ]]; then
+                im=
+            fi
+            ;;
+        M) # is for music
+            song=
+            song_artist=$(mpc current -f '%artist%')
+            song_title=$(mpc current -f '%title%')
+            if [[ $song_title ]]; then
+                song_artist=$(trunc 20 "$song_artist")
+                song_title=$(trunc 40 "$song_title")
+                song_artist=$(escape "$song_artist")
+                song_title=$(escape "$song_title")
+                song=$(escape "$song")
+                song=" %{T2}$song_artist%{T-} - $song_title"
+                song=$margin$song$margin
+                song="%{A:le music:}%{A2:mpc clear:}%{A3:mpc toggle:}$song%{A}%{A}%{A}"
+            fi
+            ;;
+    esac
+
+    # Rendering
+    printf '%%{l}%s%%{r}%s\n' \
+        "$wm$title" \
+        "$song$im$mail$network$sound$brightness$power$clock"
+done |
+
+#
+# Bar
+#
+
+lemonbar -g x28 \
+         -a 64 \
+         -B "$background" \
+         -F "$foreground" \
+         -o 0 -f 'lucy tewi:pixelsize=11' \
+         -o 0 -f 'lucy tewi:bold:pixelsize=11' \
+         -o 0 -f 'Biwidth:pixelsize=12' \
+         -o -1 -f 'wuncon siji:pixelsize=10' |
+
+#
+# Bash
+#
+
+while read -r; do
+    eval "$REPLY" &
+done

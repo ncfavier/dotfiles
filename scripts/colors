@@ -1,0 +1,114 @@
+#!/usr/bin/env node
+//
+// colors - browser-based colorscheme picker
+
+const fs = require('fs');
+const http = require('http');
+const exec = require('child_process').exec;
+
+const file = `${process.env.HOME}/.colors`;
+const port = 8642;
+
+const prefix = 'c';
+const colorRegex = new RegExp(`^#define\\s+${prefix}(\\d+)\\s+(\\S+)`);
+const autoColors = [1, 2, 3, 4, 5, 6];
+const darken = false;
+const factor = 1;
+
+const deriveColor = (color) => {
+    let r = parseInt(color.substr(1, 2), 16),
+        g = parseInt(color.substr(3, 2), 16),
+        b = parseInt(color.substr(5, 2), 16);
+
+    if (!darken)
+        r = 255-r, g = 255-g, b = 255-b;
+
+    r = Math.floor(r * factor);
+    g = Math.floor(g * factor);
+    b = Math.floor(b * factor);
+
+    if (!darken)
+        r = 255-r, g = 255-g, b = 255-b;
+
+    r = ('00' + r.toString(16)).slice(-2);
+    g = ('00' + g.toString(16)).slice(-2);
+    b = ('00' + b.toString(16)).slice(-2);
+
+    return '#' + r + g + b;
+};
+
+let colors = [];
+
+for (const line of fs.readFileSync(file).toString().split('\n')) {
+    const match = line.match(colorRegex);
+    if (match)
+        colors[match[1]] = match[2];
+}
+
+const server = http.createServer((req, res) => {
+    const end = () => res.end(`
+        <style>
+            body {
+                display: table;
+                height: 100%;
+                margin: auto;
+                background-color: ${colors[0] || 'black'};
+                color: ${colors[15] || 'white'};
+                font-family: sans-serif;
+            }
+
+            form {
+                display: table-cell;
+                vertical-align: middle;
+            }
+
+            td {
+                text-align: center;
+            }
+
+            input {
+                width: 60px;
+                height: 60px;
+                padding: 0;
+                border: none;
+            }
+        </style>
+        <form method="post">
+            ${colors.slice(0,8).map((color, i) => `
+                <input type="color" name="${i}" value="${color}">
+            `).join('\n')}
+            <br>
+            ${colors.slice(8).map((color, i) => `
+                <input type="color" name="${i + 8}" value="${color}">
+            `).join('\n')}
+        </form>
+        <script>
+            const form = document.querySelector('form');
+            form.addEventListener('change', () => {
+                form.submit();
+            });
+        </script>
+    `);
+    if (req.method == 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', () => {
+            for (let line of decodeURIComponent(body).split('&')) {
+                let parts = line.split('=');
+                colors[parts[0]] = parts[1];
+            }
+            for (let color of autoColors)
+                if (darken)
+                    colors[color] = deriveColor(colors[color + 8]);
+                else
+                    colors[color + 8] = deriveColor(colors[color]);
+            fs.writeFileSync(file, colors.map((color, i) => `#define ${prefix}${i}\t${color}`).join('\n') + '\n');
+            end();
+        });
+    } else
+        end();
+});
+
+server.listen(port, 'localhost', () => {
+    exec(`xdg-open localhost:${port} &`);
+});

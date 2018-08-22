@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=img
+Exec=img
+Categories=Other;
+NoDisplay=true
+MimeType=image/png;image/jpeg
+Terminal=false

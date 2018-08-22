@@ -1,0 +1,93 @@
+" Plugins
+
+call plug#begin('~/.vim/plugged')
+    Plug 'scrooloose/nerdtree'
+    Plug 'kien/ctrlp.vim'
+call plug#end()
+
+" Variables
+
+let mapleader = ','
+let NERDTreeMinimalUI = 1
+let g:ctrlp_show_hidden = 1
+
+" Options
+
+set autoindent
+set autoread
+set breakindent
+set breakindentopt=shift:2
+set clipboard=unnamedplus,exclude:cons\|linux
+set expandtab
+set hidden
+set hlsearch
+set ignorecase
+set incsearch
+set mouse=a
+set nocompatible
+set number
+set shiftround
+set shiftwidth=0
+set showcmd
+set smartindent
+set softtabstop=4
+set splitbelow
+set splitright
+set t_md=
+set tabstop=4
+set title
+set ttymouse=urxvt
+set whichwrap=b,s,<,>,[,]
+set wildmenu
+
+syntax on
+filetype plugin indent on
+colors peachpuff
+
+" AutoCmd
+
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif " quit if NERDTree is the last buffer
+autocmd BufWritePre * %s/\s\+$//e " trim leading whitespace on save
+autocmd BufNewFile,BufRead *.S set syntax=asm
+
+" Mappings
+
+map               <Home>    ^
+inoremap          <Home>    <Esc>^i
+nnoremap <silent> <Return>  :noh<Bar>echo<Return>
+nnoremap          p         ]p
+vnoremap          //        y/\V<C-r>=escape(@",'/\')<Return><Return>
+noremap  <silent> <C-n>     :NERDTreeToggle<Return>
+noremap           <C-Left>  <C-w>h
+noremap           <C-Right> <C-w>l
+noremap           <C-Down>  <C-w>j
+noremap           <C-Up>    <C-w>k
+noremap  <silent> <C-t>     :call ToggleTerm()<Return>
+tnoremap <silent> <C-t>     <C-w>:call ToggleTerm()<Return>
+nnoremap <silent> <Leader>, :map <Leader><Return>
+nnoremap <silent> <Leader>s :sort<Return>
+vnoremap <silent> <Leader>s :sort<Return>
+nnoremap          <Leader>m :make<Space>
+
+" Functions
+
+function! ToggleTerm()
+    if &buftype == 'terminal'
+        close
+        return
+    endif
+
+    let terminal_windows = filter(getwininfo(), 'v:val.terminal')
+    if !empty(terminal_windows)
+        execute terminal_windows[0].winnr . 'wincmd w'
+        return
+    endif
+
+    let terminal_buffers = filter(getbufinfo(), 'getbufvar(v:val.bufnr, ''&buftype'') == ''terminal''')
+    if !empty(terminal_buffers)
+        execute 'botright sbuffer' terminal_buffers[0].bufnr
+        return
+    endif
+
+    botright terminal ++close
+endfunction

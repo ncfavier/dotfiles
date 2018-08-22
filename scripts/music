@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# music - a music player interface
+
+shopt -s lastpipe nocasematch
+
+dmenu() {
+    rofi -lines 20 -dmenu -i -matching fuzzy "$@"
+}
+
+cmd=$1
+shift
+
+case $cmd in
+    ''|play)
+        { echo; mpc list artist; } |
+        dmenu -p artist | read -r artist || exit 1
+
+        { echo; mpc list album ${artist:+artist "$artist"}; } |
+        dmenu -p album | read -r album || exit 1
+
+        mpc clear
+
+        if [[ $artist || $album ]]; then
+            mpc findadd ${album:+album "$album"} ${artist:+artist "$artist"}
+        else
+            mpc add /
+        fi
+
+        mpc playlist -f '[%track% - ]%title%' |
+        dmenu -p song -format d | read -r index || exit 1
+
+        mpc play "$index"
+        ;;
+    pause)
+        if [[ $(mpc current) ]]; then
+            mpc toggle
+        else
+            :
+            #bspc query -T -m | jq -r '.desktops[].root | recurse(.firstChild, .secondChild) | select(.client.className == "Firefox") | .id' |
+            #    while read -r id; do
+            #        orig_title=$(xtitle
+            #    done
+        fi
+        ;;
+esac

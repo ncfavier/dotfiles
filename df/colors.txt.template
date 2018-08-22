@@ -1,0 +1,17 @@
+These are the display colors in RGB.  The game is actually displaying extended ASCII characters in OpenGL, so you can modify the colors.
+
+{{{
+print_color() {
+    local name=${1^^} value=${2#\#}
+    printf '[%s_R:%d]\n' "$name" "$(( 0x${value:0:2} ))"
+    printf '[%s_G:%d]\n' "$name" "$(( 0x${value:2:2} ))"
+    printf '[%s_B:%d]\n' "$name" "$(( 0x${value:4:2} ))"
+}
+
+names=(black red green brown blue magenta cyan lgray dgray lred lgreen yellow lblue lmagenta lcyan white)
+
+for i in {0..15}; do
+    color=color$i
+    print_color "${names[i]}" "${!color}"
+done
+}}}

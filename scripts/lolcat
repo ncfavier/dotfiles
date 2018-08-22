@@ -1,0 +1,73 @@
+#!/bin/bash
+#
+# lolcat - a lightweight bash rewrite
+
+colorCodes=()
+numColors=$(tput colors)
+if (( numColors >= 256 )); then
+    colorCodes=(198 204 203 202 208 214 178 184 148 154 118 119 83 84 48 49 43 44 39 33 63 93 129 128 164 163 199)
+elif (( numColors >= 8 )); then
+    colorCodes=(1 3 2 6 4 5)
+fi
+
+reset=$'\e[0m'
+colors=()
+for i in "${colorCodes[@]}"; do
+    colors+=($'\e'"[38;5;${i}m")
+done
+if [[ ${#colors[@]} == 0 ]]; then
+    colors=('')
+fi
+numColors=${#colors[@]}
+
+range=1000
+period=30
+slope=30
+slope_sign=1
+offset=
+
+integer_pattern='^[-+]?[[:digit:]]+$'
+
+while (( $# )); do
+    case $1 in
+        -p|--period)
+            shift
+            if [[ $1 =~ $integer_pattern ]]; then
+                period=$1
+            fi
+            ;;
+        -S|--slope)
+            shift
+            if [[ $1 =~ $integer_pattern ]] && (( -100 <= $1 && $1 <= 100 )); then
+                (( slope = ($1 < 0 ? -$1 : $1) ))
+                (( slope_sign = ($1 < 0 ? -1 : 1) ))
+            fi
+            ;;
+        -o|--offset)
+            shift
+            if [[ $1 =~ $integer_pattern ]]; then
+                (( offset = $1 % range ))
+            fi
+            ;;
+        *)
+            break
+            ;;
+    esac
+    shift
+done
+
+(( xstep = range * slope / period / 100 ))
+(( ystep = range * (100 - slope) / period / 100 * slope_sign ))
+[[ ! $offset ]] && (( offset = RANDOM % range ))
+
+eof=
+cat "$@" | while [[ ! $eof ]]; do
+    read -r || eof=true
+    buf=
+    for (( i = 0, x = offset, n = ${#REPLY}; i < n; i++, x += xstep, x %= range )) do
+        buf+=${colors[x * numColors / range % numColors]}${REPLY:i:1}$reset
+    done
+    printf '%s' "$buf"
+    [[ $eof ]] || printf '\n'
+    (( offset += ystep, offset %= range ))
+done

@@ -1,0 +1,96 @@
+# Global
+
+super + r
+    refresh
+
+{XF86PowerOff,super + Escape}
+    power
+
+super + {_,shift} + b
+    border_width=$(bspc config border_width); (( border_width {+,-}= 4 )); bspc config border_width "$(( border_width >= 0 ? border_width : 0 ))"
+
+super + {_,shift} + g
+    window_gap=$(bspc config window_gap); (( window_gap {+,-}= 4 )); bspc config window_gap "$(( window_gap >= 0 ? window_gap : 0 ))"
+
+# Desktops
+
+super + {ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore,ccedilla,KP_End,KP_Down,KP_Next,KP_Left,KP_Begin,KP_Right,KP_Home,KP_Up,KP_Prior} + {_,shift}
+    desktop=^{1-9,1-9}; bspc {desktop -f "$desktop",node -d "$desktop" -f}
+
+super + {button4,button5,Left,Right} + {_,shift}
+    desktop={prev,next,prev,next}; bspc {desktop -f "$desktop",node -d "$desktop" -f}
+
+super + {_,shift} + Tab
+    bspc desktop -l next
+
+super + u
+    bspc desktop -f any.urgent
+
+super + n
+    bspc desktop -f any.!occupied
+
+super + z
+    bspc desktop -f last
+
+# Nodes
+
+super + {Prior,Home}
+    bspc node -f @{parent,/}
+
+alt + {_,shift} + {_,ctrl} + Tab
+    bspc node -f {next,prev}{.local,_}
+
+super + {t,shift + t,s,l}
+    bspc node -t \~{tiled,pseudo_tiled,floating,fullscreen}
+
+super + y
+    bspc node -g sticky
+
+super + {_,shift} + q
+    bspc node -{c,k}
+
+super + ctrl + {Left,Down,Up,Right}
+    bspc node -p \~{west,south,north,east}
+
+super + ctrl + {ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore,ccedilla,KP_End,KP_Down,KP_Next,KP_Left,KP_Begin,KP_Right,KP_Home,KP_Up,KP_Prior}
+    bspc node -o 0.{1-9,1-9}
+
+super + ctrl + {BackSpace,Delete}
+    bspc node -p cancel
+
+super + ctrl + {b,e,r,i}
+    bspc node -{B,E,R 90,i}
+
+# Control
+
+super + alt + {space,Left,Right,Down,Up,r,z,y,c,b,f,u}
+    mpc {toggle,prev,next,volume -2,volume +2,repeat,random,single,clear,seek -3,seek +3,update}
+
+XF86Audio{Play,Prev,Next}
+    mpc {toggle,prev,next}
+
+XF86Audio{Lower,Raise}Volume
+    volume {-,+}2
+
+XF86AudioMute
+    volume toggle
+
+XF86MonBrightness{Down,Up}
+    brightness {-,+}2
+
+{_,super} + {_,ctrl} + {_,alt} + {_,shift} + Print
+    shoot {_,-c} {_,-n} {_,-v} {_,-u}
+
+# Apps
+
+super + {_,shift,ctrl} + space
+    rofi -show {run,le,window}
+
+super + {_,shift} + {Return,  KP_Enter,f,    w,  c,   m,    e,     v,    i,   j}
+    le {_,-n}       {terminal,terminal,files,web,chat,music,editor,video,info,japanese}
+
+super + ctrl + w
+    le wifi
+
+super + o
+    emoji

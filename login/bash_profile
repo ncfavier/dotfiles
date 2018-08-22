@@ -1,0 +1,24 @@
+# Variables
+[[ $TERM == linux* ]] && export TERM=linux-16color
+export PATH+=:~/.bin
+export VISUAL=vim
+export EDITOR=vim
+export PAGER='less -+X'
+export GREP_COLOR='1;35'
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS='@im=fcitx'
+export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd'
+
+# Greetings
+printf '\nWelcome on %s%s%s, %s%s%s.\n\n' \
+    "$(tput setaf 5)" "$HOSTNAME" "$(tput sgr0)" \
+    "$(tput setaf 6)" "$USER" "$(tput sgr0)"
+
+# bashrc
+[[ -f ~/.bashrc ]] && . ~/.bashrc
+
+# Start X on tty1
+if [[ ! $DISPLAY && $XDG_VTNR == 1 ]]; then
+    exec startx &> ~/.Xlog
+fi
