@@ -39,7 +39,17 @@ vimx() {
 }
 
 duh() {
-    command du -h -d 1 "$@" | sort -k 1,1hr -k 2,2f
+    local lines=() total_size size file width=15 bar
+    mapfile -t lines < <(command du -ad 1 "$@")
+    read -r total_size _ <<< "${lines[-1]}"
+    printf '%s\n' "${lines[@]::${#lines[@]}-1}" | sort -nrk 1,1 | while read -r size file; do
+        bar=
+        (( n = (width + 1) * (size - 1) / total_size))
+        for (( i = 0; i < n; i++ )) do
+            bar+='#'
+        done
+        printf '[%-*s] %s\n' "$width" "$bar" "$file"
+    done
 }
 
 what() {

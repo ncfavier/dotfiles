@@ -42,7 +42,7 @@ set wildmenu
 
 syntax on
 filetype plugin indent on
-colors peachpuff
+colors delek
 
 " AutoCmd
 
@@ -89,5 +89,5 @@ function! ToggleTerm()
         return
     endif
 
-    botright terminal ++close
+    botright terminal ++close ++kill=term ++norestore
 endfunction

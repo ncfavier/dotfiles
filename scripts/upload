@@ -20,15 +20,14 @@ destination=${2:-$basename}
 host=up.v3lo.pw
 url=$(jq -nr --arg host "$host" --arg destination "$destination" '"https://\($host)/\($destination | @uri )"')
 
-if [[ $source = ~/sync/*/* ]]; then
-    source=${source#~/sync/}
-    ssh "$host" bash -s "${source@Q}" "${destination@Q}" <<< 'install -m 644 ~/sync/"$1" ~/sync/uploads/"$2"'
+if [[ $source == ~/sync/*/* ]]; then
+    base=${source#~/sync/}
+    ssh "$host" bash -s "${base@Q}" "${destination@Q}" <<< 'install -m 644 sync/"$1" sync/uploads/"$2"'
 else
-    install -m 644 "$source" ~/sync/uploads/"$destination" || exit 1
-    ssh "$host" bash -s "${destination@Q}" <<< 'until [[ -f ~/sync/uploads/$1 ]]; do sleep 0.2; done'
+    rsync -s --chmod=F644 "$source" "$host:sync/uploads/$destination"
 fi
 
-echo "$url" | tee >(clip)
+printf '%s\n' "$url" | tee >(clip)
 
 if [[ $(dunstify -t 10000 -A open,open -i network-server "uploaded $basename" "to $url") == open ]]; then
     xdg-open "$url" &
