@@ -30,5 +30,5 @@ fi
 printf '%s\n' "$url" | tee >(clip)
 
 if [[ $(dunstify -t 10000 -A open,open -i network-server "uploaded $basename" "to $url") == open ]]; then
-    xdg-open "$url" &
+    exec xdg-open "$url"
 fi &

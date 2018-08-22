@@ -101,9 +101,8 @@ git: ~/.gitconfig
 # weechat
 
 .PHONY: weechat
-weechat: $(addprefix ~/.weechat/, $(addsuffix .conf, alias autosort buflist charset exec fifo fset irc \
-													 logger plugins relay script trigger weechat) \
-		 script.list python/emoji.py python/title.py python/spurdo.py) \
+weechat: $(patsubst weechat/%, ~/.weechat/%, $(wildcard weechat/*.conf)) \
+		 $(addprefix ~/.weechat/, script.list $(wildcard python/*.py)) \
 		 ~/.local/share/emojis.json
 
 ~/.weechat/%: weechat/%
@@ -210,8 +209,8 @@ pcmanfm: ~/.config/pcmanfm/default/pcmanfm.conf ~/.config/libfm/libfm.conf
 # xdg
 
 xdg: $(addprefix ~/.config/, user-dirs.dirs user-dirs.locale mimeapps.list) \
-	 $(addprefix ~/.local/share/applications/, pcmanfm.desktop userapp-img.desktop userapp-vim.desktop) \
-	 $(addprefix ~/.local/share/thumbnailers/, ffmpegthumbnailer.thumbnailer imagemagick-pdf.thumbnailer)
+	 $(patsubst xdg/applications/%, ~/.local/share/applications/%, $(wildcard xdg/applications/*)) \
+	 $(patsubst xdg/thumbnailers/%, ~/.local/share/thumbnailers/%, $(wildcard xdg/thumbnailers/*))
 
 ~/.config/%: xdg/%
 	install -Dm 644 $< $@

@@ -28,7 +28,7 @@ while true; do
     while fetch "https://xkcd.com/$(( ++latest ))"; do
         echo "$latest" > "$cache"
         if [[ $(dunstify -t 10000 -A open,open -i star xkcd "$(xpath '//*[@id="ctitle"]/text()')") == open ]]; then
-            xdg-open "https://xkcd.com/$latest" &
+            exec xdg-open "https://xkcd.com/$latest"
         fi &
     done
     sleep 1m

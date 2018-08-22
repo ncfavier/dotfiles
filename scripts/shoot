@@ -103,7 +103,7 @@ fi
 # Notify
 
 if [[ $(dunstify -t 10000 -A open,open -I "$thumbnail" "shot saved" "as $target") == open ]]; then
-    xdg-open "$target" &> /dev/null &
+    exec xdg-open "$target" &> /dev/null
 fi &
 
 # Upload
