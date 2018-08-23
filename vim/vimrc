@@ -40,13 +40,15 @@ set ttymouse=urxvt
 set whichwrap=b,s,<,>,[,]
 set wildmenu
 
+set formatoptions-=t
+
 syntax on
 filetype plugin indent on
 colors delek
 
 " AutoCmd
 
-autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif " quit if NERDTree is the last buffer
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | quit | endif " quit if NERDTree is the last buffer
 autocmd BufWritePre * %s/\s\+$//e " trim leading whitespace on save
 autocmd BufNewFile,BufRead *.S set syntax=asm
 
@@ -64,10 +66,15 @@ noremap           <C-Down>  <C-w>j
 noremap           <C-Up>    <C-w>k
 noremap  <silent> <C-t>     :call ToggleTerm()<Return>
 tnoremap <silent> <C-t>     <C-w>:call ToggleTerm()<Return>
-nnoremap <silent> <Leader>, :map <Leader><Return>
+nnoremap <silent> <Leader><Leader> :map <Leader><Return>
+nnoremap          <Leader>i :call AddImport()<Bar>SortImports<Return>
 nnoremap <silent> <Leader>s :sort<Return>
 vnoremap <silent> <Leader>s :sort<Return>
 nnoremap          <Leader>m :make<Space>
+
+" Commands
+
+command! SortImports 1/^import /,$?^import ?sort u /^import \+/ | nohlsearch
 
 " Functions
 
@@ -79,7 +86,7 @@ function! ToggleTerm()
 
     let terminal_windows = filter(getwininfo(), 'v:val.terminal')
     if !empty(terminal_windows)
-        execute terminal_windows[0].winnr . 'wincmd w'
+        execute terminal_windows[0].winnr.'wincmd w'
         return
     endif
 
@@ -90,4 +97,34 @@ function! ToggleTerm()
     endif
 
     botright terminal ++close ++kill=term ++norestore
+endfunction
+
+function! AddImport(...)
+    if !exists('$IMPORTPATH')
+        echoerr 'IMPORTPATH not set'
+        return
+    endif
+
+    let $TYPENAME = get(a:, 1, expand('<cword>'))
+    let types = systemlist('IFS=: read -ra jars <<< "$IMPORTPATH"; for f in "${jars[@]}"; do jar -tf "$f" 2> /dev/null; done | sed -n ''/\<''"$TYPENAME"''\.class$/{s/\.class$//;s,/,.,g;p}''')
+
+    if len(types) == 0
+        return
+    elseif len(types) == 1
+        let type = types[0]
+    else
+        for i in range(len(types))
+            echo i types[i]
+        endfor
+        let type = get(types, input('Which type do you want to import? '))
+    endif
+
+    let v:errmsg = ''
+    silent! $?^import
+    if v:errmsg != ''
+        silent! $?^package
+        normal o
+    endif
+
+    put ='import '.type.';'
 endfunction
