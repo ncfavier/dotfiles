@@ -15,6 +15,8 @@ else
     basename=${source##*/}
 fi
 
+[[ -d $source ]] && source=${source%/}/
+
 destination=${2:-$basename}
 
 host=up.v3lo.pw
@@ -22,9 +24,9 @@ url=$(jq -nr --arg host "$host" --arg destination "$destination" '"https://\($ho
 
 if [[ $source == ~/sync/*/* ]]; then
     base=${source#~/sync/}
-    ssh "$host" bash -s "${base@Q}" "${destination@Q}" <<< 'install -m 644 sync/"$1" sync/uploads/"$2"'
+    ssh "$host" bash -s "${base@Q}" "${destination@Q}" <<< 'rsync -rs --chmod=D755,F644 sync/"$1" sync/uploads/"$2"'
 else
-    rsync -s --chmod=F644 "$source" "$host:sync/uploads/$destination"
+    rsync -Pvrs --chmod=D755,F644 "$source" "$host:sync/uploads/$destination"
 fi
 
 printf '%s\n' "$url" | tee >(clip)

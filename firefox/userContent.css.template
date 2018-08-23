@@ -12,7 +12,7 @@
 
 @media not print {
     body {
-        background: var(--bg) !important;
+        background-image: none !important;
     }
 }
 

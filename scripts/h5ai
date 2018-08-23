@@ -1,0 +1,6 @@
+#!/bin/bash
+
+archive=$(mktemp --suffix .zip) || exit 1
+trap 'rm -f -- "$archive"' exit
+curl -sSLo "$archive" https://release.larsjung.de/h5ai/h5ai-0.29.0.zip || exit 1
+unzip ${1:+-d "$1"} "$archive"
