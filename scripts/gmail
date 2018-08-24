@@ -7,7 +7,7 @@ die() {
     exit 1
 } >&2
 
-request() until curl -sS "$@"; do sleep 10; done
+request() until curl -fsSL "$@"; do sleep 10; done
 
 authorize() {
     xdg-open "$auth_uri?scope=$scope&response_type=code&redirect_uri=$redirect_uri&client_id=$client_id" &

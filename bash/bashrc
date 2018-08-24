@@ -1,10 +1,16 @@
 # Options
+
 set +H -b
 shopt -s autocd
 shopt -s globstar
 shopt -s histappend
 
+# Terminal settings
+
+stty -ixon
+
 # Variables
+
 HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE=ls:l:ll
 HISTSIZE=5000
@@ -12,12 +18,15 @@ PS1='\[\e[36;1m\]$(pwd_short)\[\e[0;1m\] \$\[\e[0m\] '
 PS2='\[\e[0;1m\]>\[\e[0m\] '
 
 # Aliases
+
 [[ -f ~/.bash_aliases ]] && . ~/.bash_aliases
 
 # Functions
+
 [[ -f ~/.bash_functions ]] && . ~/.bash_functions
 
 # Startup
+
 if [[ $BASH_STARTUP ]]; then
     eval "$BASH_STARTUP"
 else

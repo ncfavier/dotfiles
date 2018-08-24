@@ -1,3 +1,36 @@
+" Defaults
+
+source $VIMRUNTIME/defaults.vim
+
+" Options
+
+set autoindent
+set autoread
+set breakindent
+set breakindentopt=shift:2
+set clipboard=unnamedplus,exclude:cons\|linux
+set expandtab
+set formatoptions-=t
+set hidden
+set hlsearch
+set ignorecase
+set incsearch
+set number
+set shiftround
+set shiftwidth=0
+set smartindent
+set softtabstop=4
+set splitbelow
+set splitright
+set t_md=
+set tabstop=4
+set title
+set ttimeoutlen=10
+set ttymouse=urxvt
+set whichwrap=b,s,<,>,[,]
+
+colors delek
+
 " Plugins
 
 call plug#begin('~/.vim/plugged')
@@ -11,70 +44,42 @@ let mapleader = ','
 let NERDTreeMinimalUI = 1
 let g:ctrlp_show_hidden = 1
 
-" Options
+" Mappings
 
-set autoindent
-set autoread
-set breakindent
-set breakindentopt=shift:2
-set clipboard=unnamedplus,exclude:cons\|linux
-set expandtab
-set hidden
-set hlsearch
-set ignorecase
-set incsearch
-set mouse=a
-set nocompatible
-set number
-set shiftround
-set shiftwidth=0
-set showcmd
-set smartindent
-set softtabstop=4
-set splitbelow
-set splitright
-set t_md=
-set tabstop=4
-set title
-set ttymouse=urxvt
-set whichwrap=b,s,<,>,[,]
-set wildmenu
+map               <Home>           ^
+imap              <Home>           <C-o><Home>
+nnoremap <silent> <Return>         :noh<Bar>echo<Return>
+nnoremap          p                ]p
+vnoremap          //               y/\V<C-r>=escape(@",'/\')<Return><Return>
+noremap  <silent> <C-n>            :NERDTreeToggle<Return>
+noremap           <C-Left>         <C-w>h
+noremap           <C-Right>        <C-w>l
+noremap           <C-Down>         <C-w>j
+noremap           <C-Up>           <C-w>k
+noremap  <silent> <C-t>            :ToggleTerm<Return>
+tnoremap <silent> <C-t>            <C-w>:ToggleTerm<Return>
+noremap           <F9><F9>         :make<Return>
+noremap           <F9>i            :make install<Return>
+noremap           <F9>c            :make clean<Return>
+noremap           <F9><Space>      :make<Space>
+imap              <F9>             <C-o><F9>
+nnoremap <silent> <Leader><Leader> :map <Leader><Return>
+nnoremap          <Leader>i        :AddImport<Bar>SortImports<Return>
+nnoremap          <Leader>r        :%s///g<Left><Left>
+nnoremap <silent> <Leader>s        :sort<Return>
+vnoremap <silent> <Leader>s        :sort<Return>
 
-set formatoptions-=t
-
-syntax on
-filetype plugin indent on
-colors delek
-
-" AutoCmd
+" Autocommands
 
 autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | quit | endif " quit if NERDTree is the last buffer
 autocmd BufWritePre * %s/\s\+$//e " trim leading whitespace on save
 autocmd BufNewFile,BufRead *.S set syntax=asm
 
-" Mappings
-
-map               <Home>    ^
-inoremap          <Home>    <Esc>^i
-nnoremap <silent> <Return>  :noh<Bar>echo<Return>
-nnoremap          p         ]p
-vnoremap          //        y/\V<C-r>=escape(@",'/\')<Return><Return>
-noremap  <silent> <C-n>     :NERDTreeToggle<Return>
-noremap           <C-Left>  <C-w>h
-noremap           <C-Right> <C-w>l
-noremap           <C-Down>  <C-w>j
-noremap           <C-Up>    <C-w>k
-noremap  <silent> <C-t>     :call ToggleTerm()<Return>
-tnoremap <silent> <C-t>     <C-w>:call ToggleTerm()<Return>
-nnoremap <silent> <Leader><Leader> :map <Leader><Return>
-nnoremap          <Leader>i :call AddImport()<Bar>SortImports<Return>
-nnoremap <silent> <Leader>s :sort<Return>
-vnoremap <silent> <Leader>s :sort<Return>
-nnoremap          <Leader>m :make<Space>
-
 " Commands
 
+command! ToggleTerm call ToggleTerm()
 command! SortImports 1/^import /,$?^import ?sort u /^import \+/ | nohlsearch
+command! -nargs=* AddImport call AddImport(<f-args>)
 
 " Functions
 
