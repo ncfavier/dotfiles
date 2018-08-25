@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+# game - launch a game via Steam
+
+declare -A ids=(
+    [ftl]=212680
+    [hld]=257850
+    [isaac]=113200
+    [portal2]=620
+    [portal]=400
+    [teeworlds]=380840
+    [terraria]=105600
+    [tmnf]=11020
+)
+
+exec steam ${1:+-applaunch "${ids[$1]}"}

@@ -10,7 +10,7 @@ set breakindent
 set breakindentopt=shift:2
 set clipboard=unnamedplus,exclude:cons\|linux
 set expandtab
-set formatoptions-=t
+set formatoptions-=tro
 set hidden
 set hlsearch
 set ignorecase
@@ -36,12 +36,17 @@ colors delek
 
 call plug#begin('~/.vim/plugged')
     Plug 'scrooloose/nerdtree'
+    Plug 'scrooloose/nerdcommenter'
 call plug#end()
 
 " Variables
 
 let mapleader = ','
 let NERDTreeMinimalUI = 1
+let NERDSpaceDelims = 1
+let NERDDefaultAlign = 'left'
+let NERDCommentEmptyLines = 1
+let NERDToggleCheckAllLines = 1
 
 " Mappings
 
