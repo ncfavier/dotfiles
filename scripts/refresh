@@ -6,10 +6,13 @@ shopt -s extglob
 
 [[ -f ~/.theme ]] && . ~/.theme
 
-(( $# )) || set -- xresources sxhkd bspwm terminals
+(( $# )) || set -- dots xresources sxhkd bspwm terminals
 
 for e do
     case $e in
+        dots)
+            make -C ~/git/dotfiles --no-print-directory
+            ;;
         xresources)
             defines=()
             for symbol in color{0..15} background foreground accent font; do

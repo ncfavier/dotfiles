@@ -17,8 +17,6 @@ packages=$(pacman -Qq | wc -l)
 
 shell=${SHELL##*/}
 
-editor=$EDITOR
-
 id=$(xprop -root _NET_SUPPORTING_WM_CHECK | grep -o '0x\w*')
 wm=$(xprop -id "$id" _NET_WM_NAME | cut -d \" -f 2)
 wm=${wm,,}
@@ -33,7 +31,8 @@ font=${font##* }
 # Display
 
 space=10
-sep=' ┃ '
+#sep=' ┃ '
+sep=' = '
 bold=$(tput bold)
 reset=$(tput sgr0)
 
@@ -48,7 +47,6 @@ info kernel "$kernel"
 info os "$os"
 info pkg "$packages"
 info shell "$shell"
-info editor "$editor"
 info wm "$wm"
 info term "$term"
 info font "$font"

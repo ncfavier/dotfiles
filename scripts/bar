@@ -13,6 +13,7 @@ network_interface=$(iw dev | grep -oPm 1 '(?<=Interface ).*')
 home_ssid='NEUF_89B4'
 
 margin='  '
+declare -A icons=([web]= [chat]= [files]=)
 
 # Functions
 
@@ -21,16 +22,14 @@ escape() {
 }
 
 trunc() {
-    max_length=$1
-    text=$2
-    length=${#text}
+    local max_length=$1 text=$2 length=${#text}
     (( length > max_length )) &&
         text=${text::$(( max_length/2 ))}…${text:$(( length - (max_length - 1)/2 ))}
     printf '%s\n' "$text"
 }
 
 icon_ramp() {
-    value=$1
+    local value=$1 index
     shift
     if [[ $1 == -u ]]; then
         shift
@@ -158,7 +157,8 @@ while read -rn 1 event; do
                 item=${part:1}
                 if [[ ${type,,} == [fou] ]]; then
                     desktop=$item
-                    item=$margin$desktop$margin
+                    item=${icons[$desktop]-$item}
+                    item=$margin$item$margin
                     item="%{A:bspc desktop -f $desktop:}%{A2:bspc node -d $desktop -f:}$item%{A}%{A}"
                     [[ $desktop =~ ^[[:alpha:]]+$ ]] &&
                         item="%{A3:le $desktop:}$item%{A}" ||
@@ -199,7 +199,7 @@ while read -rn 1 event; do
             printf -v clock "%($date_format %%{T2}$time_format%%{T-})T" -1
             clock=$margin$clock$margin
             clock="%{B$color8}$clock%{B-}"
-            clock="%{A:pkill -USR1 -P $$ -f $0 -o:}$clock%{A}"
+            clock="%{A:pkill -USR1 -P $$ -f $0 -o:}%{A3:urxvt -name calendar -g 64x9 -hold +bc -e cal -3:}$clock%{A}%{A}"
             ;;
         P) # is for power
             read -r toggle

@@ -16,6 +16,7 @@ set hlsearch
 set ignorecase
 set incsearch
 set number
+set path=**
 set shiftround
 set shiftwidth=0
 set smartindent
@@ -35,14 +36,12 @@ colors delek
 
 call plug#begin('~/.vim/plugged')
     Plug 'scrooloose/nerdtree'
-    Plug 'kien/ctrlp.vim'
 call plug#end()
 
 " Variables
 
 let mapleader = ','
 let NERDTreeMinimalUI = 1
-let g:ctrlp_show_hidden = 1
 
 " Mappings
 
@@ -52,6 +51,7 @@ nnoremap <silent> <Return>         :noh<Bar>echo<Return>
 nnoremap          p                ]p
 vnoremap          //               y/\V<C-r>=escape(@",'/\')<Return><Return>
 noremap  <silent> <C-n>            :NERDTreeToggle<Return>
+noremap           <C-p>            :find<Space>
 noremap           <C-Left>         <C-w>h
 noremap           <C-Right>        <C-w>l
 noremap           <C-Down>         <C-w>j
