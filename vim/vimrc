@@ -30,8 +30,6 @@ set ttimeoutlen=10
 set ttymouse=urxvt
 set whichwrap=b,s,<,>,[,]
 
-colors delek
-
 " Plugins
 
 call plug#begin('~/.vim/plugged')
