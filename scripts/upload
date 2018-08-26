@@ -17,32 +17,34 @@ while (( $# )); do
             ls -tr sync/uploads | tail -n "${1:-1}" | while IFS= read -r file; do build_url "$file"; done
             exit
             ;;
-        -r)
-            remove=1
-            ;;
-        *)
-            break
-            ;;
+        -r) remove=1;;
+        *) break;;
     esac
     shift
 done
 
 source=$1
+destination=$2
+extension=
 
 if [[ ! $source || $source == - ]]; then
     source=$(mktemp) || exit 1
     trap 'rm -f -- "$source"' exit
     cat > "$source"
-    printf -v basename 'stdin-%(%F-%T)T.txt' -1
 else
     source=$(realpath "$source")
     [[ -r $source ]] || exit 1
     basename=${source##*/}
+    [[ $basename == *.* ]] && extension=.${basename#*.}
 fi
 
 [[ -d $source ]] && source=${source%/}/
 
-destination=${2:-$basename}
+if [[ ! $destination ]]; then
+    destination=$(printf '%(%s)T %s' -1 "$RANDOM" | sha256sum | cut -d ' ' -f 1 | base64 | head -c 6)$extension
+elif [[ $destination != *.* ]]; then
+    destination+=$extension
+fi
 
 if [[ $source == ~/sync/*/* ]]; then
     base=${source#~/sync/}

@@ -108,5 +108,5 @@ while true; do
 
     printf "$format" "$result"
 
-    sleep 1m
+    sleep 10
 done
