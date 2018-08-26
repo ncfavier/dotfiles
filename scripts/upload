@@ -2,6 +2,27 @@
 #
 # upload - upload files to the web
 
+build_url() {
+    local file=$1
+    jq -nr --arg host "$host" --arg file "$file" '"https://\($host)/\($file | @uri )"'
+}
+
+host=up.v3lo.pw
+remove=0
+
+while getopts :lr o; do
+    case $o in
+        l)
+            ls -tr sync/uploads | tail -n "${OPTARG:-1}" | while IFS= read -r file; do build_url "$file"; done
+            exit
+            ;;
+        r)
+            remove=1
+            ;;
+    esac
+done
+shift "$(( OPTIND - 1 ))"
+
 source=$1
 
 if [[ ! $source || $source == - ]]; then
@@ -19,16 +40,16 @@ fi
 
 destination=${2:-$basename}
 
-host=up.v3lo.pw
-url=$(jq -nr --arg host "$host" --arg destination "$destination" '"https://\($host)/\($destination | @uri )"')
-
 if [[ $source == ~/sync/*/* ]]; then
     base=${source#~/sync/}
-    ssh "$host" bash -s "${base@Q}" "${destination@Q}" <<< 'rsync -rs --chmod=D755,F644 sync/"$1" sync/uploads/"$2"'
+    ssh "$host" bash -s "${base@Q}" "${destination@Q}" <<< 'rsync -rs --chmod=D755,F644 sync/"$1" sync/uploads/"$2"' || exit 1
 else
-    rsync -Pvrs --chmod=D755,F644 "$source" "$host:sync/uploads/$destination"
+    rsync -Pvrs --chmod=D755,F644 "$source" "$host:sync/uploads/$destination" || exit 1
 fi
 
+(( remove )) && rm -- "$source"
+
+url=$(build_url "$destination")
 printf '%s\n' "$url" | tee >(clip)
 
 if [[ $(dunstify -t 10000 -A open,open -i network-server "uploaded $basename" "to $url") == open ]]; then

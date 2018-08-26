@@ -109,7 +109,7 @@ fi &
 # Upload
 
 if (( upload )); then
-    upload "$target" &
+    upload -r "$target" &
 fi
 
 # Wait before deleting the thumbnail

@@ -168,7 +168,7 @@ while read -rn 1 event; do
                         u|U) item="%{F$color5}$item%{F-}";;
                     esac
                     case $type in
-                        F|O|U) item="%{B$color8}%{T2}$item%{T-}%{B-}";;
+                        F|O|U) item="%{B$color8}%{F$color0}%{T2}$item%{T-}%{F-}%{B-}";;
                     esac
                     wm+=$item
                 fi
@@ -180,7 +180,7 @@ while read -rn 1 event; do
             title=$(escape "$title")
             if [[ $title ]]; then
                 title="$margin $title$margin"
-                title="%{B$accent}%{T2}$title%{T-}%{B-}"
+                title="%{B$accent}%{F$color0}%{T2}$title%{T-}%{F-}%{B-}"
                 title="%{A:bspc node -t ~floating:}%{A2:bspc node -c:}%{A3:bspc desktop -l next:}$title%{A}%{A}%{A}"
             fi
             ;;
@@ -198,7 +198,7 @@ while read -rn 1 event; do
             fi
             printf -v clock " %($date_format %%{T2}$time_format%%{T-})T" -1
             clock=$margin$clock$margin
-            clock="%{B$color8}$clock%{B-}"
+            clock="%{B$color8}%{F$color0}$clock%{F-}%{B-}"
             clock="%{A:pkill -USR1 -P $$ -f $0 -o:}%{A3:urxvt -name calendar -g 64x9 -hold +bc -e cal -3:}$clock%{A}%{A}"
             ;;
         P) # is for power

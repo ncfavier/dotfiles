@@ -45,11 +45,27 @@ duh() {
     printf '%s\n' "${lines[@]::${#lines[@]}-1}" | sort -nrk 1,1 | while read -r size file; do
         bar=
         (( n = (width + 1) * (size - 1) / total_size))
-        for (( i = 0; i < n; i++ )) do
-            bar+='#'
-        done
+        for (( i = 0; i < n; i++ )) do bar+='#'; done
         printf '[%-*s] %s\n' "$width" "$bar" "$file"
     done
+}
+
+dfb() {
+    local width=${COLUMNS:-80} total=0 info=()
+    (( $# )) || set -- /dev/sda?
+    while read -ra fields; do
+        (( total += fields[1] ))
+        info+=("${fields[*]}")
+    done < <(LC_ALL=C command df --sync --output=source,size,used,avail "$@" | tail -n +2)
+    for fields in "${info[@]}"; do
+        read -r source size used avail <<< "$fields"
+        (( sub_width = (width - 2*${#info[@]}) * size / total ))
+        bar=
+        (( n = (sub_width + 1) * (used - 1) / size ))
+        for (( i = 0; i < n; i++ )) do bar+='#'; done
+        printf '[%-*s]' "$sub_width" "$bar"
+    done
+    echo
 }
 
 what() {

@@ -15,8 +15,16 @@ color13='#ff0085'
 color14='#55fce8'
 color15='#ffffff'
 
-background=$color15
-foreground=$color0
+dark=1
+
+if (( dark )); then
+    background=$color0
+    foreground=$color15
+else
+    background=$color15
+    foreground=$color0
+fi
+
 accent=$color10
 
 font='xft:lucy tewi:pixelsize=11, xft:Biwidth:pixelsize=12, xft:Symbola'
