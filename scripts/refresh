@@ -12,6 +12,7 @@ for e do
     case $e in
         dots)
             make -C ~/git/dotfiles --no-print-directory
+            [[ -f ~/.theme ]] && . ~/.theme
             ;;
         xresources)
             defines=()

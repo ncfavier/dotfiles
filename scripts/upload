@@ -10,18 +10,22 @@ build_url() {
 host=up.v3lo.pw
 remove=0
 
-while getopts :lr o; do
-    case $o in
-        l)
-            ls -tr sync/uploads | tail -n "${OPTARG:-1}" | while IFS= read -r file; do build_url "$file"; done
+while (( $# )); do
+    case $1 in
+        -l)
+            shift
+            ls -tr sync/uploads | tail -n "${1:-1}" | while IFS= read -r file; do build_url "$file"; done
             exit
             ;;
-        r)
+        -r)
             remove=1
             ;;
+        *)
+            break
+            ;;
     esac
+    shift
 done
-shift "$(( OPTIND - 1 ))"
 
 source=$1
 

@@ -176,7 +176,7 @@ bspwm: $(addprefix ~/.config/, bspwm/bspwmrc bspwm/rules sxhkd/sxhkdrc)
 .PHONY: dunst
 dunst: ~/.config/dunst/dunstrc
 
-~/.config/dunst/dunstrc: dunst/dunstrc
+~/.config/dunst/%: dunst/%
 	install -Dm 644 $< $@
 
 # feh
