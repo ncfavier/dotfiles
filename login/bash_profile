@@ -1,6 +1,5 @@
 # Environment
 
-[[ $TERM == linux* ]] && export TERM=linux-16color
 export PATH+=:~/.bin
 export VISUAL=vim
 export EDITOR=vim
