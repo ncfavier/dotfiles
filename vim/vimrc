@@ -35,6 +35,7 @@ set whichwrap=b,s,<,>,[,]
 call plug#begin('~/.vim/plugged')
     Plug 'scrooloose/nerdtree'
     Plug 'scrooloose/nerdcommenter'
+    Plug 'lilydjwg/colorizer'
 call plug#end()
 
 " Variables
@@ -55,6 +56,7 @@ nnoremap          p                ]p
 vnoremap          //               y/\V<C-r>=escape(@",'/\')<Return><Return>
 noremap  <silent> <C-n>            :NERDTreeToggle<Return>
 noremap           <C-p>            :find<Space>
+cnoremap          <C-p>            <Home>vert s<End>
 noremap           <C-Left>         <C-w>h
 noremap           <C-Right>        <C-w>l
 noremap           <C-Down>         <C-w>j

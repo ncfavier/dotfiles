@@ -14,7 +14,11 @@ while (( $# )); do
     case $1 in
         -l)
             shift
-            ls -tr sync/uploads | tail -n "${1:-1}" | while IFS= read -r file; do build_url "$file"; done
+            n=${1:-1}
+            eval "sorted=( $(ls -tr --quoting-style=shell-escape sync/uploads) )"
+            for f in "${sorted[@]:(-n)}"; do
+                build_url "$f"
+            done
             exit
             ;;
         -r) remove=1;;
