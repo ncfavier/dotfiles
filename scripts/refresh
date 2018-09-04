@@ -11,7 +11,7 @@ shopt -s extglob
 for e do
     case $e in
         dots)
-            make -C ~/git/dotfiles --no-print-directory
+            make -C ~/.dots --no-print-directory
             [[ -f ~/.theme ]] && . ~/.theme
             ;;
         xresources)

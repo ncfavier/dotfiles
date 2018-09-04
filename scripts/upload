@@ -8,6 +8,7 @@ build_url() {
 }
 
 host=up.v3lo.pw
+uploads_dir=sync/uploads
 remove=0
 
 while (( $# )); do
@@ -15,9 +16,9 @@ while (( $# )); do
         -l)
             shift
             n=${1:-1}
-            eval "sorted=( $(ls -tr --quoting-style=shell-escape sync/uploads) )"
-            for f in "${sorted[@]:(-n)}"; do
-                build_url "$f"
+            find "$uploads_dir" -type f -printf '%T@/%P\0' | sort -znst / -k 1,1 | tail -zn "$n" |
+            while IFS=/ read -rd '' time path; do
+                build_url "$path"
             done
             exit
             ;;
@@ -51,10 +52,9 @@ elif [[ $destination != *.* ]]; then
 fi
 
 if [[ $source == ~/sync/*/* ]]; then
-    base=${source#~/sync/}
-    ssh "$host" bash -s "${base@Q}" "${destination@Q}" <<< 'rsync -rs --chmod=D755,F644 sync/"$1" sync/uploads/"$2"' || exit 1
+    printf 'rsync -vrs --chmod=D755,F644 %q %q\n' "sync/${source#~/sync/}" "$uploads_dir/$destination" | ssh "$host" bash || exit 1
 else
-    rsync -Pvrs --chmod=D755,F644 "$source" "$host:sync/uploads/$destination" || exit 1
+    rsync -Pvrs --chmod=D755,F644 "$source" "$host:$uploads_dir/$destination" || exit 1
 fi
 
 (( remove )) && rm -- "$source"

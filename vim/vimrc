@@ -30,6 +30,9 @@ set ttimeoutlen=10
 set ttymouse=urxvt
 set whichwrap=b,s,<,>,[,]
 
+set visualbell
+set t_vb=
+
 " Plugins
 
 call plug#begin('~/.vim/plugged')
@@ -73,12 +76,14 @@ nnoremap          <Leader>i        :AddImport<Bar>SortImports<Return>
 nnoremap          <Leader>r        :%s///g<Left><Left>
 nnoremap <silent> <Leader>s        :sort<Return>
 vnoremap <silent> <Leader>s        :sort<Return>
+nnoremap <silent> <Leader>x        :!chmod +x %<Return>
 
 " Autocommands
 
 autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | quit | endif " quit if NERDTree is the last buffer
 autocmd BufWritePre * %s/\s\+$//e " trim leading whitespace on save
-autocmd BufNewFile,BufRead *.S set syntax=asm
+
+autocmd BufNewFile,BufRead *bash_aliases,*bash_functions call dist#ft#SetFileTypeSH("bash")
 
 " Commands
 

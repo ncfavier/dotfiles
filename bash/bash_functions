@@ -1,9 +1,26 @@
+# Debugging
+
 args() {
     printf '%d\n' "$#"
     if (( $# )); then
         printf '<%s> ' "$@"
         echo
     fi
+}
+
+# Files
+
+pwd_short() {
+    local pwd='\w' component i prefix
+    while IFS= read -rd/ component; do
+        i=0
+        while
+            prefix=${component::++i}
+            [[ $prefix == +(.) ]]
+        do :; done
+        printf %s/ "$prefix"
+    done <<< "${pwd@P}"
+    printf '%s\n' "$component"
 }
 
 cd() {
@@ -15,12 +32,14 @@ mkcd() {
 }
 
 bck() {
+    local f
     for f do
         cp -i -- "$f" "$f.bck"
     done
 }
 
 unbck() {
+    local f
     for f do
         if [[ $f == *.bck ]]; then
             cp -i -- "$f" "${f%.bck}"
@@ -30,13 +49,20 @@ unbck() {
     done
 }
 
-vimx() {
-    if [[ -x $1 ]]; then
-        vim "$@"
-    else
-        vim -c 'autocmd BufWritePost * exec "!chmod +x" shellescape(expand("%"), 1) | autocmd! BufWritePost' "$@"
-    fi
+flast() {
+    local print_time=0 n=+1 o OPTIND OPTARG
+    while getopts :tn: o; do case $o in
+        t) print_time=1;;
+        n) n=$OPTARG;;
+    esac; done; shift "$(( OPTIND - 1 ))"
+    find "${@:-.}" -type f -printf '%T@/%P\0' | sort -znst / -k 1,1 | tail -zn "$n" |
+    while IFS=/ read -rd '' time path; do
+        (( print_time )) && printf '[%(%F %T)T] ' "${time%%.*}"
+        printf '%s\n' "$path"
+    done
 }
+
+# Disk usage
 
 duh() {
     local lines=() total_size size file width=15 bar
@@ -51,7 +77,7 @@ duh() {
 }
 
 dfb() {
-    local width=${COLUMNS:-80} total=0 info=()
+    local width=${COLUMNS:-80} total=0 info=() fields=() source size used avail sub_width bar
     (( $# )) || set -- /dev/sda?
     while read -ra fields; do
         (( total += fields[1] ))
@@ -68,19 +94,40 @@ dfb() {
     echo
 }
 
-what() {
-    local path
-    if [[ $1 == */* ]]; then
-        pacman -Fo "$1" ||
-        pacman -Fo "$(realpath "$1")"
-    else
-        path=$(type -P "$1") || path=/usr/bin/$1
-        pacman -Fo "$path"
-    fi
+# Streams
+
+sponge() {
+    local tmp
+    tmp=$(mktemp) || return 1
+    cat > "$tmp"; cat -- "$tmp"
+    rm -f -- "$tmp"
 }
 
+unfold() {
+    tr -s '[:space:]' '[ *]'
+}
+
+clipuf() {
+    clip | unfold | clip
+}
+
+clipcmd_helper () {
+    local cmd
+    local -a lines
+    read -r _ _ cmd < <(history 1)
+    mapfile lines < <(LC_ALL=en_US.UTF-8 eval "$cmd" 2>&1)
+    printf %s "${lines[@]}"
+    {
+        printf '$ %s\n' "$cmd"
+        printf %s "${lines[@]}"
+    } | xsel -b -i
+}; alias clipcmd='clipcmd_helper # '
+
+# SSH
+
 attassh() {
-    ssh -t "$1" screen -r "$2"
+    local host=$1 session=$2
+    ssh -t "$host" screen -r "$session"
 }
 
 sshesc() {
@@ -105,36 +152,10 @@ sshesc() {
     ssh "${args[@]}"
 }
 
-sudofn() {
-    sudo bash -c "$(declare -f "$1"); ${@@Q}"
-}
+# Network
 
-sponge() {
-    tmp=$(mktemp) && cat > "$tmp" && cat -- "$tmp" && rm -f -- "$tmp"
-}
-
-unfold() {
-    tr -s '[:space:]' '[ *]'
-}
-
-unfoldclip() {
-    clip | unfold | clip
-}
-
-alert() {
-    command=("$@")
-    if "${command[@]}"; then
-        dunstify -t 10000 -i ok "${command[*]}" "succeeded"
-    else
-        dunstify -t 10000 -i error "${command[*]}" "failed"
-    fi
-}
-
-insist() {
-    command=("$@")
-    until "${command[@]}"; do
-        sleep 0.1
-    done
+myip() {
+    dig +short myip.opendns.com @resolver1.opendns.com
 }
 
 http() {
@@ -159,57 +180,51 @@ http() {
     fi
 }
 
-myip() {
-    dig +short myip.opendns.com @resolver1.opendns.com
-}
-
-pwd_short() {
-    local prefix i ps1='\w'
-    while read -rd/; do
-        i=0
-        while
-            prefix=${REPLY::++i}
-            [[ $prefix == +(.) ]]
-        do :; done
-        printf %s/ "$prefix"
-    done <<< "${ps1@P}"
-    printf '%s\n' "$REPLY"
-}
+# Misc
 
 remind() {
     local delay=$1
     shift
     {
         sleep "$delay"
-        dunstify -i dialog-info -t 10000 "$*"
+        exec dunstify -i dialog-info -t 10000 "$*"
     } &> /dev/null & disown
 }
 
-mans() {
-    man -P "less +/${2@Q}" "$1"
+insist() {
+    local command=("$@")
+    until "${command[@]}"; do sleep 0.1; done
 }
 
-mock() {
-    while IFS= read -rd '' -n 1 c; do
-        (( RANDOM%2 )) && c=${c^^}
-        printf %s "$c"
-    done <<< "$*"
+what() {
+    local thing=$1 path
+    if [[ $thing == */* ]]; then
+        pacman -Fo "$thing" ||
+        pacman -Fo "$(realpath "$thing")"
+    else
+        path=$(type -P "$thing") || path=/usr/bin/$thing
+        pacman -Fo "$path"
+    fi
 }
 
-# Magic
-
-clipcmd_helper () {
-    local cmd
-    local -a lines
-    read -r _ _ cmd < <(history 1)
-    mapfile lines < <(LC_ALL=en_US.UTF-8 eval "$cmd" 2>&1)
-    printf %s "${lines[@]}"
-    {
-        printf '$ %s\n' "$cmd"
-        printf %s "${lines[@]}"
-    } | xsel -b -i
+whatdoes() {
+    local command=$1 thing=$2 before=
+    if [[ $thing == -* ]]; then
+        before='^[[:space:]]*'
+    fi
+    man -P "less +/${before@Q}\\\\C${thing@Q}" "$command"
 }
 
-alias clipcmd='clipcmd_helper # '
-
-# vim: syntax=sh
+efibootorder() {
+    local field value boot_order=() boot_entries=()
+    while read -r field value; do
+        if [[ $field == BootOrder: ]]; then
+            IFS=, read -ra boot_order <<< "$value"
+        elif [[ $field =~ ^Boot([0-9A-F]+) ]]; then
+            boot_entries[16#${BASH_REMATCH[1]}]=$value
+        fi
+    done < <(efibootmgr)
+    for i in "${boot_order[@]}"; do
+        printf -- '- %s\n' "${boot_entries[16#$i]}"
+    done
+}

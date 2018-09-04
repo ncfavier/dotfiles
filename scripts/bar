@@ -22,7 +22,8 @@ escape() {
 }
 
 trunc() {
-    local max_length=$1 text=$2 length=${#text}
+    local max_length=$1 text=$2
+    local length=${#text}
     (( length > max_length )) &&
         text=${text::$(( max_length/2 ))}…${text:$(( length - (max_length - 1)/2 ))}
     printf '%s\n' "$text"

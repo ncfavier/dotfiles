@@ -1,5 +1,5 @@
 # X settings
-setxkbmap -option grp:shifts_toggle,compose:menu fr,us,ru oss,,
+setxkbmap -option grp:shifts_toggle,compose:menu fr,us,ru,gr oss,,,
 [[ -f ~/.Xmodmap ]] && xmodmap ~/.Xmodmap
 numlockx
 xset -b

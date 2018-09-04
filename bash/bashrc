@@ -15,8 +15,14 @@ HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE=ls:l:ll
 HISTSIZE=5000
 PS1='\[\e[36;1m\]$(pwd_short)\[\e[0m\] ::\[\e[0m\] '
-[[ $TERM != *linux* ]] && PS1+='\[\a\]'
 PS2='\[\e[0;1m\]>\[\e[0m\] '
+
+# Alarm for long running commands
+
+if [[ $term != *linux* ]]; then
+    trap '(( AT_PROMPT )) && { AT_PROMPT=0 SECONDS_LAST=$SECONDS; }' debug
+    PROMPT_COMMAND+=${PROMPT_COMMAND:+; }'(( SECONDS - SECONDS_LAST >= 3 )) && printf \\a; AT_PROMPT=1'
+fi
 
 # Aliases
 

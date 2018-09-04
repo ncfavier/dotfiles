@@ -24,7 +24,7 @@ case $1 in
         focus urxvt -n '* - vim' || { urxvt -name editor -e vim & }
         ;;
     wifi)
-        focus urxvt -i wifi || { urxvt -name wifi -title wifi -geometry 50x25 -e sudo wifi-menu -o & }
+        focus urxvt -i wifi || { urxvt -name wifi -title wifi -geometry 50x25 -e sudo wifi-menu & }
         ;;
     info|details)
         BASH_STARTUP='details' urxvt -name info -geometry 24x17 &

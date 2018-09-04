@@ -9,3 +9,4 @@ set show-all-if-ambiguous On
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 "\er": "\C-asudo \C-e"
+"\ec": "\C-a\ed"
