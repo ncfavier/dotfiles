@@ -11,7 +11,7 @@ args() {
 # Files
 
 pwd_short() {
-    local pwd='\w' component i prefix
+    local component i prefix
     while IFS= read -rd/ component; do
         i=0
         while
@@ -19,7 +19,7 @@ pwd_short() {
             [[ $prefix == +(.) ]]
         do :; done
         printf %s/ "$prefix"
-    done <<< "${pwd@P}"
+    done <<< "${PWD/#$HOME/'~'}"
     printf '%s\n' "$component"
 }
 

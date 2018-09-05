@@ -1,3 +1,5 @@
+[[ $- == *i* ]] || return
+
 # Options
 
 set +H -b
