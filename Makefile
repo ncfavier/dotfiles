@@ -82,7 +82,7 @@ scripts: $(patsubst scripts/%, ~/.bin/%, $(wildcard scripts/*)) ~/.local/share/e
 	install -Dm 755 $< $@
 
 ~/.local/share/emojis.json:
-	cd $(dir $@) && curl -fLO https://raw.githubusercontent.com/muan/emojilib/master/emojis.json
+	curl -fLo $@ --create-dirs https://raw.githubusercontent.com/muan/emojilib/master/emojis.json
 
 # misc
 
