@@ -37,7 +37,7 @@ set t_vb=
 
 " Plugins
 
-if g:loaded_plug
+if exists('g:loaded_plug')
     call plug#begin('~/.vim/plugged')
         Plug 'scrooloose/nerdtree'
         Plug 'scrooloose/nerdcommenter'
