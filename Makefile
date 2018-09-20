@@ -10,19 +10,26 @@
 here: $(shell hostname)
 
 .PHONY: turing
-turing: all
+turing: personal
 
 .PHONY: curry
-curry: all
+curry: personal
 
 .PHONY: ritchie
-ritchie: login bash ascii scripts misc vim git yay
+ritchie: server
+
+.PHONY: church
+church: server
 
 #
 # Meta-bundles
 #
 
 all: themes login bash ascii scripts misc vim git weechat mpd x redshift compton fcitx fontconfig bspwm dunst feh mpv pcmanfm gtk firefox df yay
+
+personal: all
+
+server: themes login bash ascii scripts misc vim git weechat yay
 
 #
 # Bundles
@@ -55,6 +62,9 @@ bash: ~/.bashrc ~/.bash_aliases ~/.bash_functions ~/.inputrc
 ~/.%: bash/%
 	install -Dm 644 $< $@
 
+~/.bash_%: bash/%
+	install -Dm 644 $< $@
+
 # ascii
 
 .PHONY: ascii
@@ -77,7 +87,7 @@ scripts: $(patsubst scripts/%, ~/.bin/%, $(wildcard scripts/*)) ~/.local/share/e
 # misc
 
 .PHONY: misc
-misc: ~/.nanorc ~/.toprc
+misc: ~/.nanorc ~/.toprc ~/.screenrc
 
 ~/.%: misc/%
 	install -Dm 644 $< $@

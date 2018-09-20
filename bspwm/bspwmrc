@@ -23,8 +23,8 @@ bspc config -d chat right_padding 150
 
 # Rules
 bspc rule -r '*:*'
-for class in feh mpv Gimp Gimp-2.10 File-roller Deluge Fcitx-config-gtk3 \
-             Lxappearance Pavucontrol URxvt:info URxvt:wifi URxvt:calendar Rofi Qemu-system-x86_64; do
+for class in feh mpv File-roller Deluge Fcitx-config-gtk3 Lxappearance Pavucontrol \
+             URxvt:info URxvt:wifi URxvt:calendar Rofi Qemu-system-x86_64; do
     bspc rule -a "$class" state=floating
 done
 bspc rule -a Firefox desktop=web follow=on

@@ -27,7 +27,7 @@ fi
 
 accent=$color10
 
-font='xft:lucy tewi:pixelsize=11, xft:Biwidth:pixelsize=12, xft:Symbola'
+font='xft:lucy tewi:pixelsize=11, xft:Efont Biwidth:pixelsize=12, xft:Symbola'
 
 border_width=1
 window_gap=16

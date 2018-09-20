@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# efi - manage efi variables using efibootmgr
+
+shopt -s nullglob
+
+efibootmgr() {
+    sudo efibootmgr -q "$@"
+}
+
+[[ -r ~/.config/efi ]] || exit 1
+. ~/.config/efi
+
+for id in "${order[@]}"; do
+    declare -n entry=entry_$id
+    [[ -v entry[@] ]] || continue
+
+    label=${entry[label]}
+    name=${entry[name]-Custom}
+
+    if [[ ${entry[kernel]} ]]; then
+        kernel=${entry[kernel]}
+    else
+        kernel=(/boot/vmlinuz*-"${entry[label]}")
+
+        if (( ! ${#kernel[@]} )); then
+            echo "Could not find a kernel for '${entry[label]}'." >&2
+            exit 1
+        fi
+    fi
+
+    kernel=/${kernel#/boot/}
+
+    case ${entry[root]} in
+        label)    root=LABEL=$label;;
+        partuuid) root=PARTUUID=$(lsblk -no PARTUUID /dev/disk/by-label/"$label");;
+        *)        root=${entry[root]};;
+    esac
+
+    cmdline="root=$root rw ${entry[cmdline]} ${global_cmdline[*]}"
+
+    efibootmgr --bootnum "$id" --delete-bootnum 2> /dev/null
+    efibootmgr --bootnum "$id" \
+               --create \
+               --disk "${esp[0]}" --part "${esp[1]}" \
+               --label "$name" \
+               --loader "$kernel" \
+               --unicode "${cmdline[*]}"
+done
+
+(IFS=,; efibootmgr -o "${order[*]}")
+
+command efibootmgr -uv

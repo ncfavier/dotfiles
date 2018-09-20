@@ -86,8 +86,14 @@ XF86MonBrightness{Down,Up}
 super + {_,shift,ctrl} + space
     rofi -show {run,le,window}
 
-super + {_,shift} + {Return,  KP_Enter,f,    w,  c,   m,    e,     v,    i,   j}
-    le {_,-n}       {terminal,terminal,files,web,chat,music,editor,video,info,japanese}
+super + {_,shift} + {Return,  KP_Enter,f,    w,  c,   e,     v,    i,   j}
+    le {_,-n}       {terminal,terminal,files,web,chat,editor,video,info,japanese}
+
+super + m
+    le music
+
+super + shift + m
+    xdg-open http://mail.google.com/
 
 super + ctrl + w
     le wifi

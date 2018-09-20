@@ -15,6 +15,8 @@ set hidden
 set hlsearch
 set ignorecase
 set incsearch
+set modeline
+set mouse=a
 set number
 set path=**
 set shiftround
@@ -35,11 +37,13 @@ set t_vb=
 
 " Plugins
 
-call plug#begin('~/.vim/plugged')
-    Plug 'scrooloose/nerdtree'
-    Plug 'scrooloose/nerdcommenter'
-    Plug 'lilydjwg/colorizer'
-call plug#end()
+if g:loaded_plug
+    call plug#begin('~/.vim/plugged')
+        Plug 'scrooloose/nerdtree'
+        Plug 'scrooloose/nerdcommenter'
+        Plug 'lilydjwg/colorizer'
+    call plug#end()
+endif
 
 " Variables
 
@@ -52,31 +56,34 @@ let NERDToggleCheckAllLines = 1
 
 " Mappings
 
-map               <Home>           ^
-imap              <Home>           <C-o><Home>
-nnoremap <silent> <Return>         :noh<Bar>echo<Return>
-nnoremap          p                ]p
-vnoremap          //               y/\V<C-r>=escape(@",'/\')<Return><Return>
-noremap  <silent> <C-n>            :NERDTreeToggle<Return>
-noremap           <C-p>            :find<Space>
-cnoremap          <C-p>            <Home>vert s<End>
-noremap           <C-Left>         <C-w>h
-noremap           <C-Right>        <C-w>l
-noremap           <C-Down>         <C-w>j
-noremap           <C-Up>           <C-w>k
-noremap  <silent> <C-t>            :ToggleTerm<Return>
-tnoremap <silent> <C-t>            <C-w>:ToggleTerm<Return>
-noremap           <F9><F9>         :make<Return>
-noremap           <F9>i            :make install<Return>
-noremap           <F9>c            :make clean<Return>
-noremap           <F9><Space>      :make<Space>
-imap              <F9>             <C-o><F9>
-nnoremap <silent> <Leader><Leader> :map <Leader><Return>
-nnoremap          <Leader>i        :AddImport<Bar>SortImports<Return>
-nnoremap          <Leader>r        :%s///g<Left><Left>
-nnoremap <silent> <Leader>s        :sort<Return>
-vnoremap <silent> <Leader>s        :sort<Return>
-nnoremap <silent> <Leader>x        :!chmod +x %<Return>
+map                      <Home>           ^
+imap                     <Home>           <C-o><Home>
+nnoremap <silent>        <Return>         :noh<Bar>echo<Return>
+nnoremap                 p                ]p
+vnoremap                 //               y/\V<C-r>=escape(@",'/\')<Return><Return>
+nnoremap <silent>        <C-c>            :call NERDComment(0, 'toggle')<Return>
+vnoremap <silent> <expr> <C-c>            (mode() ==# 'V' ? '' : 'V').":call NERDComment(0, 'toggle')<Return>"
+noremap  <silent>        <C-n>            :NERDTreeToggle<Return>
+noremap                  <C-p>            :find<Space>
+cnoremap                 <C-p>            <Home>vert s<End>
+noremap                  <C-Left>         <C-w>h
+noremap                  <C-Right>        <C-w>l
+noremap                  <C-Down>         <C-w>j
+noremap                  <C-Up>           <C-w>k
+noremap  <silent>        <C-t>            :ToggleTerm<Return>
+tnoremap <silent>        <C-t>            <C-w>:ToggleTerm<Return>
+noremap                  <F9><F9>         :make<Return>
+noremap                  <F9>i            :make install<Return>
+noremap                  <F9>c            :make clean<Return>
+noremap                  <F9><Space>      :make<Space>
+imap                     <F9>             <C-o><F9>
+nnoremap <silent>        <Leader><Leader> :map <Leader><Return>
+noremap  <silent>        <Leader>c        :call NERDComment(0, 'toggle')<Return>
+nnoremap                 <Leader>i        :AddImport<Bar>SortImports<Return>
+nnoremap                 <Leader>r        :%s///g<Left><Left>
+nnoremap <silent>        <Leader>s        :sort<Return>
+vnoremap <silent>        <Leader>s        :sort<Return>
+nnoremap <silent>        <Leader>x        :!chmod +x %<Return>
 
 " Autocommands
 

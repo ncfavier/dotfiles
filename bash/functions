@@ -62,17 +62,17 @@ flast() {
     done
 }
 
-# Disk usage
+# Disks
 
 duh() {
     local lines=() total_size size file width=15 bar
-    mapfile -t lines < <(command du -ad 1 "$@")
+    mapfile -t lines < <(command du -abd 1 "$@")
     read -r total_size _ <<< "${lines[-1]}"
     printf '%s\n' "${lines[@]::${#lines[@]}-1}" | sort -nrk 1,1 | while read -r size file; do
         bar=
         (( n = (width + 1) * (size - 1) / total_size))
         for (( i = 0; i < n; i++ )) do bar+='#'; done
-        printf '[%-*s] %s\n' "$width" "$bar" "$file"
+        printf '%7s [%-*s] %s\n' "$(numfmt --to=iec-i --suffix=B "$size")" "$width" "$bar" "$file"
     done
 }
 
@@ -92,6 +92,12 @@ dfb() {
         printf '[%-*s]' "$sub_width" "$bar"
     done
     echo
+}
+
+mountl() {
+    local label=$1
+    sudo mkdir -p /mnt/"$label"
+    sudo mount LABEL="$label" /mnt/"$label"
 }
 
 # Streams
@@ -227,4 +233,35 @@ efibootorder() {
     for i in "${boot_order[@]}"; do
         printf -- '- %s\n' "${boot_entries[16#$i]}"
     done
+}
+
+# Vultr
+
+vultr() {
+    local args=() sub=() name subid
+    local preset_paris=(-r 24)
+    local preset_cheap=(-p 200)
+    local preset_archiso=(-o 159 --iso=417463)
+    [[ -f ~/.vultr ]] && . ~/.vultr
+    for arg do
+        sub=()
+        case $arg in
+            NAME=*)
+                subid=$(command vultr server list | awk -F'\t+' -v name="${arg#NAME=}" 'NR > 1 && $4 == name { print $1; exit }')
+                [[ $subid ]] && sub=("$subid")
+                ;;
+            SNAPSHOT=*)
+                snapshotid=$(command vultr snapshot list | awk -F'\t+' -v description="${arg#SNAPSHOT=}" 'NR > 1 && $2 == description { print $1; exit }')
+                [[ $snapshotid ]] && sub=("$snapshotid")
+                ;;
+            %*)
+                local -n preset=preset_${arg#%}
+                if [[ ${preset@a} == *a* ]]; then
+                    sub=("${preset[@]}")
+                fi
+                ;;
+        esac
+        args+=("${sub[@]:-$arg}")
+    done
+    command vultr "${args[@]}"
 }
