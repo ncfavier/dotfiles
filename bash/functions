@@ -240,8 +240,11 @@ efibootorder() {
 vultr() {
     local args=() sub=() name subid
     local preset_paris=(-r 24)
-    local preset_cheap=(-p 200)
+    local preset_350=(-p 200)
+    local preset_1000=(-p 202)
+    local preset_2000=(-p 203)
     local preset_archiso=(-o 159 --iso=417463)
+    local preset_ubuntu=(-o 270)
     [[ -f ~/.vultr ]] && . ~/.vultr
     for arg do
         sub=()
@@ -253,6 +256,10 @@ vultr() {
             SNAPSHOT=*)
                 snapshotid=$(command vultr snapshot list | awk -F'\t+' -v description="${arg#SNAPSHOT=}" 'NR > 1 && $2 == description { print $1; exit }')
                 [[ $snapshotid ]] && sub=("$snapshotid")
+                ;;
+            SCRIPT=*)
+                scriptid=$(command vultr script list | awk -F'\t+' -v name="${arg#SCRIPT=}" 'NR > 1 && $2 == name { print $1; exit }')
+                [[ $scriptid ]] && sub=("$scriptid")
                 ;;
             %*)
                 local -n preset=preset_${arg#%}

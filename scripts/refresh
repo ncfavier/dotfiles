@@ -16,7 +16,7 @@ for e do
             ;;
         xresources)
             defines=()
-            for symbol in color{0..15} background foreground accent font; do
+            for symbol in color{0..15} background foreground accent font terminal_padding; do
                 defines+=("-D_$symbol=${!symbol}")
             done
             xrdb "${defines[@]}" ~/.Xresources

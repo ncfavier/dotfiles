@@ -36,10 +36,12 @@ fi
 
 # Startup
 
-if [[ $BASH_STARTUP ]]; then
+if [[ -v BASH_STARTUP ]]; then
     eval "$BASH_STARTUP"
 else
-    ascii
-    echo
+    # if command -v ascii > /dev/null; then
+    #     ascii
+    #     echo
+    # fi
     ls
 fi

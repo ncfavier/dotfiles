@@ -2,6 +2,8 @@
 #
 # game - launch a game via Steam
 
+game=$1
+
 declare -A ids=(
     [ftl]=212680
     [hld]=257850
@@ -9,8 +11,25 @@ declare -A ids=(
     [portal2]=620
     [portal]=400
     [teeworlds]=380840
-    [terraria]=105600
     [tmnf]=11020
 )
 
-exec steam ${1:+-applaunch "${ids[$1]}"}
+if ! pgrep -f /usr/lib/steam/steam > /dev/null; then
+    steam -silent &> /dev/null &
+    sleep 20
+fi
+
+case $game in
+    terraria)
+        layout_saved=$(xkblayout-state print %c)
+        xkblayout-state set 1
+        { sleep 5; exec xkblayout-state set "$layout_saved"; } &
+        exec ~/.local/share/Steam/steamapps/common/Terraria/Terraria -autoarch
+        ;;
+    *)
+        exec steam -applaunch "${ids[$game]}"
+        ;;
+esac
+
+echo "Couldn't launch $game." >&2
+exit 1

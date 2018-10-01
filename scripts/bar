@@ -9,11 +9,23 @@ shopt -s nullglob
 # Variables
 
 battery=(/sys/class/power_supply/BAT*)
-network_interface=$(iw dev | grep -oPm 1 '(?<=Interface ).*')
-home_ssid='NEUF_89B4'
+home_ssid='Bbox-3641FF2F'
+default_layout=fr
 
 margin='  '
-declare -A icons=([1]='*' [2]=${icons[1]} [3]=${icons[1]} [4]=${icons[1]} [5]=${icons[1]} [6]=${icons[1]} [web]= [chat]= [files]=)
+icon_default='*'
+declare -A icons=([1]=$icon_default
+                  [2]=$icon_default
+                  [3]=$icon_default
+                  [4]=$icon_default
+                  [5]=$icon_default
+                  [6]=$icon_default
+                  [web]=
+                  [chat]=
+                  [files]=)
+
+font_args=()
+for f in "${bar_font[@]}"; do font_args+=(-f "$f"); done
 
 # Functions
 
@@ -88,19 +100,25 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
 
     while true; do
         # Clock
-        echo C
+        printf 'C\n'
 
         # Fcitx
         fcitx-remote &> /dev/null && fcitx=on || fcitx=off
-        echo "I$fcitx"
+        printf 'I%s\n' "$fcitx"
 
+        sleep 1
+    done &
+
+    # Keyboard layout
+    while true; do
+        xkblayout-state print $'K%s\n'
         sleep 1
     done &
 
     # Power
     if [[ $battery ]]; then
         while true; do
-            echo P
+            printf 'P\n'
             sleep 5
         done &
     fi
@@ -108,7 +126,7 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
     # Backlight
     false && udevadm monitor -u -s backlight |
     while true; do
-        echo "B$(brightness)"
+        printf 'B%s\n' "$(brightness)"
         read -r
     done &
 
@@ -116,16 +134,22 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
     stdbuf -oL alsactl monitor pulse |
     grep --line-buffered -i master |
     while true; do
-        echo "S$(volume)"
+        printf 'S%s\n' "$(volume)"
         read -r
     done &
 
     # Network
-    ip -o monitor dev "$network_interface" |
-    grep --line-buffered -P "^\\d+:\\s+$network_interface" |
+    ip -o monitor link |
     while true; do
-        ssid=$(iw dev "$network_interface" info | grep -oP '(?<=ssid\s).*')
-        echo "N${ssid/$home_ssid/home}"
+        ssid=
+        while read -r field value; do
+            if [[ $field == ssid ]]; then
+                ssid=$value
+                break
+            fi
+        done < <(iw dev)
+        printf 'N%s\n' "${ssid/$home_ssid/home}"
+        printf 'V%s\n' "$(ip -o link show type wireguard | awk -F'[ :]+' '{ print $2 }')"
         read -r
     done &
 
@@ -135,7 +159,7 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
     # Music
     mpc idleloop player |
     while true; do
-        echo M
+        printf 'M\n'
         read -r || sleep 10
     done &
 
@@ -150,7 +174,7 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
 
 while read -rn 1 event; do
     case $event in
-        W) # is for WM
+        W) # is for window manager
             wm=
             IFS=: read -ra parts
             for part in "${parts[@]}"; do
@@ -169,7 +193,7 @@ while read -rn 1 event; do
                         u|U) item="%{F$color5}$item%{F-}";;
                     esac
                     case $type in
-                        F|O|U) item="%{B$color8}%{F$color0}%{T2}$item%{T-}%{F-}%{B-}";;
+                        F|O|U) item="%{B$color8}$item%{B-}";;
                     esac
                     wm+=$item
                 fi
@@ -232,6 +256,27 @@ while read -rn 1 event; do
             power=$margin$power$margin
             power="%{A:pkill -USR2 -P $$ -f $0 -o:}%{A3:power:}$power%{A}%{A}"
             ;;
+        K) # is for keyboard
+            read -r layout
+            if [[ $layout == "$default_layout" ]]; then
+                keyboard=
+            else
+                layout=$(escape "$layout")
+                keyboard=" $layout"
+                keyboard=$margin$keyboard$margin
+                keyboard="%{A4:xkblayout-state set +1:}%{A5:xkblayout-state set -1:}$keyboard%{A}%{A}"
+            fi
+            ;;
+        I) # is for input method
+            read -r status
+            if [[ $status == on ]]; then
+                im=" fcitx"
+                im=$margin$im$margin
+                im="%{A:fcitx-remote -t:}%{A2:le im:}%{A3:fcitx-configtool:}$im%{A}%{A}%{A}"
+            elif [[ $status == off ]]; then
+                im=
+            fi
+            ;;
         B) # is for backlight
             read -r percentage
             brightness="$(icon_ramp "$percentage"  10  50 ) $percentage%"
@@ -255,7 +300,15 @@ while read -rn 1 event; do
                 network=$(escape "$network")
                 network=" $network"
                 network=$margin$network$margin
-                network="%{A:le wifi:}%{A3:sudo systemctl restart netctl-auto@$network_interface:}$network%{A}%{A}"
+                network="%{A:le wifi:}%{A3:sudo systemctl restart netctl-auto@'*':}$network%{A}%{A}"
+            fi
+            ;;
+        V) # is for VPN
+            read -r vpn
+            if [[ $vpn ]]; then
+                vpn=$(escape "$vpn")
+                vpn=" $vpn"
+                vpn=$margin$vpn$margin
             fi
             ;;
         G) # is for Gmail
@@ -267,23 +320,13 @@ while read -rn 1 event; do
                 mail="%{A:le mail:}$mail%{A}"
             fi
             ;;
-        I) # is for input method
-            read -r status
-            if [[ $status == on ]]; then
-                im=" fcitx"
-                im=$margin$im$margin
-                im="%{A:fcitx-remote -t:}%{A2:le im:}%{A3:fcitx-configtool:}$im%{A}%{A}%{A}"
-            elif [[ $status == off ]]; then
-                im=
-            fi
-            ;;
         M) # is for music
             song=
             song_artist=$(mpc current -f '%artist%')
             song_title=$(mpc current -f '%title%')
             if [[ $song_title ]]; then
                 song_artist=$(trunc 20 "$song_artist")
-                song_title=$(trunc 40 "$song_title")
+                song_title=$(trunc 30 "$song_title")
                 song_artist=$(escape "$song_artist")
                 song_title=$(escape "$song_title")
                 song=$(escape "$song")
@@ -297,7 +340,7 @@ while read -rn 1 event; do
     # Rendering
     printf '%%{l}%s%%{r}%s\n' \
         "$wm$title" \
-        "$song$im$mail$network$sound$brightness$power$clock"
+        "$song$mail$vpn$network$sound$brightness$im$keyboard$power$clock"
 done |
 
 #
@@ -308,10 +351,7 @@ lemonbar -g x28 \
          -a 64 \
          -B "$background" \
          -F "$foreground" \
-         -o 0 -f 'lucy tewi:pixelsize=11' \
-         -o 0 -f 'lucy tewi:bold:pixelsize=11' \
-         -o 0 -f 'Biwidth:pixelsize=12' \
-         -o -1 -f 'wuncon siji:pixelsize=10' |
+         "${font_args[@]}" |
 
 #
 # Bash

@@ -37,13 +37,14 @@ set t_vb=
 
 " Plugins
 
-if exists('g:loaded_plug')
+try
     call plug#begin('~/.vim/plugged')
         Plug 'scrooloose/nerdtree'
         Plug 'scrooloose/nerdcommenter'
         Plug 'lilydjwg/colorizer'
     call plug#end()
-endif
+catch
+endtry
 
 " Variables
 
@@ -80,7 +81,7 @@ imap                     <F9>             <C-o><F9>
 nnoremap <silent>        <Leader><Leader> :map <Leader><Return>
 noremap  <silent>        <Leader>c        :call NERDComment(0, 'toggle')<Return>
 nnoremap                 <Leader>i        :AddImport<Bar>SortImports<Return>
-nnoremap                 <Leader>r        :%s///g<Left><Left>
+nnoremap                 <Leader>r        :%s///g<Bar>''<Left><Left><Left><Left><Left>
 nnoremap <silent>        <Leader>s        :sort<Return>
 vnoremap <silent>        <Leader>s        :sort<Return>
 nnoremap <silent>        <Leader>x        :!chmod +x %<Return>
@@ -90,13 +91,13 @@ nnoremap <silent>        <Leader>x        :!chmod +x %<Return>
 autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | quit | endif " quit if NERDTree is the last buffer
 autocmd BufWritePre * %s/\s\+$//e " trim leading whitespace on save
 
-autocmd BufNewFile,BufRead *bash_aliases,*bash_functions call dist#ft#SetFileTypeSH("bash")
+autocmd BufNewFile,BufRead ~/.dots/bash/*,~/.dots/packages/* call dist#ft#SetFileTypeSH("bash")
 
 " Commands
 
 command! ToggleTerm call ToggleTerm()
 command! SortImports 1/^import /,$?^import ?sort u /^import \+/ | nohlsearch
-command! -nargs=* AddImport call AddImport(<f-args>)
+command! -nargs=* -bar AddImport call AddImport(<f-args>)
 
 " Functions
 

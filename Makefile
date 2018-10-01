@@ -25,7 +25,7 @@ church: server
 # Meta-bundles
 #
 
-all: themes login bash ascii scripts misc vim git weechat mpd x redshift compton fcitx fontconfig bspwm dunst feh mpv pcmanfm gtk firefox df yay
+all: themes login bash ascii scripts misc vim git weechat mpd x redshift compton fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm gtk firefox df yay
 
 personal: all
 
@@ -173,12 +173,17 @@ fontconfig: ~/.config/fontconfig/fonts.conf
 # bspwm
 
 .PHONY: bspwm
-bspwm: $(addprefix ~/.config/, bspwm/bspwmrc bspwm/rules sxhkd/sxhkdrc)
+bspwm: $(addprefix ~/.config/bspwm/, bspwmrc rules)
 
 ~/.config/bspwm/%: bspwm/%
 	install -Dm 755 $< $@
 
-~/.config/sxhkd/%: bspwm/%
+# sxhkd
+
+.PHONY: sxhkd
+sxhkd: ~/.config/sxhkd/sxhkdrc
+
+~/.config/sxhkd/%: sxhkd/%
 	install -Dm 644 $< $@
 
 # dunst

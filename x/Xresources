@@ -30,9 +30,9 @@ Xft.rgba: rgb
 Xft.lcdfilter: lcddefault
 
 ! URxvt
+*.cursorBlink: 1
+*.internalBorder: _terminal_padding
 URxvt.depth: 32
-URxvt.cursorBlink: 1
-URxvt.internalBorder: 16
 URxvt.scrollBar: 0
 URxvt.iso14755: false
 URxvt.perl-ext-common: default,-searchable-scrollback,selection-to-clipboard,matcher,vtwheel
