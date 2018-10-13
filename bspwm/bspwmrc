@@ -28,7 +28,7 @@ for class in feh mpv File-roller Deluge Fcitx-config-gtk3 Lxappearance Pavucontr
 done
 bspc rule -a Firefox desktop=web follow=on
 bspc rule -a URxvt:chat desktop=chat follow=on
-bspc rule -a URxvt:music desktop=music follow=on
+bspc rule -a URxvt:files desktop=files follow=on
 bspc rule -a Pcmanfm desktop=files follow=on
 bspc rule -a URxvt:editor follow=on
 bspc rule -a teeworlds state=fullscreen

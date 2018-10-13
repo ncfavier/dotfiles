@@ -7,4 +7,6 @@ shopt -s nullglob
 files=(~/.ascii/"$1"*)
 (( ${#files[@]} )) || exit 1
 
+echo
 sed 's/^/    /' "${files[RANDOM % ${#files[@]}]}"
+echo

@@ -1,4 +1,4 @@
-# Debugging
+# Misc
 
 args() {
     printf '%d\n' "$#"
@@ -6,6 +6,10 @@ args() {
         printf '<%s> ' "$@"
         echo
     fi
+}
+
+count() {
+    printf '%d\n' "$#"
 }
 
 # Files

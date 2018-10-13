@@ -1,2 +1,4 @@
-zoom_in 4
-zoom_out 5
+scroll_up 4
+scroll_down 5
+next_img
+prev_img

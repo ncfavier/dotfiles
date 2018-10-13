@@ -1,2 +1,7 @@
 save_filelist
 toggle_fullscreen f
+action_0
+render Return
+prev_img p Left
+close Escape BackSpace
+quit q

@@ -13,9 +13,9 @@ export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd'
 
 # Greetings
 
-printf '\nWelcome on %s%s%s, %s%s%s.\n\n' \
-    "$(tput setaf 5)" "$HOSTNAME" "$(tput sgr0)" \
-    "$(tput setaf 6)" "$USER" "$(tput sgr0)"
+printf '\nHello %s%s%s, I am %s%s%s.\n\n' \
+    "$(tput setaf 5)" "$USER" "$(tput sgr0)" \
+    "$(tput setaf 6)" "$HOSTNAME" "$(tput sgr0)"
 
 # Startup
 

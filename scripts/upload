@@ -46,7 +46,7 @@ fi
 [[ -d $source ]] && source=${source%/}/
 
 if [[ ! $destination ]]; then
-    destination=$(printf '%(%s)T %s' -1 "$RANDOM" | sha256sum | cut -d ' ' -f 1 | base64 | head -c 6)$extension
+    destination=$(base64 /dev/urandom | tr -cd '[:alnum:]' | head -c 6)$extension
 elif [[ $destination != *.* ]]; then
     destination+=$extension
 fi

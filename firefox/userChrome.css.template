@@ -8,8 +8,8 @@
     --fg-inactive: {{ "$color7" }};
     --green: {{ "$color2" }};
     --blue: {{ "$color4" }};
-    --font: "lucy tewi", "Biwidth", "EmojiOne Color", "fixed";
-    --font-size: 12px;
+    --font: serif, "Source Han Serif", "EmojiOne Color";
+    --font-size: 14px;
 }
 
 @-moz-document url(chrome://browser/content/browser.xul) {

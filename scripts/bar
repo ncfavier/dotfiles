@@ -6,27 +6,6 @@ shopt -s nullglob
 
 [[ -f ~/.theme ]] && . ~/.theme
 
-# Variables
-
-battery=(/sys/class/power_supply/BAT*)
-home_ssid='Bbox-3641FF2F'
-default_layout=fr
-
-margin='  '
-icon_default='*'
-declare -A icons=([1]=$icon_default
-                  [2]=$icon_default
-                  [3]=$icon_default
-                  [4]=$icon_default
-                  [5]=$icon_default
-                  [6]=$icon_default
-                  [web]=
-                  [chat]=
-                  [files]=)
-
-font_args=()
-for f in "${bar_font[@]}"; do font_args+=(-f "$f"); done
-
 # Functions
 
 escape() {
@@ -67,6 +46,27 @@ print_time() {
     (( hours )) && printf '%02d:' "$hours"
     printf '%02d:%02d\n' "$minutes" "$seconds"
 }
+
+# Variables
+
+battery=(/sys/class/power_supply/BAT*)
+home_ssid='Bbox-3641FF2F'
+default_layout=fr
+
+margin='  '
+icon_default='*'
+declare -A icons=([1]=$icon_default
+                  [2]=$icon_default
+                  [3]=$icon_default
+                  [4]=$icon_default
+                  [5]=$icon_default
+                  [6]=$icon_default
+                  [web]=
+                  [chat]=
+                  [files]=)
+
+font_args=()
+for f in "${bar_font[@]}"; do font_args+=(-f "$f"); done
 
 # Set lemonbar to be just above the root window to prevent displaying over other windows
 xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &

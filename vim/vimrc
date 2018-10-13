@@ -35,6 +35,8 @@ set whichwrap=b,s,<,>,[,]
 set visualbell
 set t_vb=
 
+colorscheme pablo
+
 " Plugins
 
 try

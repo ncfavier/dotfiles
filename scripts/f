@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# f - run functions from a non-interactive shell
+
+eval bash_functions=~"$SUDO_USER"/.bash_functions
+
+[[ -f $bash_functions ]] && . "$bash_functions"
+
+"$@"
