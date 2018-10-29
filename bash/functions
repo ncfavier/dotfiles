@@ -121,6 +121,15 @@ clipuf() {
     clip | unfold | clip
 }
 
+clipe() {
+    local tmpfile
+    tmpfile=$(mktemp) || return 1
+    clip > "$tmpfile"
+    vim "$tmpfile"
+    clip < "$tmpfile"
+    rm -- "$tmpfile"
+}
+
 clipcmd_helper () {
     local cmd
     local -a lines

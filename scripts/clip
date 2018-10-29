@@ -3,9 +3,9 @@
 # clip - clipboard utility
 
 if [[ $# != 0 ]]; then
-    printf '%s' "$*" | xsel -b -i
+    printf '%s' "$*" | xsel -bi
 elif [[ ! -t 0 ]]; then
-    printf '%s' "$(< /dev/stdin)" | xsel -b -i
+    xsel -bi
 else
-    xsel -b -o 2> /dev/null
+    xsel -bo 2> /dev/null
 fi

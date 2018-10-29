@@ -20,17 +20,11 @@ super + {ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore,
 super + {button4,button5,Left,Right} + {_,shift}
     desktop={prev,next,prev,next}; bspc {desktop -f "$desktop",node -d "$desktop" -f}
 
+super + {u,n,z} + {_,shift}
+    desktop={any.urgent,any.!occupied,last}; bspc {desktop -f "$desktop",node -d "$desktop" -f}
+
 super + {_,shift} + Tab
     bspc desktop -l {next,prev}
-
-super + u
-    bspc desktop -f any.urgent
-
-super + n
-    bspc desktop -f any.!occupied
-
-super + z
-    bspc desktop -f last
 
 # Nodes
 

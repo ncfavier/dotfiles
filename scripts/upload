@@ -7,7 +7,7 @@ build_url() {
     jq -nr --arg host "$host" --arg file "$file" '"https://\($host)/\($file | @uri )"'
 }
 
-host=up.v3lo.pw
+host=up.monade.li
 uploads_dir=sync/uploads
 remove=0
 
