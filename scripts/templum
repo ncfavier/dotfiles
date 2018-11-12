@@ -27,15 +27,15 @@ while IFS= read -r line; do
         [[ $type ]]
     do
         declare -n delim=delim_$type
-        printf '%s' "${line%%${delim[0]}*}"
+        printf '%s' "${line%%"${delim[0]}"*}"
         code=
-        code_line=${line#*${delim[0]}}
+        code_line=${line#*"${delim[0]}"}
         while [[ $code_line != *"${delim[1]}"* ]]; do
             code+=$code_line$'\n'
             IFS= read -r code_line || exit
         done
-        code+=${code_line%%${delim[1]}*}
-        line=${code_line#*${delim[1]}}
+        code+=${code_line%%"${delim[1]}"*}
+        line=${code_line#*"${delim[1]}"}
         if [[ $type == block ]]; then
             eval "$code"
         else

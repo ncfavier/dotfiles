@@ -28,7 +28,7 @@
     co = checkout
     r = reset
     p = push
-    pl = pull
+    pl = pull --rebase
     cl = clone
     l = log --graph --oneline
     la = log --graph --oneline --all

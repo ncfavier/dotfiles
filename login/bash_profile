@@ -1,6 +1,6 @@
 # Environment
 
-export PATH+=:~/.bin
+export PATH+=:~/.bin:~/.local/bin
 export VISUAL=vim
 export EDITOR=vim
 export PAGER=less

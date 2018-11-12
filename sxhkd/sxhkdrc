@@ -6,12 +6,6 @@ super + r
 {XF86PowerOff,super + Escape}
     power
 
-super + {_,shift} + b
-    border_width=$(bspc config border_width); (( border_width {+,-}= 4 )); bspc config border_width "$(( border_width >= 0 ? border_width : 0 ))"
-
-super + {_,shift} + g
-    window_gap=$(bspc config window_gap); (( window_gap {+,-}= 4 )); bspc config window_gap "$(( window_gap >= 0 ? window_gap : 0 ))"
-
 # Desktops
 
 super + {ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore,ccedilla,KP_End,KP_Down,KP_Next,KP_Left,KP_Begin,KP_Right,KP_Home,KP_Up,KP_Prior} + {_,shift}
@@ -39,6 +33,12 @@ super + {t,shift + t,s,l}
 
 super + y
     bspc node -g sticky
+
+super + less
+    bspc node -l "$(bspc query -T -n | jq -r 'if .client.layer == "above" then "normal" else "below" end')"
+
+super + greater
+    bspc node -l "$(bspc query -T -n | jq -r 'if .client.layer == "below" then "normal" else "above" end')"
 
 super + {_,shift} + q
     bspc node -{c,k}

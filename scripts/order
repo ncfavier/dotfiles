@@ -49,7 +49,7 @@ pending_source=() pending_destination=()
 for i in "${!files_ordered[@]}"; do
     source=${files_ordered[i]}
     name=${source##*/}
-    printf -v destination '%s/%0*d%s' "$dir" "$length" "$(( i + 1 ))" "${name#${name%%.*}}"
+    printf -v destination '%s/%0*d%s' "$dir" "$length" "$(( i + 1 ))" "${name#"${name%%.*}"}"
     if [[ -e $destination ]]; then
         if [[ ! $destination -ef $source ]]; then
             pending_source+=("$source")

@@ -2,10 +2,42 @@
 #
 # clip - clipboard utility
 
-if [[ $# != 0 ]]; then
-    printf '%s' "$*" | xsel -bi
-elif [[ ! -t 0 ]]; then
-    xsel -bi
+clipin()  { xsel -bi; }
+clipout() { xsel -bo 2> /dev/null; }
+
+nonewline= edit= unfold=
+
+while getopts :neu o; do
+    case $o in
+        n) nonewline=1;;
+        e) edit=1;;
+        u) unfold=1;;
+    esac
+done
+
+shift "$(( OPTIND - 1 ))"
+
+if (( edit )); then
+    tmpfile=$(mktemp) || exit 1
+    clipout > "$tmpfile"
+    vim ${nonewline:+-c 'set binary noeol'} "$tmpfile"
+    clipin < "$tmpfile"
+    rm -- "$tmpfile"
+elif (( unfold )); then
+    clipout | tr -s '[:space:]' '[ *]' | clipin
 else
-    xsel -bo 2> /dev/null
+    if [[ -t 0 ]] && (( ! $# )); then
+        clipout
+    else
+        if (( $# )); then
+            data=$*
+        else
+            data=$(< /dev/stdin)
+        fi
+        if (( nonewline )); then
+            printf '%s' "$data"
+        else
+            printf '%s\n' "$data"
+        fi | clipin
+    fi
 fi

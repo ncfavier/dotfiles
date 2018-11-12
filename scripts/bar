@@ -47,13 +47,18 @@ print_time() {
     printf '%02d:%02d\n' "$minutes" "$seconds"
 }
 
+pad() {
+    local -n var=$1
+    var=$padding$var$padding
+}
+
 # Variables
 
 battery=(/sys/class/power_supply/BAT*)
-home_ssid='Bbox-3641FF2F'
+home_ssid='Bbox-3641FF2F*'
 default_layout=fr
 
-margin='  '
+padding='  '
 icon_default='*'
 declare -A icons=([1]=$icon_default
                   [2]=$icon_default
@@ -63,10 +68,17 @@ declare -A icons=([1]=$icon_default
                   [6]=$icon_default
                   [web]=
                   [chat]=
-                  [files]=)
+                  [files]=)
 
 font_args=()
-for f in "${bar_font[@]}"; do font_args+=(-f "$f"); done
+for f in "${bar_font[@]}"; do
+    if [[ $f == *'lucy tewi'* ]]; then
+        font_args+=(-o 1)
+    else
+        font_args+=(-o 0)
+    fi
+    font_args+=(-f "$f")
+done
 
 # Set lemonbar to be just above the root window to prevent displaying over other windows
 xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
@@ -103,8 +115,8 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
         printf 'C\n'
 
         # Fcitx
-        fcitx-remote &> /dev/null && fcitx=on || fcitx=off
-        printf 'I%s\n' "$fcitx"
+        fcitx-remote &> /dev/null
+        printf 'I%s\n' "$(( ! $? ))"
 
         sleep 1
     done &
@@ -148,8 +160,8 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
                 break
             fi
         done < <(iw dev)
-        printf 'N%s\n' "${ssid/$home_ssid/home}"
-        printf 'V%s\n' "$(ip -o link show type wireguard | awk -F'[ :]+' '{ print $2 }')"
+        wireguard=$(ip -o link show type wireguard | awk -F'[ :]+' '{ print $2 }')
+        printf 'N%s:%s\n' "$wireguard" "$ssid"
         read -r
     done &
 
@@ -183,17 +195,17 @@ while read -rn 1 event; do
                 if [[ ${type,,} == [fou] ]]; then
                     desktop=$item
                     item=${icons[$desktop]-$item}
-                    item=$margin$item$margin
+                    pad item
                     item="%{A:bspc desktop -f $desktop:}%{A2:bspc node -d $desktop -f:}$item%{A}%{A}"
                     [[ $desktop =~ ^[[:alpha:]]+$ ]] &&
                         item="%{A3:le $desktop:}$item%{A}" ||
                         item="%{A3:bspc desktop -f $desktop; le terminal:}$item%{A}"
                     case $type in
-                        f|F) item="%{F$color7}$item%{F-}";;
+                        f|F) item="%{F$color8}$item%{F-}";;
                         u|U) item="%{F$color5}$item%{F-}";;
                     esac
                     case $type in
-                        F|O|U) item="%{B$color8}$item%{B-}";;
+                        F|O|U) item="%{B$color7}$item%{B-}";;
                     esac
                     wm+=$item
                 fi
@@ -204,8 +216,8 @@ while read -rn 1 event; do
             title=$(trunc 50 "$title")
             title=$(escape "$title")
             if [[ $title ]]; then
-                title="$margin $title$margin"
-                title="%{B$accent}%{F$color0}%{T2}$title%{T-}%{F-}%{B-}"
+                title="%{T4}%{T-} %{T2}$title%{T-}"
+                pad title
                 title="%{A:bspc node -t ~floating:}%{A2:bspc node -c:}%{A3:bspc desktop -l next:}$title%{A}%{A}%{A}"
             fi
             ;;
@@ -213,6 +225,7 @@ while read -rn 1 event; do
             read -r toggle
             if [[ $toggle == toggle ]]; then
                 (( long_clock ^= 1 ))
+                debug=1
             fi
             if (( long_clock )) ; then
                 date_format="%a %-d %b %Y"
@@ -221,9 +234,8 @@ while read -rn 1 event; do
                 date_format="%a %-d"
                 time_format="%H:%M"
             fi
-            printf -v clock " %($date_format %%{T2}$time_format%%{T-})T" -1
-            clock=$margin$clock$margin
-            clock="%{B$color8}%{F$color0}$clock%{F-}%{B-}"
+            printf -v clock " %($date_format %%{T2}$time_format%%{T-})T" -1
+            pad clock
             clock="%{A:pkill -USR1 -P $$ -f $0 -o:}%{A3:urxvt -name calendar -g 64x9 -hold +bc -e cal -3:}$clock%{A}%{A}"
             ;;
         P) # is for power
@@ -232,28 +244,31 @@ while read -rn 1 event; do
                 (( long_battery ^= 1 ))
             fi
             status=$(< "$battery"/status)
-            (( percentage = $(< "$battery"/capacity) ))
-            (( percentage > 100 )) && (( percentage = 100 ))
-            icon=$(icon_ramp "$percentage" -u          )
-            [[ $status == Charging ]] && icon+=
-            [[ $status == Full ]] && icon=
-            power="$icon $percentage%"
-            if (( long_battery )); then
-                power+=" $status"
-                (( voltage = $(< "$battery"/voltage_now) / 1000 ))
-                if (( present_rate = $(< "$battery"/power_now) / voltage )); then
-                    (( remaining_capacity = $(< "$battery"/energy_now) / voltage ))
-                    if [[ $status == Charging ]]; then
-                        (( full_capacity = $(< "$battery"/energy_full) / voltage))
-                        (( seconds_left = 3600 * (full_capacity - remaining_capacity) / present_rate ))
-                    elif [[ $status == Discharging ]]; then
-                        (( seconds_left = 3600 * remaining_capacity / present_rate ))
+            if [[ $status == Full ]]; then
+                power=
+            else
+                (( percentage = $(< "$battery"/capacity) ))
+                (( percentage > 100 )) && (( percentage = 100 ))
+                icon=$(icon_ramp "$percentage" -u          )
+                [[ $status == Charging ]] && icon+=
+                power="$icon $percentage%"
+                if (( long_battery )); then
+                    power+=" $status"
+                    (( voltage = $(< "$battery"/voltage_now) / 1000 ))
+                    if (( present_rate = $(< "$battery"/power_now) / voltage )); then
+                        (( remaining_capacity = $(< "$battery"/energy_now) / voltage ))
+                        if [[ $status == Charging ]]; then
+                            (( full_capacity = $(< "$battery"/energy_full) / voltage))
+                            (( seconds_left = 3600 * (full_capacity - remaining_capacity) / present_rate ))
+                        elif [[ $status == Discharging ]]; then
+                            (( seconds_left = 3600 * remaining_capacity / present_rate ))
+                        fi
                     fi
+                    (( seconds_left )) && power+=" $(print_time "$seconds_left")"
                 fi
-                (( seconds_left )) && power+=" $(print_time "$seconds_left")"
+                (( percentage <= 10 )) && [[ $status != Charging ]] && power="%{F$color1}$power%{F-}"
             fi
-            (( percentage <= 10 )) && [[ $status != Charging ]] && power="%{F$color1}$power%{F-}"
-            power=$margin$power$margin
+            pad power
             power="%{A:pkill -USR2 -P $$ -f $0 -o:}%{A3:power:}$power%{A}%{A}"
             ;;
         K) # is for keyboard
@@ -262,25 +277,25 @@ while read -rn 1 event; do
                 keyboard=
             else
                 layout=$(escape "$layout")
-                keyboard=" $layout"
-                keyboard=$margin$keyboard$margin
+                keyboard=" $layout"
+                pad keyboard
                 keyboard="%{A4:xkblayout-state set +1:}%{A5:xkblayout-state set -1:}$keyboard%{A}%{A}"
             fi
             ;;
         I) # is for input method
             read -r status
-            if [[ $status == on ]]; then
+            if (( status )); then
                 im=" fcitx"
-                im=$margin$im$margin
+                pad im
                 im="%{A:fcitx-remote -t:}%{A2:le im:}%{A3:fcitx-configtool:}$im%{A}%{A}%{A}"
-            elif [[ $status == off ]]; then
+            else
                 im=
             fi
             ;;
         B) # is for backlight
             read -r percentage
             brightness="$(icon_ramp "$percentage"  10  50 ) $percentage%"
-            brightness=$margin$brightness$margin
+            pad brightness
             brightness="%{A4:brightness +2:}%{A5:brightness -2:}$brightness%{A}%{A}"
             ;;
         S) # is for sound
@@ -290,25 +305,22 @@ while read -rn 1 event; do
             else
                 sound="$(icon_ramp "$percentage"  10  50 ) $percentage%"
             fi
-            sound=$margin$sound$margin
+            pad sound
             sound="%{A:le volume:}%{A3:volume toggle:}%{A4:volume +2:}%{A5:volume -2:}$sound%{A}%{A}%{A}%{A}"
             ;;
         N) # is for network
-            read -r network
-            if [[ $network ]]; then
-                network=$(trunc 15 "$network")
-                network=$(escape "$network")
-                network=" $network"
-                network=$margin$network$margin
+            IFS=: read -r wireguard ssid
+            network=
+            if [[ $ssid ]]; then
+                ssid=${ssid/$home_ssid/home}
+                ssid=$(trunc 15 "$ssid")
+                ssid=$(escape "$ssid")
+                network=" $ssid"
+                if [[ $wireguard ]]; then
+                    network="%{T4}%{T-}$network"
+                fi
+                pad network
                 network="%{A:le wifi:}%{A3:sudo systemctl restart netctl-auto@'*':}$network%{A}%{A}"
-            fi
-            ;;
-        V) # is for VPN
-            read -r vpn
-            if [[ $vpn ]]; then
-                vpn=$(escape "$vpn")
-                vpn=" $vpn"
-                vpn=$margin$vpn$margin
             fi
             ;;
         G) # is for Gmail
@@ -316,7 +328,7 @@ while read -rn 1 event; do
             read -r count
             if (( count )); then
                 mail="%{F$color5}%{F-} $count"
-                mail=$margin$mail$margin
+                pad mail
                 mail="%{A:le mail:}$mail%{A}"
             fi
             ;;
@@ -331,16 +343,25 @@ while read -rn 1 event; do
                 song_title=$(escape "$song_title")
                 song=$(escape "$song")
                 song=" %{T2}$song_artist%{T-} - $song_title"
-                song=$margin$song$margin
+                pad song
                 song="%{A:le music:}%{A2:mpc clear:}%{A3:mpc toggle:}$song%{A}%{A}%{A}"
             fi
             ;;
     esac
 
     # Rendering
-    printf '%%{l}%s%%{r}%s\n' \
-        "$wm$title" \
-        "$song$mail$vpn$network$sound$brightness$im$keyboard$power$clock"
+
+    left=$wm$title
+    center=
+    right=$song$mail$network$sound$brightness$im$keyboard$power$clock
+    printf -v bar '%%{l}%s%%{c}%s%%{r}%s' "$left" "$center" "$right"
+
+    if (( debug )); then
+        printf '%s\n' "$bar" >&2
+        debug=0
+    fi
+
+    printf '%s\n' "$bar"
 done |
 
 #

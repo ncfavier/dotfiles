@@ -95,6 +95,8 @@ autocmd BufWritePre * %s/\s\+$//e " trim leading whitespace on save
 
 autocmd BufNewFile,BufRead ~/.dots/bash/*,~/.dots/packages/* call dist#ft#SetFileTypeSH("bash")
 
+autocmd BufWritePost * if getline(1) =~ '^#!' && !executable(expand('%:p')) | silent execute '!chmod +x '.shellescape(@%) | endif
+
 " Commands
 
 command! ToggleTerm call ToggleTerm()

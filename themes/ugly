@@ -1,0 +1,35 @@
+color0='#080511'
+color1='#ff0f99'
+color2='#104f79'
+color3='#ff0085'
+color4='#00bcff'
+color5='#ff0085'
+color6='#152c60'
+color7='#92bcce'
+color8='#706b6a'
+color9='#ff0f99'
+color10='#104f79'
+color11='#ff0085'
+color12='#00bcff'
+color13='#ff0085'
+color14='#152c60'
+color15='#ffffff'
+
+dark=1
+
+if (( dark )); then
+    background=$color0
+    foreground=$color15
+else
+    background=$color15
+    foreground=$color0
+fi
+
+accent=$color10
+
+font='xft:lucy tewi:pixelsize=10, xft:Biwidth:pixelsize=12, xft:Symbola'
+bar_font=('lucy tewi:pixelsize=10' 'lucy tewi:bold:pixelsize=10' 'Biwidth:pixelsize=12' 'wuncon siji:pixelsize=10')
+
+border_width=1
+window_gap=16
+terminal_padding=12

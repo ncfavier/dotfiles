@@ -6,13 +6,12 @@
     --fg-inactive: {{ "$color7" }};
     --green: {{ "$color2" }};
     --blue: {{ "$color4" }};
-    --font: "lucy tewi", "Biwidth", "EmojiOne Color", "fixed";
-    --font-size: 12px;
 }
 
-@media not print {
+@-moz-document media-document(all) {
     body {
         background-image: none !important;
+        background-color: var(--bg) !important;
     }
 }
 
@@ -26,7 +25,7 @@
         display: none !important;
     }
 
-    .prefs-pane-button {
+    .prefs-button {
         display: none !important;
     }
 }

@@ -23,7 +23,7 @@ destdir=$(xdg-user-dir MUSIC)
 cover_maxsize=800
 
 tmpdir=$(mktemp --tmpdir -d music-XXX) || die "Could not create temporary directory."
-trap 'rm -r -- "$tmpdir"' exit
+trap 'echo; echo "Files kept in $tmpdir"' exit
 
 srcs=("$@")
 (( ${#srcs[@]} > 0 )) || read -ep "Source URLs/paths? " -a srcs
@@ -35,12 +35,11 @@ for src in "${srcs[@]}"; do
 
     if [[ $src =~ ^[[:alpha:]]+:// ]]; then
         echo "Downloading audio files from $src..."
-        youtube-dl --ignore-config -x --audio-format mp3 -o "$srcdir/%(title)s.%(ext)s" "$src" || die "Failed to download audio files."
-        printf '\a' # bell!
+        youtube-dl --ignore-config -x --audio-format mp3 -o "$srcdir/%(playlist_index)s - %(title)s.%(ext)s" "$src" || die "Failed to download audio files."
+        printf '\a'
     elif [[ -r $src ]]; then
-        cp_or_mv=cp
-        [[ ${src%/*} -ef $destdir ]] && cp_or_mv=mv
-        "$cp_or_mv" -t "$srcdir" -- "$src"
+        if [[ ${src%/*} -ef $destdir ]]; then cmd=mv; else cmd=cp; fi
+        "$cmd" -t "$srcdir" -- "$src"
     else
         die "File not found or not readable: $src"
     fi
@@ -86,7 +85,11 @@ if [[ $src ]]; then
         echo "Downloading album cover..."
         curl -fsSL "$src" > "$cover" || die "Failed to download album cover."
     elif [[ -r $src ]]; then
-        cp -- "$src" "$cover"
+        if [[ $(file -b --mime-type "$src") == image/* ]]; then
+            cp -- "$src" "$cover"
+        else
+            ffmpeg -loglevel error -nostdin -y -i "$src" -map 0:v:0 -f image2 -c:v png "$cover" || die "Unable to extract album cover"
+        fi
     else
         die "Album cover not found or not readable."
     fi
@@ -130,3 +133,5 @@ for file in "${files[@]}"; do
 done
 
 echo "Done!"
+rm -r -- "$tmpdir"
+trap - exit

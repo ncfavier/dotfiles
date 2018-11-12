@@ -5,7 +5,7 @@
 if [[ $# == 0 ]]; then
     data=$(LC_ALL=C pactl list sinks)
     volume=$(grep -i volume <<< "$data" | grep -oP '\d+(?=%)' | head -n 1)
-    mute=$(grep -i mute <<< "$data" | grep -oP 'no|yes')
+    mute=$(grep -i mute <<< "$data" | grep -oE 'no|yes' | head -n 1)
     echo "$volume:$mute"
 else
     case $1 in

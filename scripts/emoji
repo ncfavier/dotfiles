@@ -7,5 +7,5 @@ emojis=~/.local/share/emojis.json
 jq -r 'to_entries[] | .value.char + " " + .key' "$emojis" |
     rofi -dmenu -p emoji -matching normal -i -width 300 | {
         read -r emoji _
-        clip "$emoji"
+        clip -n "$emoji"
     }

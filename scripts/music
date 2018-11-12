@@ -22,8 +22,10 @@ case $cmd in
         mpc clear
 
         if [[ $artist || $album ]]; then
+            mpc random off
             mpc findadd ${album:+album "$album"} ${artist:+artist "$artist"}
         else
+            mpc random on
             mpc add /
         fi
 
