@@ -55,14 +55,23 @@ else
     done
 fi
 
+if [[ ${target##*/} != *.* ]]; then
+    if (( video )); then
+        target+=.webm
+    else
+        target+=.png
+    fi
+fi
+
 # Crop
 
 offset= geometry=
 if (( crop )); then
     if (( video )); then
-        read -r offset geometry < <(slop -f '+%x,%y %wx%h')
+        slop=$(slop -f '+%x,%y %wx%h') || exit 1
+        read -r offset geometry <<< "$slop"
     else
-        geometry=$(slop)
+        geometry=$(slop) || exit 1
     fi
 fi
 
@@ -71,8 +80,6 @@ fi
 thumbnail=$(mktemp --suffix .png) || exit 1
 
 if (( video )); then
-    [[ ${target##*/} == *.* ]] || target+=.webm
-
     # Use the screen dimensions by default
     if [[ ! $geometry ]]; then
         geometry=$(bspc query -T -m | jq -r '.rectangle | "\(.width)x\(.height)"')
@@ -91,8 +98,6 @@ if (( video )); then
     # Thumbnail
     ffmpegthumbnailer -i "$target" -o "$thumbnail" -s 300
 else
-    [[ ${target##*/} == *.* ]] || target+=.png
-
     # Screenshot
     import -silent -window root ${geometry:+-crop "$geometry"} "$target"
 

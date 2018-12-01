@@ -27,28 +27,39 @@ while (( $# )); do
     shift
 done
 
+wm_data=$(bspc wm -d)
+
 history=()
 seen=()
 
 while read -r node; do
-    [[ ${seen[$node]} ]] && continue
-    history+=("$node")
-    seen[$node]=1
-done < <(bspc wm -d | jq '.focusHistory | reverse | .[].nodeId | select(. > 0)')
+    if [[ ! -v 'seen[$node]' ]]; then
+        history+=("$node")
+        seen[$node]=1
+    fi
+done < <(jq <<< "$wm_data" '.focusHistory | reverse | .[].nodeId | select(. > 0)')
+
+if [[ $class || $instance ]]; then
+    declare -A className=() instanceName=()
+    jq_cb() {
+        className[$1]=$2
+        instanceName[$1]=$3
+    }
+    . <(jq <<< "$wm_data" -r '.monitors[].desktops[].root//empty | recurse(.firstChild//empty, .secondChild//empty) |
+                              ["jq_cb", .id, (.client | .className//"", .instanceName//"")] | @sh')
+fi
 
 for (( i = ${#history[@]} - 1; i >= 0; i-- )) do
     node=${history[i]}
     if [[ $class ]]; then
-        value=$(bspc query -T -n "$node" | jq -r ".client.className")
-        [[ ${value,,} == ${class,,} ]] || continue
+        [[ ${className[$node],,} == ${class,,} ]] || continue
     fi
     if [[ $instance ]]; then
-        value=$(bspc query -T -n "$node" | jq -r ".client.instanceName")
-        [[ ${value,,} == ${instance,,} ]] || continue
+        [[ ${instanceName[$node],,} == ${instance,,} ]] || continue
     fi
     if [[ $name ]]; then
-        value=$(xtitle "$node")
-        [[ ${value,,} == ${name,,} ]] || continue
+        title=$(xtitle "$node")
+        [[ ${title,,} == ${name,,} ]] || continue
     fi
     exec bspc node "$node" -f
 done

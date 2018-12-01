@@ -1,7 +1,0 @@
-file:///home/naim home
-file://{{ "$(xdg-user-dir DOWNLOAD)" }} downloads
-file://{{ "$(xdg-user-dir DOCUMENTS)" }} documents
-file://{{ "$(xdg-user-dir PICTURES)" }} pictures
-file://{{ "$(xdg-user-dir MUSIC)" }} music
-file://{{ "$(xdg-user-dir VIDEOS)" }} videos
-file:///home/naim/sync sync

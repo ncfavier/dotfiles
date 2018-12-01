@@ -9,15 +9,22 @@ shopt -s nullglob
 # Functions
 
 escape() {
-    printf '%s\n' "${1//\%/%%\{\}}"
+    local -n var=$1
+    var=${var//\%/%%\{\}}
 }
 
 trunc() {
-    local max_length=$1 text=$2
-    local length=${#text}
-    (( length > max_length )) &&
-        text=${text::$(( max_length/2 ))}…${text:$(( length - (max_length - 1)/2 ))}
-    printf '%s\n' "$text"
+    local -n var=$1
+    local max_length=$2
+    local length=${#var}
+    if (( length > max_length )); then
+        var=${var::$(( max_length/2 ))}…${var:$(( length - (max_length - 1)/2 ))}
+    fi
+}
+
+pad() {
+    local -n var=$1
+    var=$padding$var$padding
 }
 
 icon_ramp() {
@@ -45,11 +52,6 @@ print_time() {
     (( hours = minutes / 60, minutes %= 60 ))
     (( hours )) && printf '%02d:' "$hours"
     printf '%02d:%02d\n' "$minutes" "$seconds"
-}
-
-pad() {
-    local -n var=$1
-    var=$padding$var$padding
 }
 
 # Variables
@@ -201,11 +203,12 @@ while read -rn 1 event; do
                         item="%{A3:le $desktop:}$item%{A}" ||
                         item="%{A3:bspc desktop -f $desktop; le terminal:}$item%{A}"
                     case $type in
-                        f|F) item="%{F$color8}$item%{F-}";;
+                        f) item="%{F$foreground_alt}$item%{F-}";;
+                        F) item="%{F$background}$item%{F-}";;
                         u|U) item="%{F$color5}$item%{F-}";;
                     esac
                     case $type in
-                        F|O|U) item="%{B$color7}$item%{B-}";;
+                        F|O|U) item="%{B$background_alt}$item%{B-}";;
                     esac
                     wm+=$item
                 fi
@@ -213,10 +216,10 @@ while read -rn 1 event; do
             ;;
         T) # is for title
             read -r title
-            title=$(trunc 50 "$title")
-            title=$(escape "$title")
+            trunc title 50
+            escape title
             if [[ $title ]]; then
-                title="%{T4}%{T-} %{T2}$title%{T-}"
+                title="%{T4}%{T-} $title"
                 pad title
                 title="%{A:bspc node -t ~floating:}%{A2:bspc node -c:}%{A3:bspc desktop -l next:}$title%{A}%{A}%{A}"
             fi
@@ -276,7 +279,7 @@ while read -rn 1 event; do
             if [[ $layout == "$default_layout" ]]; then
                 keyboard=
             else
-                layout=$(escape "$layout")
+                escape layout
                 keyboard=" $layout"
                 pad keyboard
                 keyboard="%{A4:xkblayout-state set +1:}%{A5:xkblayout-state set -1:}$keyboard%{A}%{A}"
@@ -313,14 +316,14 @@ while read -rn 1 event; do
             network=
             if [[ $ssid ]]; then
                 ssid=${ssid/$home_ssid/home}
-                ssid=$(trunc 15 "$ssid")
-                ssid=$(escape "$ssid")
+                trunc ssid 15
+                escape ssid
                 network=" $ssid"
+                network="%{A:le wifi:}%{A3:sudo systemctl restart netctl-auto@'*':}$network%{A}%{A}"
                 if [[ $wireguard ]]; then
-                    network="%{T4}%{T-}$network"
+                    network="%{A3:sudo systemctl restart wg-quick@'*':}%{T4}%{T-}%{A}$network"
                 fi
                 pad network
-                network="%{A:le wifi:}%{A3:sudo systemctl restart netctl-auto@'*':}$network%{A}%{A}"
             fi
             ;;
         G) # is for Gmail
@@ -334,17 +337,27 @@ while read -rn 1 event; do
             ;;
         M) # is for music
             song=
-            song_artist=$(mpc current -f '%artist%')
-            song_title=$(mpc current -f '%title%')
-            if [[ $song_title ]]; then
-                song_artist=$(trunc 20 "$song_artist")
-                song_title=$(trunc 30 "$song_title")
-                song_artist=$(escape "$song_artist")
-                song_title=$(escape "$song_title")
-                song=$(escape "$song")
-                song=" %{T2}$song_artist%{T-} - $song_title"
+            song_file=$(mpc current -f '%file%')
+            if [[ $song_file ]]; then
+                song_artist=$(mpc current -f '%artist%')
+                song_title=$(mpc current -f '%title%')
+                if [[ $song_title ]]; then
+                    trunc song_title 30
+                    escape song_title
+                    song=$song_title
+                    if [[ $song_artist ]]; then
+                        trunc song_artist 20
+                        escape song_artist
+                        song="%{T2}$song_artist%{T-} - $song"
+                    fi
+                else
+                    trunc song_file 50
+                    escape song_file
+                    song=$song_file
+                fi
+                song=" $song"
                 pad song
-                song="%{A:le music:}%{A2:mpc clear:}%{A3:mpc toggle:}$song%{A}%{A}%{A}"
+                song="%{A:music:}%{A2:mpc clear:}%{A3:mpc toggle:}$song%{A}%{A}%{A}"
             fi
             ;;
     esac

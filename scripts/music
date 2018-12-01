@@ -5,44 +5,69 @@
 shopt -s lastpipe nocasematch
 
 dmenu() {
-    rofi -lines 20 -dmenu -i -matching fuzzy "$@"
+    rofi -dmenu -i -matching fuzzy "$@"
 }
 
-cmd=$1
-shift
+mpc() {
+    command mpc -q "$@"
+}
 
-case $cmd in
-    ''|play)
-        { echo; mpc list artist; } |
-        dmenu -p artist | read -r artist || exit 1
-
-        { echo; mpc list album ${artist:+artist "$artist"}; } |
-        dmenu -p album | read -r album || exit 1
-
-        mpc clear
-
-        if [[ $artist || $album ]]; then
-            mpc random off
-            mpc findadd ${album:+album "$album"} ${artist:+artist "$artist"}
-        else
-            mpc random on
-            mpc add /
+if (( $# )); then
+    mpc clear
+    for f do
+        if ! mpc add "${f##*/}" 2> /dev/null; then
+            mpc clear
+            exec mpv --player-operation-mode=pseudo-gui -- "$@"
         fi
+    done
+    mpc play
+else
+    filter=()
+    declare -A filter_has=()
 
-        mpc playlist -f '[%track% - ]%title%' |
-        dmenu -p song -format d | read -r index || exit 1
+    { echo all; mpc list artist; } |
+    dmenu -p artist -format i/s |
+    IFS=/ read -r index artist || exit 1
 
-        mpc play "$index"
-        ;;
-    pause)
-        if [[ $(mpc current) ]]; then
-            mpc toggle
-        else
-            :
-            #bspc query -T -m | jq -r '.desktops[].root | recurse(.firstChild, .secondChild) | select(.client.className == "Firefox") | .id' |
-            #    while read -r id; do
-            #        orig_title=$(xtitle
-            #    done
-        fi
-        ;;
-esac
+    if (( index > 0 )); then
+        filter+=(artist "$artist")
+        filter_has[artist]=1
+    fi
+
+    { echo all; mpc list album "${filter[@]}"; } |
+    dmenu -p album -format i/s |
+    IFS=/ read -r index album || exit 1
+
+    if (( index > 0 )); then
+        filter+=(album "$album")
+        filter_has[album]=1
+    fi
+
+    mpc clear
+
+    if (( ${#filter[@]} )); then
+        mpc random off
+        mpc findadd "${filter[@]}"
+    else
+        mpc random on
+        mpc add /
+    fi
+
+    lines=$(mpc playlist | wc -l)
+    (( lines > 15 )) && lines=15
+
+    format='%title%|%file%'
+    if [[ -v 'filter_has[album]' ]]; then
+        format='[%track% - ]'$format
+    elif [[ -v 'filter_has[artist]' ]]; then
+        format='[%album% - ]'$format
+    else
+        format='[%artist% - ]'$format
+    fi
+
+    mpc playlist -f "$format" |
+    dmenu -p song -format d -lines "$lines" |
+    read -r index || exit 1
+
+    mpc play "$index"
+fi

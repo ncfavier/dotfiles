@@ -11,7 +11,7 @@ refresh xresources
 sxhkd &
 
 # Wallpaper
-[[ -x ~/.fehbg ]] && { ~/.fehbg & }
+refresh wallpaper
 
 # Compositing manager
 compton -b &
@@ -24,6 +24,9 @@ rofl &
 
 # xkcd watcher
 xkcd &
+
+# Polkit agent
+/usr/lib/mate-polkit/polkit-mate-authentication-agent-1 &
 
 # Window manager
 bspwm

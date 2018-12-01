@@ -25,7 +25,7 @@ church: server
 # Meta-bundles
 #
 
-all: themes login bash ascii scripts misc vim git weechat mpd x redshift compton fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm gtk firefox df yay
+all: themes login bash ascii scripts misc vim git weechat mpd x redshift compton fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm xdg gtk firefox df yay
 
 personal: all
 
@@ -76,13 +76,10 @@ ascii: $(patsubst ascii/%, ~/.ascii/%, $(wildcard ascii/*))
 # scripts
 
 .PHONY: scripts
-scripts: $(patsubst scripts/%, ~/.bin/%, $(wildcard scripts/*)) ~/.local/share/emojis.json
+scripts: $(patsubst scripts/%, ~/.bin/%, $(wildcard scripts/*))
 
 ~/.bin/%: scripts/%
 	install -Dm 755 $< $@
-
-~/.local/share/emojis.json:
-	curl -fLo $@ --create-dirs https://raw.githubusercontent.com/muan/emojilib/master/emojis.json
 
 # misc
 
@@ -112,8 +109,7 @@ git: ~/.gitconfig
 
 .PHONY: weechat
 weechat: $(patsubst weechat/%, ~/.weechat/%, $(wildcard weechat/*.conf)) \
-		 $(addprefix ~/.weechat/, script.list $(wildcard python/*.py)) \
-		 ~/.local/share/emojis.json
+		 $(addprefix ~/.weechat/, script.list $(wildcard python/*.py))
 
 ~/.weechat/%: weechat/%
 	install -Dm 644 $< $@
@@ -223,6 +219,7 @@ pcmanfm: ~/.config/pcmanfm/default/pcmanfm.conf ~/.config/libfm/libfm.conf
 
 # xdg
 
+.PHONY: xdg
 xdg: $(addprefix ~/.config/, user-dirs.dirs user-dirs.locale mimeapps.list) \
 	 $(patsubst xdg/applications/%, ~/.local/share/applications/%, $(wildcard xdg/applications/*)) \
 	 $(patsubst xdg/thumbnailers/%, ~/.local/share/thumbnailers/%, $(wildcard xdg/thumbnailers/*))

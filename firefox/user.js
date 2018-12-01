@@ -9,6 +9,7 @@ user_pref("browser.uiCustomization.state", '{"placements":{"widget-overflow-fixe
 user_pref("browser.urlbar.clickSelectsAll", true);
 user_pref("browser.urlbar.doubleClickSelectsAll", false);
 user_pref("browser.urlbar.suggest.searches", false);
+user_pref("devtools.debugger.prompt-connection", false);
 user_pref("extensions.pocket.enabled", false);
 user_pref("general.autoScroll", true);
 user_pref("general.warnOnAboutConfig", false);

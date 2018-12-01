@@ -5,7 +5,7 @@
     --bg-hover: hsla(0, 100%, 100%, .1);
     --bg-active: hsla(0, 100%, 100%, .15);
     --fg: {{ "$foreground" }};
-    --fg-inactive: {{ "$color7" }};
+    --fg-inactive: {{ "$foreground_alt" }};
     --green: {{ "$color2" }};
     --blue: {{ "$color4" }};
     --font: "lucy tewi", "Biwidth";

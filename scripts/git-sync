@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# git-sync - create or pull local repositories from a set of remotes
+
+declare -A remotes=(
+    [~/.dots]='gitea@git.monade.li:nai/dotfiles.git'
+    [~/git/chan]='gitea@git.monade.li:nai/chan.git'
+    [~/git/fightcube]='gitea@git.monade.li:nai/fightcube.git'
+    [~/git/www]='gitea@git.monade.li:nai/www.git'
+    [~/git/terraria-setup]='git@gist.github.com:7ae6cadc980b0cfa6bd440d98168d919.git'
+    [~/git/aghpb]='https://github.com/boyEstrogen/Anime-Girls-Holding-Programming-Books'
+    [~/.local/share/emojilib]='https://github.com/muan/emojilib'
+)
+
+for dir in "${!remotes[@]}"; do
+    printf 'Syncing %s...\n' "$dir"
+    if [[ -d $dir/.git ]]; then
+        git -C "$dir" pull --rebase
+    else
+        git clone "${remotes[$dir]}" "$dir"
+    fi
+done

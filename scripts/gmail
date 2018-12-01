@@ -21,7 +21,7 @@ authorize() {
     IFS='?' read -r path query <<< "$target"
     IFS='&' read -ra query_parts <<< "$query"
 
-    declare -A parameters
+    declare -A parameters=()
     for parameter in "${query_parts[@]}"; do
         IFS='=' read -r key value <<< "$parameter"
         parameters[$key]=$value
@@ -94,7 +94,7 @@ access_token=
 
 while true; do
     response=$(
-        request \
+        request 2> /dev/null \
             -G -H "Authorization: Bearer $access_token" \
             -d labelIds=UNREAD \
             https://www.googleapis.com/gmail/v1/users/me/messages

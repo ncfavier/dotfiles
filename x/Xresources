@@ -60,8 +60,8 @@ rofi.width: 300
 rofi.sort: true
 rofi.matching: fuzzy
 rofi.padding: 16
-rofi.font: lucy tewi 8
-rofi.color-normal: #00000000, _foreground, #00000000, _color8, _foreground
+rofi.font: Fixed 9
+rofi.color-normal: #00000000, _foreground, #00000000, _foreground_alt, _foreground
 rofi.color-active: #00000000, _color5, #00000000, _color5, _foreground
 rofi.color-urgent: #00000000, _color1, #00000000, _color1, _background
 rofi.color-window: _background, _accent, #00000000

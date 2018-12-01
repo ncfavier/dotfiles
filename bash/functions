@@ -1,17 +1,3 @@
-# Misc
-
-args() {
-    printf '%d\n' "$#"
-    if (( $# )); then
-        printf '<%s> ' "$@"
-        echo
-    fi
-}
-
-count() {
-    printf '%d\n' "$#"
-}
-
 # Files
 
 pwd_short() {
@@ -58,7 +44,7 @@ flast() {
     while getopts :tn: o; do case $o in
         t) print_time=1;;
         n) n=$OPTARG;;
-    esac; done; shift "$(( OPTIND - 1 ))"
+    esac done; shift "$(( OPTIND - 1 ))"
     find "${@:-.}" -type f -printf '%T@/%P\0' | sort -znst / -k 1,1 | tail -zn "$n" |
     while IFS=/ read -rd '' time path; do
         (( print_time )) && printf '[%(%F %T)T] ' "${time%%.*}"
@@ -170,6 +156,18 @@ http() {
 
 # Misc
 
+args() {
+    printf '%d\n' "$#"
+    if (( $# )); then
+        printf '<%s> ' "$@"
+        echo
+    fi
+}
+
+count() {
+    printf '%d\n' "$#"
+}
+
 remind() {
     local delay=$1
     shift
@@ -203,6 +201,8 @@ whatdoes() {
     man -P "less +/${before@Q}\\\\C${thing@Q}" "$command"
 }
 
+# EFI
+
 efibootorder() {
     local field value boot_order=() boot_entries=()
     while read -r field value; do
@@ -215,6 +215,23 @@ efibootorder() {
     for i in "${boot_order[@]}"; do
         printf -- '- %s\n' "${boot_entries[16#$i]}"
     done
+}
+
+# Python
+
+pyv() {
+    local root=.
+    until [[ -d $root/.venv ]]; do
+        if [[ $root -ef / ]]; then
+            return 1
+        fi
+        root+=/..
+    done
+    if (( $# )); then
+        (. "$root"/.venv/bin/activate; "$@")
+    else
+        . "$root"/.venv/bin/activate
+    fi
 }
 
 # Vultr

@@ -6,6 +6,8 @@ set show-all-if-ambiguous On
 
 "\e[1;5D": backward-word
 "\e[1;5C": forward-word
+"\ef": shell-forward-word
+"\eb": shell-backward-word
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 "\er": "\C-asudo \C-e"

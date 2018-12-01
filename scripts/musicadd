@@ -78,6 +78,7 @@ if [[ $src == @ ]]; then
 fi
 
 cover=
+resize=1
 if [[ $src ]]; then
     cover=$(mktemp --tmpdir="$tmpdir" cover-XXX)
 
@@ -89,13 +90,16 @@ if [[ $src ]]; then
             cp -- "$src" "$cover"
         else
             ffmpeg -loglevel error -nostdin -y -i "$src" -map 0:v:0 -f image2 -c:v png "$cover" || die "Unable to extract album cover"
+            resize=0
         fi
     else
         die "Album cover not found or not readable."
     fi
 
-    echo "Resizing album cover..."
-    convert "$cover" -resize "${cover_maxsize}x${cover_maxsize}>" "$cover"
+    if (( resize )); then
+        echo "Resizing album cover..."
+        convert "$cover" -resize "${cover_maxsize}x${cover_maxsize}>" "$cover"
+    fi
 fi
 
 use_tracks=

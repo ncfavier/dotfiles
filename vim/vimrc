@@ -17,7 +17,7 @@ set ignorecase
 set incsearch
 set modeline
 set mouse=a
-set number
+set nonumber
 set path=**
 set shiftround
 set shiftwidth=0
@@ -35,7 +35,8 @@ set whichwrap=b,s,<,>,[,]
 set visualbell
 set t_vb=
 
-colorscheme pablo
+colorscheme default
+highlight LineNr ctermfg=8
 
 " Plugins
 
@@ -83,10 +84,13 @@ imap                     <F9>             <C-o><F9>
 nnoremap <silent>        <Leader><Leader> :map <Leader><Return>
 noremap  <silent>        <Leader>c        :call NERDComment(0, 'toggle')<Return>
 nnoremap                 <Leader>i        :AddImport<Bar>SortImports<Return>
+nnoremap <silent>        <Leader>n        :set number!<Return>
 nnoremap                 <Leader>r        :%s///g<Bar>''<Left><Left><Left><Left><Left>
 nnoremap <silent>        <Leader>s        :sort<Return>
 vnoremap <silent>        <Leader>s        :sort<Return>
 nnoremap <silent>        <Leader>x        :!chmod +x %<Return>
+xnoremap <silent>        //               "zy/<C-r>z<Return>
+xnoremap <silent>        ??               "zy?<C-r>z<Return>
 
 " Autocommands
 

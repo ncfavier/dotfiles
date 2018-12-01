@@ -2,7 +2,7 @@
 
 # Options
 
-set +H -b
+set -b
 shopt -s autocd
 shopt -s globstar
 shopt -s histappend

@@ -1,7 +1,7 @@
 # Global
 
 super + r
-    refresh
+    make --no-print-directory -C ~/.dots; refresh
 
 {XF86PowerOff,super + Escape}
     power
@@ -60,8 +60,8 @@ super + ctrl + {b,e,r,i}
 super + alt + {space,Left,Right,Down,Up,r,z,y,c,b,f,u}
     mpc {toggle,prev,next,volume -2,volume +2,repeat,random,single,clear,seek -3,seek +3,update}
 
-XF86Audio{Play,Prev,Next}
-    mpc {toggle,prev,next}
+XF86Audio{Play,Prev,Next,Stop}
+    mpc {toggle,prev,next,stop}
 
 XF86Audio{Lower,Raise}Volume
     volume {-,+}2
@@ -84,7 +84,7 @@ super + {_,shift} + {Return,  KP_Enter,f,    w,  c,   e,     v,    i,   j}
     le {_,-n}       {terminal,terminal,files,web,chat,editor,video,info,japanese}
 
 super + m
-    le music
+    music
 
 super + shift + m
     xdg-open http://mail.google.com/

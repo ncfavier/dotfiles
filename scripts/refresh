@@ -4,47 +4,80 @@
 
 shopt -s extglob
 
+refresh_xresources() {
+    defines=()
+    for symbol in color{0..15} background foreground accent font terminal_padding; do
+        defines+=("-D_$symbol=${!symbol}")
+    done
+    xrdb "${defines[@]}" ~/.Xresources
+}
+
+refresh_wallpaper() {
+    if [[ -f ~/.fehbg ]]; then
+        . ~/.fehbg
+    else
+        hsetroot -add "$background_alt" -addd "$background_alt" 28 -addd "$background" 768 -gradient 0
+    fi
+}
+
+refresh_bspwm() {
+    ~/.config/bspwm/bspwmrc
+}
+
+refresh_sxhkd() {
+    pkill -usr1 -x sxhkd
+}
+
+refresh_terminals() {
+    sequences=
+    for i in {0..15}; do
+        color=color$i
+        sequences+="\\e]4;$i;${!color}\\e\\\\"
+    done
+    sequences+="\\e]10;$foreground\\e\\\\"
+    sequences+="\\e]11;$background\\e\\\\"
+    sequences+="\\e]708;$background\\e\\\\"
+    sequences+="\\e]12;$foreground\\e\\\\"
+    sequences+="\\e]50;$font\\e\\\\"
+
+    for term in /dev/pts/*([0-9]); do
+        [[ -w $term ]] && printf %b "$sequences" > "$term"
+    done
+}
+
+refresh_firefox() {
+    local port=6642 profile=default fifo line len json
+    [[ -e ~/.mozilla/firefox/"$profile"/lock ]] || return
+    fifo=$(mktemp -u) &&
+    mkfifo "$fifo" &&
+    firefox --start-debugger-server "$port" || return 1
+    < "$fifo" nc -N localhost "$port" |
+    while read -rd : len && read -rd '' -n "$len" json; do
+        printf '%s\n' "$json"
+    done |
+    jq -cn --unbuffered --arg userChrome "$(< ~/.mozilla/firefox/"$default"/chrome/userChrome.css)" \
+        '{to: "root", type: "getProcess"},
+         limit(1; inputs | {to: (.form.styleSheetsActor//empty), type: "getStyleSheets"}),
+         limit(1; inputs | {to: (.styleSheets[]? | select(.href//empty | endswith("userChrome.css")).actor), type: "update", text: $userChrome, transition: "true"}),
+         (inputs | select(.type == "styleApplied") | halt)' |
+    while IFS= read -r json; do
+        printf '%s:%s\n' "$(( ${#json} + 1 ))" "$json"
+    done > "$fifo"
+    rm -- "$fifo"
+}
+
 [[ -f ~/.theme ]] && . ~/.theme
 
-(( $# )) || set -- dots xresources sxhkd bspwm terminals
-
-for e do
-    case $e in
-        dots)
-            make -C ~/.dots --no-print-directory
-            [[ -f ~/.theme ]] && . ~/.theme
-            ;;
-        xresources)
-            defines=()
-            for symbol in color{0..15} background foreground accent font terminal_padding; do
-                defines+=("-D_$symbol=${!symbol}")
-            done
-            xrdb "${defines[@]}" ~/.Xresources
-            ;;
-        sxhkd)
-            pkill -usr1 -x sxhkd &
-            ;;
-        bspwm)
-            ~/.config/bspwm/bspwmrc &
-            ;;
-        terminals)
-            sequences=
-            for i in {0..15}; do
-                color=color$i
-                sequences+="\\e]4;$i;${!color}\\e\\\\"
-            done
-            sequences+="\\e]10;$foreground\\e\\\\"
-            sequences+="\\e]11;$background\\e\\\\"
-            sequences+="\\e]708;$background\\e\\\\"
-            sequences+="\\e]12;$foreground\\e\\\\"
-            sequences+="\\e]50;$font\\e\\\\"
-
-            for term in /dev/pts/*([0-9]); do
-                [[ -w $term ]] && printf %b "$sequences" > "$term"
-            done
-            ;;
-        *)
-            printf 'Invalid option %s\n' "$e" >&2
-            ;;
-    esac
-done
+if (( $# )); then
+    for a do
+        if [[ $(type -t refresh_"$a") == function ]]; then
+            refresh_"$a" &
+        else
+            printf 'Unknown action: %s\n' "$a" >&2
+        fi
+    done
+else
+    compgen -A function refresh_ | while read -r f; do
+        "$f" &
+    done
+fi
