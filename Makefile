@@ -280,5 +280,5 @@ yay: ~/.config/yay/config.json
 # Miscellaneous
 #
 
-%:: %.template scripts/templum themes/current
+%:: %.template scripts/templum themes/current xdg/user-dirs.dirs
 	scripts/templum -s themes/current -o $@ $<
