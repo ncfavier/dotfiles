@@ -25,20 +25,30 @@ else
     filter=()
     declare -A filter_has=()
 
-    { echo all; mpc list artist; } |
+    mpc list artist | mapfile -t artists
+
+    {
+        (( ${#artists[@]} > 1 )) && echo all
+        printf '%s\n' "${artists[@]}"
+    } |
     dmenu -p artist -format i/s |
     IFS=/ read -r index artist || exit 1
 
-    if (( index > 0 )); then
+    if (( ${#artists[@]} == 1 || index > 0 )); then
         filter+=(artist "$artist")
         filter_has[artist]=1
     fi
 
-    { echo all; mpc list album "${filter[@]}"; } |
+    mpc list album "${filter[@]}" | mapfile -t albums
+
+    {
+        (( ${#albums[@]} > 1 )) && echo all
+        printf '%s\n' "${albums[@]}"
+    } |
     dmenu -p album -format i/s |
     IFS=/ read -r index album || exit 1
 
-    if (( index > 0 )); then
+    if (( ${#albums[@]} == 1 || index > 0 )); then
         filter+=(album "$album")
         filter_has[album]=1
     fi
@@ -46,10 +56,8 @@ else
     mpc clear
 
     if (( ${#filter[@]} )); then
-        mpc random off
         mpc findadd "${filter[@]}"
     else
-        mpc random on
         mpc add /
     fi
 
@@ -57,17 +65,29 @@ else
     (( lines > 15 )) && lines=15
 
     format='%title%|%file%'
+    no_filter=
     if [[ -v 'filter_has[album]' ]]; then
         format='[%track% - ]'$format
     elif [[ -v 'filter_has[artist]' ]]; then
         format='[%album% - ]'$format
     else
         format='[%artist% - ]'$format
+        no_filter=1
     fi
 
-    mpc playlist -f "$format" |
+    {
+        (( no_filter )) && echo random
+        mpc playlist -f "$format"
+    } |
     dmenu -p song -format d -lines "$lines" |
     read -r index || exit 1
 
-    mpc play "$index"
+    (( no_filter && index-- ))
+
+    if (( no_filter && index == 0 )); then
+        mpc shuffle
+        mpc play
+    else
+        mpc play "$index"
+    fi
 fi

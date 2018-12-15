@@ -64,6 +64,6 @@ rofi.font: Fixed 9
 rofi.color-normal: #00000000, _foreground, #00000000, _foreground_alt, _foreground
 rofi.color-active: #00000000, _color5, #00000000, _color5, _foreground
 rofi.color-urgent: #00000000, _color1, #00000000, _color1, _background
-rofi.color-window: _background, _accent, #00000000
+rofi.color-window: _background, _foreground, #00000000
 rofi.kb-mode-next: Super+space,Control+Tab
 rofi.kb-mode-previous: Super+Shift+space,Control+ISO_Left_Tab

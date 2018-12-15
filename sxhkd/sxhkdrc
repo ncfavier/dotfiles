@@ -14,7 +14,7 @@ super + {ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore,
 super + {button4,button5,Left,Right} + {_,shift}
     desktop={prev,next,prev,next}; bspc {desktop -f "$desktop",node -d "$desktop" -f}
 
-super + {u,n,z} + {_,shift}
+super + {a,n,z} + {_,shift}
     desktop={any.urgent,any.!occupied,last}; bspc {desktop -f "$desktop",node -d "$desktop" -f}
 
 super + {_,shift} + Tab

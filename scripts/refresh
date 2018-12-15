@@ -6,7 +6,7 @@ shopt -s extglob
 
 refresh_xresources() {
     defines=()
-    for symbol in color{0..15} background foreground accent font terminal_padding; do
+    for symbol in color{0..15} background{,_alt} foreground{,_alt} accent font terminal_padding; do
         defines+=("-D_$symbol=${!symbol}")
     done
     xrdb "${defines[@]}" ~/.Xresources
@@ -47,7 +47,7 @@ refresh_terminals() {
 
 refresh_firefox() {
     local port=6642 profile=default fifo line len json
-    [[ -e ~/.mozilla/firefox/"$profile"/lock ]] || return
+    [[ -L ~/.mozilla/firefox/"$profile"/lock ]] || return
     fifo=$(mktemp -u) &&
     mkfifo "$fifo" &&
     firefox --start-debugger-server "$port" || return 1

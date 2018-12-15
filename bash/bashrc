@@ -39,9 +39,8 @@ fi
 if [[ -v BASH_STARTUP ]]; then
     eval "$BASH_STARTUP"
 else
-    # if command -v ascii > /dev/null; then
-    #     ascii
-    #     echo
-    # fi
+    if command -v ascii > /dev/null; then
+        ascii triangle | lolcat
+    fi
     ls
 fi

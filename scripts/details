@@ -31,8 +31,7 @@ font=${font##* }
 # Display
 
 space=10
-#sep=' ┃ '
-sep=' = '
+sep=' '
 bold=$(tput bold)
 reset=$(tput sgr0)
 
@@ -41,8 +40,8 @@ info() {
 }
 
 echo
-ascii camera | lolcat -o 600
-echo
+ascii triangle | lolcat -o 600
+# echo
 info kernel "$kernel"
 info os "$os"
 info pkg "$packages"
