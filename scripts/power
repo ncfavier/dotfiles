@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# power - rofi power menu
+# power - power menu using rofi
 
 case $(printf '%s\n' shutdown reboot suspend logout | rofi -dmenu -p action -lines 4 -width 200) in
     shutdown) sudo poweroff;;

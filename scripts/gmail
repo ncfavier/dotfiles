@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# gmail - get unread mail count
+# gmail - get unread mail count from gmail
 
 die() {
     printf '%s\n' "$@"

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# git-sync - create or pull local repositories from a set of remotes
+# git-sync - sync local repositories with a set of remotes
 
 declare -A remotes=(
     [~/.dots]='gitea@git.monade.li:nai/dotfiles.git'

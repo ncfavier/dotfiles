@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# musicadd - automate the downloading, splitting, editing and tagging of mp3 files
+# musicadd - download, process and add audio files to the music library
 
 shopt -s nullglob
 

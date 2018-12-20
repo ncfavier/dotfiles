@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# xkcd - watch for xkcd updates
+# xkcd - watch xkcd for updates
 
 fetch() {
     until response=$(curl -fsL "$1"); do

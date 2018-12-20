@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# emoji - rofi emoji picker, because why not
+# emoji - emoji picker using rofi
 
 emojis=~/.local/share/emojilib/emojis.json
 

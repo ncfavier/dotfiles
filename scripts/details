@@ -11,7 +11,7 @@
 kernel=$(uname -r)
 kernel=${kernel%%-*}
 
-os=$(. /etc/os-release && echo "$ID")
+os=$(. /etc/os-release && printf '%s' "$ID")
 
 packages=$(pacman -Qq | wc -l)
 
@@ -41,7 +41,6 @@ info() {
 
 echo
 ascii triangle | lolcat -o 600
-# echo
 info kernel "$kernel"
 info os "$os"
 info pkg "$packages"

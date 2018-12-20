@@ -26,7 +26,7 @@ for class in feh mpv File-roller Deluge Fcitx-config-gtk3 Lxappearance Pavucontr
              URxvt:{info,wifi,calendar} Rofi Qemu-system-x86_64; do
     bspc rule -a "$class" state=floating
 done
-bspc rule -a Firefox desktop=web follow=on
+bspc rule -a Firefox:Navigator desktop=web follow=on
 bspc rule -a URxvt:chat desktop=chat follow=on
 bspc rule -a URxvt:files desktop=files follow=on
 bspc rule -a Pcmanfm desktop=files follow=on

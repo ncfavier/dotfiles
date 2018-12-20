@@ -8,8 +8,7 @@ efibootmgr() {
     sudo efibootmgr -q "$@"
 }
 
-[[ -r ~/.config/efi ]] || exit 1
-. ~/.config/efi
+. ~/.config/efi || exit 1
 
 for id in "${order[@]}"; do
     declare -n entry=entry_$id

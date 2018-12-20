@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# le - focus or open various applications
+# le - focus/launch stuff
 
 # If -n is given, always create a new instance
 if [[ $1 == -n ]]; then
@@ -12,7 +12,7 @@ fi
 
 case $1 in
     '')
-        printf '%s\n' "term" "chat" "text" "wifi" "info" "web" "mail" "files" "music" "video" "volume" "jap"
+        printf '%s\n' term chat text wifi info web mail files music video volume jap
         ;;
     term|terminal)
         urxvt &

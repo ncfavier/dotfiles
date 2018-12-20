@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# musicart - display the current playing song's album art
+# musicart - display album art for the currently playing song
 
 current=$(mpc current -f %file%)
 

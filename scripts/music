@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# music - a music player interface
+# music - song picker using mpc and rofi
 
 shopt -s lastpipe nocasematch
 

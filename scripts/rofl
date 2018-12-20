@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# rofl - edit rofi's {,d}run history to put favourites on top
+# rofl - edit rofi's history to put favourite entries on top
 
 apps=(urxvt pcmanfm firefox deluge gimp audacity lxappearance pavucontrol)
 

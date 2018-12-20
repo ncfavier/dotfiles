@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# img - view images using feh
+# img - feh wrapper
 
 [[ -f ~/.theme ]] && . ~/.theme
 

@@ -2,7 +2,7 @@
 #
 # game - launch a game via Steam
 
-game=$1
+game=${1,,}
 
 declare -A ids=(
     [ftl]=212680

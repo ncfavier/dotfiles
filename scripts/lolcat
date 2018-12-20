@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# lolcat - a lightweight bash rewrite
+# lolcat - a lolcat implementation in bash
 
 colorCodes=()
 numColors=$(tput colors)

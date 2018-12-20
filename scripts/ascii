@@ -1,12 +1,13 @@
 #!/bin/bash
 #
-# ascii - displays ascii art
+# ascii - show ascii art
 
 shopt -s nullglob
 
 files=(~/.ascii/"$1"*)
 (( ${#files[@]} )) || exit 1
+file="${files[RANDOM % ${#files[@]}]}"
 
-echo
-sed 's/^/    /' "${files[RANDOM % ${#files[@]}]}"
-echo
+indent=${2:-4}
+
+awk -v indent="$indent" 'BEGIN { print "" } END { print "" } { printf "%*s%s\n", indent, "", $0 }' "$file"

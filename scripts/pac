@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# pac - keep track of installed packages
+# pac - keep the list of installed packages in sync
 
 ask() {
     local prompt=$1 default=${2:-y} yn

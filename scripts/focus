@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# focus - focus bspwm windows by class, instance name or title
+# focus - focus windows by class, instance name or title (bspwm only)
 
 class=
 instance=

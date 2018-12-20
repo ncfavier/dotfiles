@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# upload - upload files to the web
+# upload - upload files to a remote host
 
 build_url() {
     local file=$1

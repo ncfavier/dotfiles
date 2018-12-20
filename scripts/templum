@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# templum - a bash template engine
 
 delim_expression=('{{' '}}')
 delim_block=('{{{' '}}}')

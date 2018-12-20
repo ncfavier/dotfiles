@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# refresh - refresh various configurations on the fly
+# refresh - refresh configurations on-the-fly
 
 shopt -s extglob
 
@@ -13,7 +13,7 @@ refresh_xresources() {
 }
 
 refresh_wallpaper() {
-    if [[ -f ~/.fehbg ]]; then
+    if [[ -r ~/.fehbg ]]; then
         . ~/.fehbg
     else
         hsetroot -add "$background_alt" -addd "$background_alt" 28 -addd "$background" 768 -gradient 0

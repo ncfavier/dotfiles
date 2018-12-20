@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# shoot - take screenshots and screen recordings
+# shoot - shoot and record the screen
 
 shopt -s nullglob
 

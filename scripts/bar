@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# bar - lemonbar script
+# bar - bar script using lemonbar
 
 shopt -s nullglob
 

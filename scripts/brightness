@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# brightness - control the backlight
+# brightness - get/set the screen's brightness
 
 backlights=(/sys/class/backlight/*)
 backlight=${backlights[0]}
@@ -10,7 +10,7 @@ brightness=$(< "$backlight/brightness")
 brightness=$(( (brightness+1)*100/max_brightness ))
 
 if [[ $# == 0 ]]; then
-    echo "$brightness"
+    printf '%s\n' "$brightness"
 else
     [[ $1 == [-+]* ]] && brightness=$(( brightness $1 )) || brightness=$1
     (( brightness < 0 )) && brightness=0
