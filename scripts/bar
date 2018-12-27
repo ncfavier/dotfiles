@@ -158,7 +158,7 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
         ssid=
         while read -r field value; do
             if [[ $field == ssid ]]; then
-                ssid=$value
+                printf -v ssid '%b' "$value"
                 break
             fi
         done < <(iw dev)
@@ -178,7 +178,7 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
     done &
 
     # Wait
-    until wait; do true; done
+    until wait; do :; done
 
 } |
 
@@ -228,7 +228,6 @@ while read -rn 1 event; do
             read -r toggle
             if [[ $toggle == toggle ]]; then
                 (( long_clock ^= 1 ))
-                debug=1
             fi
             if (( long_clock )) ; then
                 date_format="%a %-d %b %Y"
@@ -368,11 +367,6 @@ while read -rn 1 event; do
     center=
     right=$song$mail$network$sound$brightness$im$keyboard$power$clock
     printf -v bar '%%{l}%s%%{c}%s%%{r}%s' "$left" "$center" "$right"
-
-    if (( debug )); then
-        printf '%s\n' "$bar" >&2
-        debug=0
-    fi
 
     printf '%s\n' "$bar"
 done |

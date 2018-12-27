@@ -4,13 +4,14 @@
 
 declare -A remotes=(
     [~/.dots]='gitea@git.monade.li:nai/dotfiles.git'
-    [~/git/chan]='gitea@git.monade.li:nai/chan.git'
-    [~/git/fightcube]='gitea@git.monade.li:nai/fightcube.git'
-    [~/git/www]='gitea@git.monade.li:nai/www.git'
     [~/git/terraria-setup]='git@gist.github.com:7ae6cadc980b0cfa6bd440d98168d919.git'
     [~/git/aghpb]='https://github.com/boyEstrogen/Anime-Girls-Holding-Programming-Books'
     [~/.local/share/emojilib]='https://github.com/muan/emojilib'
 )
+
+for repo in chan fightcube www napoleon; do
+    remotes[~/git/$repo]="gitea@git.monade.li:nai/$repo.git"
+done
 
 for dir in "${!remotes[@]}"; do
     printf 'Syncing %s...\n' "$dir"

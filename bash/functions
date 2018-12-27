@@ -1,7 +1,17 @@
 # Files
 
 pwd_short() {
-    local component i prefix
+    local pwd=$PWD user home component i prefix
+    while IFS=: read -r user _ _ _ _ home _; do
+        if [[ $home == @(/home/*|/root|/var/lib/*|/srv/*) && $pwd == "$home"?(/*) ]]; then
+            if [[ $user == $USER ]]; then
+                pwd=${pwd/#"$home"/'~'}
+            else
+                pwd=${pwd/#"$home"/'~'"$user"}
+            fi
+            break
+        fi
+    done < <(getent passwd)
     while IFS= read -rd/ component; do
         i=0
         while
@@ -9,7 +19,7 @@ pwd_short() {
             [[ $prefix == +(.) ]]
         do :; done
         printf %s/ "$prefix"
-    done <<< "${PWD/#"$HOME"/'~'}"
+    done <<< "$pwd"
     printf '%s\n' "$component"
 }
 
@@ -151,6 +161,15 @@ http() {
         do :; done
     else
         echo "Invalid source." >&2
+    fi
+}
+
+wg!() {
+    local interface=wg0
+    if systemctl -q is-active wg-quick@"$interface"; then
+        sudo systemctl stop wg-quick@"$interface"
+    else
+        sudo systemctl start wg-quick@"$interface"
     fi
 }
 

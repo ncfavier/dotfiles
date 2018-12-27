@@ -1,21 +1,21 @@
-color0='#080511'
-color1='#ff0f99'
-color2='#256c60'
+color0='#08080f'
+color1='#ff0f79'
+color2='#25dca0'
 color3='#ff0085'
 color4='#00bcff'
-color5='#ff0085'
-color6='#336f99'
+color5='#ff00a5'
+color6='#33afd9'
 color7='#a2acde'
-color8='#a2acde'
+color8='#f23c7e'
 color9='#ff0f99'
-color10='#256c60'
+color10='#25dca0'
 color11='#ff0085'
 color12='#00bcff'
 color13='#ff0085'
 color14='#336f99'
 color15='#ffffff'
 
-dark=0
+dark=1
 
 if (( dark )); then
     background=$color0
@@ -34,6 +34,6 @@ accent=$color10
 font='xft:lucy tewi:pixelsize=10, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12'
 bar_font=('lucy tewi:pixelsize=10' 'lucy tewi:bold:pixelsize=10' 'Biwidth:pixelsize=12' 'wuncon siji:pixelsize=10')
 
-border_width=1
+border_width=8
 window_gap=16
 terminal_padding=20

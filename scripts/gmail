@@ -2,6 +2,8 @@
 #
 # gmail - get unread mail count from gmail
 
+shopt -s lastpipe
+
 die() {
     printf '%s\n' "$@"
     exit 1
@@ -14,48 +16,45 @@ request() {
 authorize() {
     xdg-open "$auth_uri?scope=$scope&response_type=code&redirect_uri=$redirect_uri&client_id=$client_id" &
 
-    read -r method target protocol < <(
-        nc -l -p "$port" -N <<< $'HTTP/2.0 200 OK\n\n<h1>:)</h1>\n'
-    )
+    nc -l -p "$port" -N <<< $'HTTP/2.0 200 OK\r\n\r\n<pre>You may now close this window.</pre>' |
+    read -r method target protocol
 
     IFS='?' read -r path query <<< "$target"
     IFS='&' read -ra query_parts <<< "$query"
 
     declare -A parameters=()
-    for parameter in "${query_parts[@]}"; do
-        IFS='=' read -r key value <<< "$parameter"
+    for part in "${query_parts[@]}"; do
+        IFS='=' read -r key value <<< "$part"
         parameters[$key]=$value
-    done <<< "$query"
+    done
 
     [[ ${parameters[code]} ]] || die "Authorization failed."
 
+    request \
+        -d code="${parameters[code]}" \
+        -d client_id="$client_id" \
+        -d client_secret="$client_secret" \
+        -d redirect_uri="$redirect_uri" \
+        -d grant_type=authorization_code \
+        "$token_uri" |
+    jq -r '.access_token, .refresh_token' |
     {
         IFS= read -r access_token
         IFS= read -r refresh_token
-    } < <(
-        request \
-            -d code="${parameters[code]}" \
-            -d client_id="$client_id" \
-            -d client_secret="$client_secret" \
-            -d redirect_uri="$redirect_uri" \
-            -d grant_type=authorization_code \
-            "$token_uri" |
-        jq -r '.access_token, .refresh_token'
-    )
+    }
 
     printf '%s\n' "$refresh_token" > "$refresh_token_file"
 }
 
 get_access_token() {
-    IFS= read -r access_token < <(
-        request \
-            -d refresh_token="$refresh_token" \
-            -d client_id="$client_id" \
-            -d client_secret="$client_secret" \
-            -d grant_type=refresh_token \
-            "$token_uri" |
-        jq -r '.access_token'
-    )
+    request \
+        -d refresh_token="$refresh_token" \
+        -d client_id="$client_id" \
+        -d client_secret="$client_secret" \
+        -d grant_type=refresh_token \
+        "$token_uri" |
+    jq -r '.access_token' |
+    IFS= read -r access_token
 }
 
 port=4242
@@ -71,22 +70,27 @@ refresh_token_file=$gmail_dir/refresh_token
 refresh_token=
 access_token=
 
+if [[ ! -e $credentials_file ]]; then
+    printf '%s\n' "Please save your client ID's JSON under $credentials_file" >&2
+    xdg-open 'https://console.developers.google.com/apis/credentials' &
+    exit 1
+fi
+
+jq -r '.installed |
+    .client_id,
+    .client_secret,
+    .auth_uri,
+    .token_uri,
+    (.redirect_uris[] | select(contains("localhost")))' \
+    "$credentials_file" |
 {
-    IFS= read -r client_id || exit 1
+    IFS= read -r client_id
     IFS= read -r client_secret
     IFS= read -r auth_uri
     IFS= read -r token_uri
     IFS= read -r redirect_uri
     redirect_uri+=:$port
-} < <(
-    jq -r '.installed |
-        .client_id,
-        .client_secret,
-        .auth_uri,
-        .token_uri,
-        (.redirect_uris[] | select(contains("localhost")))' \
-        "$credentials_file"
-)
+}
 
 [[ -r $refresh_token_file ]] && refresh_token=$(< "$refresh_token_file")
 
@@ -102,10 +106,9 @@ while true; do
 
     if [[ ! $response ]] || jq -e .error > /dev/null <<< "$response"; then
         get_access_token
-        continue
+    else
+        printf "$format" "$(jq -r .resultSizeEstimate <<< "$response")"
     fi
-
-    printf "$format" "$(jq -r .resultSizeEstimate <<< "$response")"
 
     sleep "$delay"
 done
