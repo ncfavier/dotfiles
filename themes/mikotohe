@@ -32,4 +32,4 @@ bar_font=('Fixed:pixelsize=12' 'Fixed:bold:pixelsize=12' 'Biwidth:pixelsize=12' 
 
 border_width=1
 window_gap=16
-terminal_padding=16
+padding=16

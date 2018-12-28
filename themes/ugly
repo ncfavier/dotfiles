@@ -36,4 +36,4 @@ bar_font=('lucy tewi:pixelsize=10' 'lucy tewi:bold:pixelsize=10' 'Biwidth:pixels
 
 border_width=8
 window_gap=16
-terminal_padding=20
+padding=20
