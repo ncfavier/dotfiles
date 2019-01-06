@@ -10,6 +10,8 @@ print_color() {
 
 names=(black red green brown blue magenta cyan lgray dgray lred lgreen yellow lblue lmagenta lcyan white)
 
+color8='#777799'
+
 for i in {0..15}; do
     color=color$i
     print_color "${names[i]}" "${!color}"

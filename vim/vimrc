@@ -42,22 +42,25 @@ highlight LineNr ctermfg=8
 try
     call plug#begin('~/.vim/plugged')
         Plug 'scrooloose/nerdtree'
+        let NERDTreeMinimalUI = 1
+
         Plug 'scrooloose/nerdcommenter'
+        let NERDSpaceDelims = 1
+        let NERDDefaultAlign = 'left'
+        let NERDCommentEmptyLines = 1
+        let NERDToggleCheckAllLines = 1
+
         Plug 'lilydjwg/colorizer'
+
+        Plug 'mhinz/vim-startify'
+        let startify_custom_header = split(system('toilet -f mono12 vim'), '\n')
     call plug#end()
 catch
 endtry
 
-" Variables
+" Mappings
 
 let mapleader = ','
-let NERDTreeMinimalUI = 1
-let NERDSpaceDelims = 1
-let NERDDefaultAlign = 'left'
-let NERDCommentEmptyLines = 1
-let NERDToggleCheckAllLines = 1
-
-" Mappings
 
 map                      <Home>           ^
 imap                     <Home>           <C-o><Home>
@@ -96,7 +99,7 @@ xnoremap <silent>        ??               "zy?<C-r>z<Return>
 autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | quit | endif " quit if NERDTree is the last buffer
 autocmd BufWritePre * %s/\s\+$//e " trim leading whitespace on save
 
-autocmd BufNewFile,BufRead ~/.dots/bash/*,~/.dots/packages/* call dist#ft#SetFileTypeSH("bash")
+autocmd BufNewFile,BufRead ~/.dots/bash/* call dist#ft#SetFileTypeSH("bash")
 
 autocmd BufWritePost * if getline(1) =~ '^#!' && !executable(expand('%:p')) | silent execute '!chmod +x '.shellescape(@%) | endif
 

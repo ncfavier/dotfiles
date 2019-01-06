@@ -3,18 +3,22 @@
 # git-sync - sync local repositories with a set of remotes
 
 declare -A remotes=(
-    [~/.dots]='gitea@git.monade.li:nai/dotfiles.git'
     [~/git/terraria-setup]='git@gist.github.com:7ae6cadc980b0cfa6bd440d98168d919.git'
     [~/git/aghpb]='https://github.com/boyEstrogen/Anime-Girls-Holding-Programming-Books'
     [~/.local/share/emojilib]='https://github.com/muan/emojilib'
 )
 
-for repo in chan fightcube www napoleon; do
-    remotes[~/git/$repo]="gitea@git.monade.li:nai/$repo.git"
-done
+while read -r repo; do
+    if [[ $repo == dotfiles ]]; then
+        dir=~/.dots
+    else
+        dir=~/git/$repo
+    fi
+    remotes[$dir]="gitea@git.monade.li:nai/$repo.git"
+done < <(curl -fsSL https://git.monade.li/api/v1/users/nai/repos | jq -r '.[].name')
 
 for dir in "${!remotes[@]}"; do
-    printf 'Syncing %s...\n' "$dir"
+    printf '%s==>%s %s\n' "$(tput bold; tput setaf 2)" "$(tput sgr0)" "$dir"
     if [[ -d $dir/.git ]]; then
         git -C "$dir" pull --rebase
     else

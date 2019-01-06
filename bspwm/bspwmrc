@@ -18,7 +18,7 @@ bspc config pointer_action3 resize_corner
 # Desktops
 bspc monitor -d 1 2 3 4 5 6 web chat files
 bspc desktop web -l monocle
-for side in left right; do bspc config -d chat "$side"_padding 150; done
+for side in left right; do bspc config -d chat "$side"_padding 200; done
 
 # Rules
 bspc rule -r '*:*'
@@ -30,6 +30,7 @@ bspc rule -a Firefox:Navigator desktop=web follow=on
 bspc rule -a URxvt:chat desktop=chat follow=on
 bspc rule -a URxvt:files desktop=files follow=on
 bspc rule -a Pcmanfm desktop=files follow=on
+bspc rule -a Thunar desktop=files follow=on
 bspc rule -a URxvt:editor follow=on
 bspc rule -a teeworlds state=fullscreen
 [[ -x ~/.config/bspwm/rules ]] && bspc config external_rules_command ~/.config/bspwm/rules

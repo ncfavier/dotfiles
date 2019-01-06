@@ -7,7 +7,7 @@ backlight=${backlights[0]}
 
 max_brightness=$(< "$backlight/max_brightness")
 brightness=$(< "$backlight/brightness")
-brightness=$(( (brightness+1)*100/max_brightness ))
+brightness=$(( brightness*100/max_brightness ))
 
 if [[ $# == 0 ]]; then
     printf '%s\n' "$brightness"

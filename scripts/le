@@ -37,7 +37,7 @@ case $1 in
         ;;
     files)
         # focus urxvt -i files || { urxvt -name files -e ranger & }
-        focus pcmanfm || { pcmanfm & }
+        focus thunar || { thunar & }
         ;;
     video)
         focus mpv
