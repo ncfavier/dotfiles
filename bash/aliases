@@ -21,9 +21,14 @@ alias o='xdg-open'
 alias ocaml='rlwrap ocaml'
 alias sd='systemctl'
 alias sda='systemctl start'
+alias sdluf='systemctl list-units --failed'
 alias sdo='systemctl stop'
 alias sdr='systemctl restart'
 alias sds='systemctl status'
 alias sudo='sudo '
 alias tall='tail -f -n +1'
 alias watch='watch '
+
+while read -r hostname; do
+    alias ".$hostname=ssh $hostname "
+done < <(compgen -A hostname)

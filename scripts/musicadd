@@ -66,30 +66,35 @@ done
 
 (( ${#files[@]} > 0 )) || die "No files given."
 
+cover_src=
+if [[ ${srcs[0]} == http?(s)://*.bandcamp.com/* ]]; then
+    cover_src=$(curl -fsSL "${srcs[0]}" | xmllint --html --xpath 'string(//link[@rel="image_src"]/@href)' - 2> /dev/null)
+fi
+
 read -ep "Artist? " artist
 read -ep "Album? [$artist] " album
 album=${album:-$artist}
-read -ep "Album cover? " src
+read -ep "Album cover? " ${cover_src:+-i "$cover_src"} cover_src
 
 reuse_cover=
-if [[ $src == @ ]]; then
+if [[ $cover_src == @ ]]; then
     reuse_cover=1
-    src=
+    cover_src=
 fi
 
 cover=
 resize=1
-if [[ $src ]]; then
+if [[ $cover_src ]]; then
     cover=$(mktemp --tmpdir="$tmpdir" cover-XXX)
 
-    if [[ $src =~ ^[[:alpha:]]+:// ]]; then
+    if [[ $cover_src =~ ^[[:alpha:]]+:// ]]; then
         echo "Downloading album cover..."
-        curl -fsSL "$src" > "$cover" || die "Failed to download album cover."
-    elif [[ -r $src ]]; then
-        if [[ $(file -b --mime-type "$src") == image/* ]]; then
-            cp -- "$src" "$cover"
+        curl -fsSL "$cover_src" > "$cover" || die "Failed to download album cover."
+    elif [[ -r $cover_src ]]; then
+        if [[ $(file -b --mime-type "$cover_src") == image/* ]]; then
+            cp -- "$cover_src" "$cover"
         else
-            ffmpeg -loglevel error -nostdin -y -i "$src" -map 0:v:0 -f image2 -c:v png "$cover" || die "Unable to extract album cover"
+            ffmpeg -loglevel error -nostdin -y -i "$cover_src" -map 0:v:0 -f image2 -c:v png "$cover" || die "Unable to extract album cover"
             resize=0
         fi
     else

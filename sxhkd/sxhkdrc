@@ -70,7 +70,7 @@ XF86AudioMute
     volume toggle
 
 XF86MonBrightness{Down,Up}
-    brightness {-,+}2
+    brightness {-,+}
 
 {_,super} + {_,ctrl} + {_,alt} + {_,shift} + Print
     shoot {_,-c} {_,-n} {_,-v} {_,-u}

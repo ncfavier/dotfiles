@@ -2,6 +2,9 @@
 #
 # git-sync - sync local repositories with a set of remotes
 
+declare -A should_sync
+for repo do should_sync[$repo]=1; done
+
 declare -A remotes=(
     [~/git/terraria-setup]='git@gist.github.com:7ae6cadc980b0cfa6bd440d98168d919.git'
     [~/git/aghpb]='https://github.com/boyEstrogen/Anime-Girls-Holding-Programming-Books'
@@ -18,6 +21,7 @@ while read -r repo; do
 done < <(curl -fsSL https://git.monade.li/api/v1/users/nai/repos | jq -r '.[].name')
 
 for dir in "${!remotes[@]}"; do
+    (( $# && ! should_sync[${dir##*/}] )) && continue
     printf '%s==>%s %s\n' "$(tput bold; tput setaf 2)" "$(tput sgr0)" "$dir"
     if [[ -d $dir/.git ]]; then
         git -C "$dir" pull --rebase

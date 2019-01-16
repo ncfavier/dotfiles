@@ -120,12 +120,9 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
         fcitx-remote &> /dev/null
         printf 'I%s\n' "$(( ! $? ))"
 
-        sleep 1
-    done &
-
-    # Keyboard layout
-    while true; do
+        # Keyboard layout
         xkblayout-state print $'K%s\n'
+
         sleep 1
     done &
 
@@ -163,7 +160,7 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
             fi
         done < <(iw dev)
         wireguard=$(ip -o link show type wireguard | awk -F'[ :]+' '{ print $2 }')
-        printf 'N%s:%s\n' "$wireguard" "$ssid"
+        printf 'N%s:%s\n' "$ssid" "$wireguard"
         read -r
     done &
 
@@ -298,7 +295,7 @@ while read -rn 1 event; do
             read -r percentage
             brightness="$(icon_ramp "$percentage"  10  50 ) $percentage%"
             pad brightness
-            brightness="%{A4:brightness +2:}%{A5:brightness -2:}$brightness%{A}%{A}"
+            brightness="%{A4:brightness +:}%{A5:brightness -:}$brightness%{A}%{A}"
             ;;
         S) # is for sound
             IFS=: read -r percentage mute
@@ -311,7 +308,7 @@ while read -rn 1 event; do
             sound="%{A:le volume:}%{A3:volume toggle:}%{A4:volume +2:}%{A5:volume -2:}$sound%{A}%{A}%{A}%{A}"
             ;;
         N) # is for network
-            IFS=: read -r wireguard ssid
+            IFS=: read -r ssid wireguard
             network=
             if [[ $ssid ]]; then
                 ssid=${ssid/$home_ssid/home}

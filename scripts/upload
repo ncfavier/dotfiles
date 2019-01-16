@@ -8,7 +8,7 @@ build_url() {
 }
 
 host=up.monade.li
-uploads_dir=sync/uploads
+uploads_dir=/srv/http/uploads
 folders=(my pictures music camera uploads)
 remove=0
 
