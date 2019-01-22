@@ -21,7 +21,7 @@
 accent:         _accent
 
 ! fonts
-*font: _font
+*font: _X_font
 Xft.antialias: 1
 Xft.hinting: 1
 Xft.hintstyle: hintslight
@@ -61,7 +61,7 @@ rofi.sort: true
 rofi.matching: fuzzy
 rofi.padding: _padding
 rofi.bw: _border_width
-rofi.font: Fixed 9
+rofi.font: _font 9
 rofi.color-normal: #00000000, _foreground, #00000000, _background_alt, _foreground
 rofi.color-active: #00000000, _color5, #00000000, _color5, _foreground
 rofi.color-urgent: #00000000, _color1, #00000000, _color1, _background

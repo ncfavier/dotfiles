@@ -24,9 +24,8 @@ wm=${wm,,}
 term=$(xprop -id "$WINDOWID" WM_CLASS | cut -d \" -f 4)
 term=${term,,}
 
-IFS=':' read -rd ',' prefix font _ <<< "$font"
-[[ $prefix == xft ]] || font=$prefix
 font=${font##* }
+font=${font,,}
 
 # Display
 
@@ -39,7 +38,6 @@ info() {
     [[ $2 ]] && printf '%s%*s%s%s%s\n' "$bold" "$space" "$1" "$reset" "$sep" "$2"
 }
 
-echo
 ascii triangle | lolcat -o 600
 info kernel "$kernel"
 info os "$os"

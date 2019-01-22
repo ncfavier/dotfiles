@@ -31,8 +31,11 @@ fi
 
 accent=$color10
 
-font='xft:lucy tewi:pixelsize=10, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12'
-bar_font=('lucy tewi:pixelsize=10' 'lucy tewi:bold:pixelsize=10' 'Biwidth:pixelsize=12' 'wuncon siji:pixelsize=10')
+font=Dina
+
+X_font="xft:$font:pixelsize=10, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12"
+bar_font=("$font:pixelsize=10" "$font:bold:pixelsize=10" "Biwidth:pixelsize=12" "wuncon siji:pixelsize=10")
+firefox_font="${font@Q}, Biwidth"
 
 border_width=8
 window_gap=16

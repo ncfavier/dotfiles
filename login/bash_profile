@@ -12,6 +12,8 @@ export XLOGFD
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd'
 export SYSTEMD_LESS='FRMK'
 
+[[ -f ~/.dircolors ]] && . <(dircolors ~/.dircolors)
+
 # Greetings
 
 printf '\nHello %s%s%s, I am %s%s%s.\n\n' \

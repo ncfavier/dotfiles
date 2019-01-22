@@ -27,7 +27,7 @@ case $1 in
         focus urxvt -i wifi || { urxvt -name wifi -title wifi -geometry 50x25 -e sudo wifi-menu & }
         ;;
     info|details)
-        BASH_STARTUP='PS1=; details' urxvt -name info -geometry 23x18 &
+        BASH_STARTUP='details' urxvt -name info -geometry 23x19 &
         ;;
     web|browser)
         focus firefox || { firefox & }

@@ -22,10 +22,13 @@ limonade: server
 # Meta-bundles
 #
 
+.PHONY: all
 all: themes login bash ascii scripts misc vim git weechat mpd x redshift compton fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm xdg gtk firefox df yay
 
+.PHONY: personal
 personal: all
 
+.PHONY: server
 server: themes login bash ascii scripts misc vim git weechat yay
 
 #

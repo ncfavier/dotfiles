@@ -8,7 +8,7 @@
     --fg-inactive: {{ "$foreground_alt" }};
     --green: {{ "$color2" }};
     --blue: {{ "$color4" }};
-    --font: "lucy tewi", "Biwidth";
+    --font: {{ "$firefox_font" }};
     --font-size: 12px;
 }
 

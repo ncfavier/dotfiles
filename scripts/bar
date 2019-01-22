@@ -74,11 +74,13 @@ declare -A icons=([1]=$icon_default
 
 font_args=()
 for f in "${bar_font[@]}"; do
-    if [[ $f == *'lucy tewi'* ]]; then
-        font_args+=(-o 1)
-    else
-        font_args+=(-o 0)
-    fi
+    font_args+=(-o)
+    case $f in
+        *'lucy tewi'*|*'Dina'*)
+            font_args+=(1);;
+        *)
+            font_args+=(0);;
+    esac
     font_args+=(-f "$f")
 done
 
@@ -363,17 +365,15 @@ while read -rn 1 event; do
     left=$wm$title
     center=
     right=$song$mail$network$sound$brightness$im$keyboard$power$clock
-    printf -v bar '%%{l}%s%%{c}%s%%{r}%s' "$left" "$center" "$right"
-
-    printf '%s\n' "$bar"
+    printf '%%{l}%s%%{c}%s%%{r}%s\n' "$left" "$center" "$right"
 done |
 
 #
 # Bar
 #
 
-lemonbar -g x28 \
-         -a 64 \
+lemonbar -g x32 \
+         -a 100 \
          -B "$background" \
          -F "$foreground" \
          "${font_args[@]}" |

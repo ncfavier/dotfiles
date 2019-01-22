@@ -203,13 +203,14 @@ insist() {
 
 what() {
     local thing=$1 path
-    if [[ $thing == */* ]]; then
-        pacman -Fo "$thing" ||
-        pacman -Fo "$(realpath "$thing")"
-    else
-        path=$(type -P "$thing") || path=/usr/bin/$thing
-        pacman -Fo "$path"
+    if [[ -e $thing ]]; then
+        thing=$(realpath "$thing")
+        [[ -d $thing ]] && thing+=/
+    elif [[ $thing != */* ]]; then
+        path=$(type -p "$thing")
+        thing=${path:-/usr/bin/$thing}
     fi
+    pacman -Fo "$thing"
 }
 
 whatdoes() {

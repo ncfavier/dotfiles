@@ -6,7 +6,7 @@ shopt -s extglob
 
 refresh_xresources() {
     defines=()
-    for symbol in color{0..15} background{,_alt} foreground{,_alt} accent font padding border_width; do
+    for symbol in color{0..15} background{,_alt} foreground{,_alt} accent font X_font padding border_width; do
         defines+=("-D_$symbol=${!symbol}")
     done
     xrdb "${defines[@]}" ~/.Xresources
@@ -38,7 +38,7 @@ refresh_terminals() {
     sequences+="\\e]11;$background\\e\\\\"
     sequences+="\\e]708;$background\\e\\\\"
     sequences+="\\e]12;$foreground\\e\\\\"
-    sequences+="\\e]50;$font\\e\\\\"
+    sequences+="\\e]50;$X_font\\e\\\\"
 
     for term in /dev/pts/*([0-9]); do
         [[ -w $term ]] && printf %b "$sequences" > "$term"

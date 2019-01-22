@@ -14,3 +14,4 @@ user_pref('devtools.debugger.prompt-connection', false);
 user_pref('extensions.pocket.enabled', false);
 user_pref('general.autoScroll', true);
 user_pref('general.warnOnAboutConfig', false);
+user_pref('gfx.color_management.mode', '0');
