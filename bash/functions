@@ -1,7 +1,8 @@
 # Files
 
 pwd_short() {
-    local pwd=$PWD user home component i prefix
+    set +x # avoid polluting xtrace output in interactive shells
+    local - pwd=$PWD user home component i prefix
     while IFS=: read -r user _ _ _ _ home _; do
         if [[ $home == @(/home/*|/root|/var/lib/*|/srv/*) && $pwd == "$home"?(/*) ]]; then
             if [[ $user == $USER ]]; then

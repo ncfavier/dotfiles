@@ -13,7 +13,7 @@
 	"mflags": "",
 	"requestsplitn": 150,
 	"sortmode": 0,
-	"sudoloop": true,
+	"sudoloop": false,
 	"timeupdate": false,
 	"devel": false,
 	"cleanAfter": false

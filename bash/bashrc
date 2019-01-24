@@ -14,16 +14,16 @@ stty -ixon
 # Variables
 
 HISTCONTROL=ignoreboth:erasedups
-HISTIGNORE=ls:l:ll
+HISTIGNORE=ls:l:ll:la
 HISTSIZE=5000
-PS1='\[\e[36;1m\]$(pwd_short)\[\e[0m\] ::\[\e[0m\] '
-PS2='\[\e[0;1m\]>\[\e[0m\] '
+PS1='\[\e[0m\]{\[\e[1m\]\u@\h \[\e[35m\]$(pwd_short)\[\e[0m\]} '
+PS2='\[\e[0m\]> '
 
 # Alarm for long running commands
 
 if [[ $term != *linux* ]]; then
     trap '(( AT_PROMPT )) && { AT_PROMPT=0 SECONDS_LAST=$SECONDS; }' debug
-    PROMPT_COMMAND+=${PROMPT_COMMAND:+; }'(( SECONDS - SECONDS_LAST >= 3 )) && printf \\a; AT_PROMPT=1'
+    PROMPT_COMMAND+=${PROMPT_COMMAND:+$'\n'}'(( SECONDS - SECONDS_LAST >= 3 )) && printf \\a; AT_PROMPT=1'
 fi
 
 # Aliases
@@ -40,7 +40,7 @@ if [[ -v BASH_STARTUP ]]; then
     eval "$BASH_STARTUP"
 else
     if command -v ascii > /dev/null; then
-        ascii triangle | lolcat
+        ascii whale | lolcat -o "$(( RANDOM % (760 - 400) + 400 ))"
+        echo
     fi
-    ls
 fi
