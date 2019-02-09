@@ -2,7 +2,7 @@
 
 pwd_short() {
     set +x # avoid polluting xtrace output in interactive shells
-    local - pwd=$PWD user home component i prefix
+    local pwd=$PWD user home component i prefix
     while IFS=: read -r user _ _ _ _ home _; do
         if [[ $home == @(/home/*|/root|/var/lib/*|/srv/*) && $pwd == "$home"?(/*) ]]; then
             if [[ $user == $USER ]]; then
@@ -165,7 +165,7 @@ http() {
     fi
 }
 
-wg!() {
+wg-toggle() {
     local interface=wg0
     if systemctl -q is-active wg-quick@"$interface"; then
         sudo systemctl stop wg-quick@"$interface"
@@ -214,12 +214,12 @@ what() {
     pacman -Fo "$thing"
 }
 
-whatdoes() {
-    local command=$1 thing=$2 before=
-    if [[ $thing == -* ]]; then
-        before='^[[:space:]]*'
+man() {
+    if [[ $2 == -* ]]; then
+        command man -P "less -j3 '+/^[[:space:]]*\\C'${2@Q}" "$1"
+    else
+        command man "$@"
     fi
-    man -P "less +/${before@Q}\\\\C${thing@Q}" "$command"
 }
 
 # EFI

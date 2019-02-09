@@ -5,7 +5,7 @@
 shopt -s lastpipe nocasematch
 
 dmenu() {
-    rofi -dmenu -i -matching fuzzy "$@"
+    rofi -dmenu -i -matching fuzzy -sorting-method fzf "$@"
 }
 
 mpc() {

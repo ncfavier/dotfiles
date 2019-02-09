@@ -22,7 +22,7 @@ done < <(curl -fsSL https://git.monade.li/api/v1/users/nai/repos | jq -r '.[].na
 
 for dir in "${!remotes[@]}"; do
     (( $# && ! should_sync[${dir##*/}] )) && continue
-    printf '%s==>%s %s\n' "$(tput bold; tput setaf 2)" "$(tput sgr0)" "$dir"
+    printf '%s %s\n' "$(tput bold; tput setaf 2)==>$(tput sgr0)" "$dir"
     if [[ -d $dir/.git ]]; then
         git -C "$dir" pull --rebase
     else

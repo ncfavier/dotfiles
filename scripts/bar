@@ -119,8 +119,7 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
         printf 'C\n'
 
         # Fcitx
-        fcitx-remote &> /dev/null
-        printf 'I%s\n' "$(( ! $? ))"
+        printf 'I%s\n' "$(fcitx-remote 2> /dev/null)"
 
         # Keyboard layout
         xkblayout-state print $'K%s\n'

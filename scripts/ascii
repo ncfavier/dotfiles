@@ -2,10 +2,10 @@
 #
 # ascii - show ascii art
 
-shopt -s nullglob
+shopt -s nullglob extglob
 
-files=(~/.ascii/"$1"*)
-(( ${#files[@]} )) || exit 1
+files=(~/.ascii/$1*)
+[[ -e ${files[0]} ]] || exit 1
 file="${files[RANDOM % ${#files[@]}]}"
 
 indent=${2:-4}
