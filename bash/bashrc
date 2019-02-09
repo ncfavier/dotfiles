@@ -16,7 +16,7 @@ stty -ixon
 HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE=ls:l:ll:la
 HISTSIZE=5000
-PS1='\[\e[0;1m\]\h \[\e[35m\]$(pwd_short)\[\e[0m\], '
+PS1='\[\e[0;1m\]\h \[\e[35m\]$(pwd_short)\[\e[0m\]. '
 PS2='\[\e[0m\]> '
 
 # Alarm for long running commands

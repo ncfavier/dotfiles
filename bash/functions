@@ -215,7 +215,7 @@ what() {
 }
 
 man() {
-    if [[ $2 == -* ]]; then
+    if [[ $1 != -* && $2 == -* ]]; then
         command man -P "less -j3 '+/^[[:space:]]*\\C'${2@Q}" "$1"
     else
         command man "$@"
