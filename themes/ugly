@@ -6,7 +6,7 @@ color4='#00bcff'
 color5='#ff00a5'
 color6='#33afd9'
 color7='#727c7e'
-color8='#f23c7e'
+color8='#bbbbcc'
 color9='#ff0f99'
 color10='#25dca0'
 color11='#ff0085'
@@ -29,14 +29,14 @@ else
     foreground_alt=$color8
 fi
 
-font=Dina
+font='Dina'
 font_size=10
 
 X_font="xft:$font:pixelsize=$font_size, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12"
 bar_font=("$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "Biwidth:pixelsize=12" "wuncon siji:pixelsize=10")
 firefox_font="${font@Q}, Biwidth"
 
-border_color=$color8
+border_color=$color5
 border_width=8
 window_gap=16
-padding=20
+padding=16

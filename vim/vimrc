@@ -9,6 +9,7 @@ set autoread
 set breakindent
 set clipboard=unnamedplus,exclude:cons\|linux
 set expandtab
+set exrc
 set formatoptions-=tro
 set hidden
 set hlsearch
@@ -18,6 +19,7 @@ set modeline
 set mouse=a
 set nonumber
 set path=**
+set secure
 set shiftround
 set shiftwidth=0
 set smartindent
@@ -90,8 +92,9 @@ nnoremap <silent>        <Leader>n        :set number!<Return>
 nnoremap                 <Leader>r        :%s///g<Bar>''<Left><Left><Left><Left><Left>
 nnoremap <silent>        <Leader>s        :sort<Return>
 vnoremap <silent>        <Leader>s        :sort<Return>
-nnoremap <silent>        <Leader>x        :!chmod +x %<Return>
-xnoremap <silent>        //               "zy/<C-r>z<Return>
+noremap  <silent>        <leader>u        :write !upload<Return>
+nnoremap <silent>        <leader>x        :!chmod +x %<Return>
+xnoremap <silent>        //               "zy/<c-r>z<Return>
 xnoremap <silent>        ??               "zy?<C-r>z<Return>
 
 " Autocommands

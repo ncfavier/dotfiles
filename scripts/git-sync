@@ -7,7 +7,6 @@ for repo do should_sync[$repo]=1; done
 
 declare -A remotes=(
     [~/git/terraria-setup]='git@gist.github.com:7ae6cadc980b0cfa6bd440d98168d919.git'
-    [~/git/aghpb]='https://github.com/boyEstrogen/Anime-Girls-Holding-Programming-Books'
     [~/.local/share/emojilib]='https://github.com/muan/emojilib'
 )
 

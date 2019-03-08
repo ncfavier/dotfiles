@@ -15,3 +15,4 @@ user_pref('extensions.pocket.enabled', false);
 user_pref('general.autoScroll', true);
 user_pref('general.warnOnAboutConfig', false);
 user_pref('gfx.color_management.mode', '0');
+user_pref('security.dialog_enable_delay', '0');

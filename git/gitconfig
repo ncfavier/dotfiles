@@ -20,7 +20,7 @@
     dh = diff HEAD
     b = branch
     a = add
-    aa = add .
+    aa = add -A
     au = add -u
     c = "!git commit --allow-empty-message -m \"$*\" #"
     ca = "!git commit --allow-empty-message -am \"$*\" #"
@@ -32,5 +32,3 @@
     cl = clone
     l = log --graph --oneline
     la = log --graph --oneline --all
-    cn = config
-    cng = config --global

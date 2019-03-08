@@ -1,7 +1,7 @@
 # Global
 
-super + r
-    make --no-print-directory -C ~/.dots; refresh
+super + {_,shift} + r
+    {_,make --no-print-directory -C ~/.dots; }refresh
 
 {XF86PowerOff,super + Escape}
     power

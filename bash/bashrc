@@ -2,7 +2,7 @@
 
 # Options
 
-set -b
+set -b +H
 shopt -s autocd
 shopt -s globstar extglob
 shopt -s histappend
@@ -19,11 +19,15 @@ HISTSIZE=5000
 PS1='\[\e[0;1m\]\h \[\e[35m\]$(pwd_short)\[\e[0m\]. '
 PS2='\[\e[0m\]> '
 
+# Set the window title
+
+PROMPT_COMMAND+=${PROMPT_COMMAND:+; }'printf '\''\033]0;%s@%s:%s\007'\'' "$USER" "${HOSTNAME%%.*}" "${PWD/#"$HOME"/\~}"'
+
 # Alarm for long running commands
 
 if [[ $term != *linux* ]]; then
     trap '(( AT_PROMPT )) && { AT_PROMPT=0 SECONDS_LAST=$SECONDS; }' debug
-    PROMPT_COMMAND+=${PROMPT_COMMAND:+$'\n'}'(( SECONDS - SECONDS_LAST >= 3 )) && printf \\a; AT_PROMPT=1'
+    PROMPT_COMMAND+=${PROMPT_COMMAND:+; }'(( SECONDS - SECONDS_LAST >= 3 )) && printf \\a; AT_PROMPT=1'
 fi
 
 # Aliases

@@ -8,6 +8,16 @@ shopt -s nullglob
 
 # Functions
 
+desktop_label() {
+    case $1 in
+        web) printf ;;
+        chat) printf ;;
+        files) printf ;;
+        # *) printf '%s' "$item";;
+        *) printf '+';;
+    esac
+}
+
 escape() {
     local -n var=$1
     var=${var//\%/%%\{\}}
@@ -61,16 +71,6 @@ home_ssid='Bbox-3641FF2F*'
 default_layout=fr
 
 padding='  '
-icon_default='*'
-declare -A icons=([1]=$icon_default
-                  [2]=$icon_default
-                  [3]=$icon_default
-                  [4]=$icon_default
-                  [5]=$icon_default
-                  [6]=$icon_default
-                  [web]=
-                  [chat]=
-                  [files]=)
 
 font_args=()
 for f in "${bar_font[@]}"; do
@@ -194,7 +194,7 @@ while read -rn 1 event; do
                 item=${part:1}
                 if [[ ${type,,} == [fou] ]]; then
                     desktop=$item
-                    item=${icons[$desktop]-$item}
+                    item=$(desktop_label "$item")
                     pad item
                     item="%{A:bspc desktop -f $desktop:}%{A2:bspc node -d $desktop -f:}$item%{A}%{A}"
                     [[ $desktop =~ ^[[:alpha:]]+$ ]] &&

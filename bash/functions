@@ -202,6 +202,15 @@ insist() {
     until "${command[@]}"; do sleep 0.1; done
 }
 
+with() {
+    local args
+    while read -rep "${PS1@P}$* " args; do
+        history -s "$args"
+        eval "$* $args"
+    done
+    echo
+}
+
 what() {
     local thing=$1 path
     if [[ -e $thing ]]; then
