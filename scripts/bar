@@ -28,7 +28,7 @@ trunc() {
     local max_length=$2
     local length=${#var}
     if (( length > max_length )); then
-        var=${var::$(( max_length/2 ))}…${var:$(( length - (max_length - 1)/2 ))}
+        var=${var::max_length/2}…${var:length - (max_length - 1)/2}
     fi
 }
 
