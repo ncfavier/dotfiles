@@ -26,9 +26,8 @@ escape() {
 trunc() {
     local -n var=$1
     local max_length=$2
-    local length=${#var}
-    if (( length > max_length )); then
-        var=${var::max_length/2}…${var:length - (max_length - 1)/2}
+    if (( ${#var} > max_length )); then
+        var=${var::max_length/2}…${var:${#var} - (max_length - 1)/2}
     fi
 }
 
@@ -137,22 +136,22 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
 
     # Backlight
     udevadm monitor -u -s backlight |
-    while true; do
+    while
         printf 'B%s\n' "$(brightness)"
         read -r
-    done &
+    do :; done &
 
     # Sound
     stdbuf -oL alsactl monitor pulse |
     grep --line-buffered -i master |
-    while true; do
+    while
         printf 'S%s\n' "$(volume)"
         read -r
-    done &
+    do :; done &
 
     # Network
     ip -o monitor link |
-    while true; do
+    while
         ssid=
         while read -r field value; do
             if [[ $field == ssid ]]; then
@@ -163,17 +162,17 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
         wireguard=$(ip -o link show type wireguard | awk -F'[ :]+' '{ print $2 }')
         printf 'N%s:%s\n' "$ssid" "$wireguard"
         read -r
-    done &
+    do :; done &
 
     # Mail
     gmail 'G%s\n' &
 
     # Music
     mpc idleloop player |
-    while true; do
+    while
         printf 'M\n'
-        read -r || sleep 10
-    done &
+        read -r
+    do :; done &
 
     # Wait
     until wait; do :; done
