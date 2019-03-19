@@ -52,10 +52,19 @@ try
         let NERDCommentEmptyLines = 1
         let NERDToggleCheckAllLines = 1
 
+        Plug 'tpope/vim-surround'
+
+        Plug 'tpope/vim-fugitive'
+
         Plug 'lilydjwg/colorizer'
 
         Plug 'mhinz/vim-startify'
         let startify_custom_header = split(system('toilet -f mono12 vim'), '\n')
+        let g:startify_files_number = 5
+        let g:startify_lists = [
+          \ { 'type': 'dir',   'header': ['Recent files in '.getcwd()] },
+          \ { 'type': 'files', 'header': ['Recent files']              },
+        \ ]
     call plug#end()
 catch
 endtry
@@ -64,38 +73,34 @@ endtry
 
 let mapleader = ','
 
-map                      <Home>           ^
-imap                     <Home>           <C-o><Home>
-nnoremap <silent>        <Return>         :noh<Bar>echo<Return>
-nnoremap                 p                ]p
-vnoremap                 //               y/\V<C-r>=escape(@",'/\')<Return><Return>
-nnoremap <silent>        <C-c>            :call NERDComment(0, 'toggle')<Return>
-vnoremap <silent> <expr> <C-c>            (mode() ==# 'V' ? '' : 'V').":call NERDComment(0, 'toggle')<Return>"
-noremap  <silent>        <C-n>            :NERDTreeToggle<Return>
-noremap                  <C-p>            :find<Space>
-cnoremap                 <C-p>            <Home>vert s<End>
-noremap                  <C-Left>         <C-w>h
-noremap                  <C-Right>        <C-w>l
-noremap                  <C-Down>         <C-w>j
-noremap                  <C-Up>           <C-w>k
-noremap  <silent>        <C-t>            :ToggleTerm<Return>
-tnoremap <silent>        <C-t>            <C-w>:ToggleTerm<Return>
-noremap                  <F9><F9>         :make<Return>
-noremap                  <F9>i            :make install<Return>
-noremap                  <F9>c            :make clean<Return>
-noremap                  <F9><Space>      :make<Space>
-imap                     <F9>             <C-o><F9>
-nnoremap <silent>        <Leader><Leader> :map <Leader><Return>
-noremap  <silent>        <Leader>c        :call NERDComment(0, 'toggle')<Return>
-nnoremap                 <Leader>i        :AddImport<Bar>SortImports<Return>
-nnoremap <silent>        <Leader>n        :set number!<Return>
-nnoremap                 <Leader>r        :%s///g<Bar>''<Left><Left><Left><Left><Left>
-nnoremap <silent>        <Leader>s        :sort<Return>
-vnoremap <silent>        <Leader>s        :sort<Return>
-noremap  <silent>        <leader>u        :write !upload<Return>
-nnoremap <silent>        <leader>x        :!chmod +x %<Return>
-xnoremap <silent>        //               "zy/<c-r>z<Return>
-xnoremap <silent>        ??               "zy?<C-r>z<Return>
+noremap           <Home>           ^
+imap              <Home>           <C-o><Home>
+nnoremap <silent> <Return>         :noh<Bar>echo<Return>
+noremap           p                ]p
+vnoremap          //               y/\V<C-r>=escape(@",'/\')<Return><Return>
+vnoremap          ??               y?\V<C-r>=escape(@",'?\')<Return><Return>
+noremap  <silent> <C-l>            :set number!<Return>
+noremap  <silent> <C-c>            :call NERDComment(0, 'toggle')<Return>
+noremap  <silent> <C-n>            :NERDTreeToggle<Return>
+noremap           <C-p>            :find<Space>
+cnoremap          <C-p>            <Home>vert s<End>
+noremap           <C-Left>         <C-w>h
+noremap           <C-Right>        <C-w>l
+noremap           <C-Down>         <C-w>j
+noremap           <C-Up>           <C-w>k
+noremap  <silent> <C-s>            :update<Return>
+noremap  <silent> <C-t>            :ToggleTerm<Return>
+tnoremap <silent> <C-t>            <C-w>:ToggleTerm<Return>
+noremap  <silent> <Leader><Leader> :map <Leader><Return>
+noremap           <Leader>mm       :make<Return>
+noremap           <Leader>mi       :make install<Return>
+noremap           <Leader>mc       :make clean<Return>
+noremap           <Leader>m<Space> :make<Space>
+noremap           <Leader>i        :AddImport<Bar>SortImports<Return>
+nnoremap          <Leader>r        :%s///g<Bar>''<Left><Left><Left><Left><Left>
+noremap  <silent> <Leader>s        :sort<Return>
+noremap  <silent> <Leader>u        :write !upload<Return>
+noremap  <silent> <Leader>x        :execute '!chmod +x -- '.shellescape(@%)<Return>
 
 " Autocommands
 
@@ -109,8 +114,8 @@ autocmd BufWritePost * if getline(1) =~ '^#!' && !executable(expand('%:p')) | si
 " Commands
 
 command! ToggleTerm call ToggleTerm()
-command! SortImports 1/^import /,$?^import ?sort u /^import \+/ | nohlsearch
 command! -nargs=* -bar AddImport call AddImport(<f-args>)
+command! SortImports 1/^import /,$?^import ?sort u /^import \+/ | nohlsearch
 
 " Functions
 

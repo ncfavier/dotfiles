@@ -18,6 +18,8 @@
     s = status
     d = diff
     dh = diff HEAD
+    dc = diff --cached
+    do = diff origin
     b = branch
     a = add
     aa = add -A

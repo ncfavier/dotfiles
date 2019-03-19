@@ -12,3 +12,4 @@ set show-all-if-ambiguous On
 "\e[B": history-search-forward
 "\er": "\C-asudo \C-e"
 "\ec": "\C-a\ed"
+"\C- ": "%\n"
