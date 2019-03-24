@@ -1,2 +1,3 @@
 clear lock
 keycode 66 = Escape Caps_Lock
+keycode 49 = grave twosuperior

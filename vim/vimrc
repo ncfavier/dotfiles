@@ -1,6 +1,6 @@
 " Defaults
 
-source $VIMRUNTIME/defaults.vim
+silent! source $VIMRUNTIME/defaults.vim
 
 " Options
 
@@ -35,6 +35,12 @@ set whichwrap=b,s,<,>,[,]
 
 set visualbell
 set t_vb=
+
+if $TERM =~ 'rxvt'
+    let &t_SI = "\<Esc>[5 q"
+    let &t_EI = "\<Esc>[0 q"
+    let &t_SR = "\<Esc>[3 q"
+endif
 
 colorscheme default
 highlight LineNr ctermfg=8
@@ -73,10 +79,24 @@ endtry
 
 let mapleader = ','
 
+nnoremap <silent> <Return>         :noh<Bar>echo<Return>
 noremap           <Home>           ^
 imap              <Home>           <C-o><Home>
-nnoremap <silent> <Return>         :noh<Bar>echo<Return>
-noremap           p                ]p
+inoremap <expr>   <Tab>            (col('.') == 1 \|\| getline('.')[:col('.')-2] =~ '^\s*$') ? "\<Tab>" : "\<C-n>"
+inoremap          <C-f>            <C-x><C-f>
+vmap              <Tab>            >
+vmap              <S-Tab>          <
+vnoremap          >                >gv
+vnoremap          <                <gv
+vnoremap          =                =gv
+nnoremap          <Tab>            >>
+nnoremap          <S-Tab>          <<
+" nnoremap          <S-j>            mz:move +1<Return>==`z
+" nnoremap          <S-k>            mz:move -2<Return>==`z
+vnoremap          <S-j>            :move '>+1<Return>gv=gv
+vnoremap          <S-k>            :move '<-2<Return>gv=gv
+nnoremap          p                ]p
+nnoremap          P                ]P
 vnoremap          //               y/\V<C-r>=escape(@",'/\')<Return><Return>
 vnoremap          ??               y?\V<C-r>=escape(@",'?\')<Return><Return>
 noremap  <silent> <C-l>            :set number!<Return>
@@ -89,8 +109,6 @@ noremap           <C-Right>        <C-w>l
 noremap           <C-Down>         <C-w>j
 noremap           <C-Up>           <C-w>k
 noremap  <silent> <C-s>            :update<Return>
-noremap  <silent> <C-t>            :ToggleTerm<Return>
-tnoremap <silent> <C-t>            <C-w>:ToggleTerm<Return>
 noremap  <silent> <Leader><Leader> :map <Leader><Return>
 noremap           <Leader>mm       :make<Return>
 noremap           <Leader>mi       :make install<Return>
@@ -98,18 +116,23 @@ noremap           <Leader>mc       :make clean<Return>
 noremap           <Leader>m<Space> :make<Space>
 noremap           <Leader>i        :AddImport<Bar>SortImports<Return>
 nnoremap          <Leader>r        :%s///g<Bar>''<Left><Left><Left><Left><Left>
+nnoremap          <Leader>n        :%s///gn<Return>
 noremap  <silent> <Leader>s        :sort<Return>
 noremap  <silent> <Leader>u        :write !upload<Return>
 noremap  <silent> <Leader>x        :execute '!chmod +x -- '.shellescape(@%)<Return>
 
+if v:version >= 800
+    noremap  <silent> <C-t> :ToggleTerm<Return>
+    tnoremap <silent> <C-t> <C-w>:ToggleTerm<Return>
+endif
+
 " Autocommands
 
-autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | quit | endif " quit if NERDTree is the last buffer
-autocmd BufWritePre * %s/\s\+$//e " trim leading whitespace on save
-
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | quit | endif
 autocmd BufNewFile,BufRead ~/.dots/bash/* call dist#ft#SetFileTypeSH("bash")
-
+autocmd BufWritePre * %s/\s\+$//e
 autocmd BufWritePost * if getline(1) =~ '^#!' && !executable(expand('%:p')) | silent execute '!chmod +x -- '.shellescape(@%) | endif
+autocmd BufWritePost $MYVIMRC source $MYVIMRC
 
 " Commands
 

@@ -94,8 +94,8 @@ misc: ~/.nanorc ~/.toprc ~/.screenrc
 .PHONY: vim
 vim: ~/.vimrc
 
-~/.%: vim/%
-	install -Dm 644 $< $@
+~/.vimrc: vim/vimrc
+	ln -srf $< $@
 
 # git
 
