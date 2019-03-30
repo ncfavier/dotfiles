@@ -201,7 +201,7 @@ feh: $(addprefix ~/.config/feh/, buttons keys)
 # mpv
 
 .PHONY: mpv
-mpv: $(addprefix ~/.config/mpv/, mpv.conf scripts/autoload.lua)
+mpv: $(addprefix ~/.config/mpv/, mpv.conf input.conf scripts/autoload.lua)
 
 ~/.config/mpv/%: mpv/%
 	install -Dm 644 $< $@

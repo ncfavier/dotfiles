@@ -91,10 +91,13 @@ vnoremap          <                <gv
 vnoremap          =                =gv
 nnoremap          <Tab>            >>
 nnoremap          <S-Tab>          <<
-" nnoremap          <S-j>            mz:move +1<Return>==`z
-" nnoremap          <S-k>            mz:move -2<Return>==`z
-vnoremap          <S-j>            :move '>+1<Return>gv=gv
-vnoremap          <S-k>            :move '<-2<Return>gv=gv
+nnoremap          <C-j>            mz:move +1<Return>==`z
+nnoremap          <C-k>            mz:move -2<Return>==`z
+vnoremap          <C-j>            :move '>+1<Return>gv=gv
+vnoremap          <C-k>            :move '<-2<Return>gv=gv
+nnoremap          <C-a>            ggVG
+nnoremap          +                <C-a>
+nnoremap          -                <C-x>
 nnoremap          p                ]p
 nnoremap          P                ]P
 vnoremap          //               y/\V<C-r>=escape(@",'/\')<Return><Return>

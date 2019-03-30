@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# tell - run a command and show its output in a notification
+
+shopt -s expand_aliases
+
+. ~/.bash_aliases
+. ~/.bash_functions
+
+exec dunstify -i none -r "0x$(sha256sum <<< "$*" | head -c 7)" "$*" "$(eval "$*" 2>&1)"
