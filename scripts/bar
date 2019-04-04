@@ -198,7 +198,7 @@ while read -rn 1 event; do
                     item="%{A:bspc desktop -f $desktop:}%{A2:bspc node -d $desktop -f:}$item%{A}%{A}"
                     [[ $desktop =~ ^[[:alpha:]]+$ ]] &&
                         item="%{A3:le $desktop:}$item%{A}" ||
-                        item="%{A3:bspc desktop -f $desktop; le terminal:}$item%{A}"
+                        item="%{A3:bspc desktop -f $desktop; rofi -show drun:}$item%{A}"
                     case $type in
                         f) item="%{F$foreground_alt}$item%{F-}";;
                         F) item="%{F$background}$item%{F-}";;

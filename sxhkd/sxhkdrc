@@ -78,7 +78,7 @@ XF86MonBrightness{Down,Up}
 # Apps
 
 super + {_,shift,ctrl} + space
-    rofi -show {run,le,window}
+    rofi -show {run,drun,window}
 
 super + {_,shift} + {Return,  KP_Enter,f,    w,  c,   e,     v,    i,   j}
     le {_,-n}       {terminal,terminal,files,web,chat,editor,video,info,japanese}

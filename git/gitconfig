@@ -10,9 +10,9 @@
     changed = red bold
     untracked = red bold
 [color "diff"]
-    meta = cyan bold
-    new = green bold
-    old = red bold
+    meta = cyan
+    new = green
+    old = red
 [alias]
     i = init
     s = status
@@ -26,6 +26,7 @@
     au = add -u
     c = "!git commit --allow-empty-message -m \"$*\" #"
     ca = "!git commit --allow-empty-message -am \"$*\" #"
+    ce = commit --edit
     cf = !git commit -m \"$(fortune -sn 60)\"
     co = checkout
     r = reset
