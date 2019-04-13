@@ -11,6 +11,10 @@ try_move() {
     mv -n -- "$source" "$destination"
 }
 
+get_extension() {
+    [[ ${1#.} =~ (\.[[:alnum:]]{1,10})+$ ]] && printf '%s\n' "${BASH_REMATCH[0]}"
+}
+
 [[ -d $1 ]] || exit 1
 dir=${1%/}
 shift
@@ -49,7 +53,9 @@ pending_source=() pending_destination=()
 for i in "${!files_ordered[@]}"; do
     source=${files_ordered[i]}
     name=${source##*/}
-    printf -v destination '%s/%0*d%s' "$dir" "$length" "$(( i + 1 ))" "${name#"${name%%.*}"}"
+    extension=$(get_extension "$name")
+    printf -v n '%0*d' "$length" "$(( i + 1 ))"
+    destination=$dir/$n$extension
     if [[ -e $destination ]]; then
         if [[ ! $destination -ef $source ]]; then
             pending_source+=("$source")

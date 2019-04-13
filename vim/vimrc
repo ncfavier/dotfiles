@@ -79,8 +79,8 @@ endtry
 
 let mapleader = ','
 
-nnoremap <silent> <Return>         :noh<Bar>echo<Return>
 noremap           <Home>           ^
+nnoremap <silent> <Return>         :noh<Bar>redraw!<Bar>echo<Return>
 imap              <Home>           <C-o><Home>
 inoremap <expr>   <Tab>            (col('.') == 1 \|\| getline('.')[:col('.')-2] =~ '^\s*$') ? "\<Tab>" : "\<C-n>"
 inoremap          <C-f>            <C-x><C-f>
@@ -121,7 +121,7 @@ noremap           <Leader>i        :AddImport<Bar>SortImports<Return>
 nnoremap          <Leader>r        :%s///g<Bar>''<Left><Left><Left><Left><Left>
 nnoremap          <Leader>n        :%s///gn<Return>
 noremap  <silent> <Leader>s        :sort<Return>
-noremap  <silent> <Leader>u        :write !upload<Return>
+noremap  <silent> <Leader>u        :if &mod<Bar>execute 'write !upload'<Bar>else<Bar>execute '!upload '.shellescape(@%)<Bar>endif<Return>
 noremap  <silent> <Leader>x        :execute '!chmod +x -- '.shellescape(@%)<Return>
 
 if v:version >= 800
