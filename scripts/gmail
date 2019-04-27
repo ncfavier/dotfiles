@@ -10,7 +10,13 @@ die() {
 } >&2
 
 request() {
-    curl -fsSL "$@"
+    local err
+    until
+        curl -fsSL "$@"
+        err=$?
+        (( err == 0 || err == 22 ))
+    do sleep 10; done
+    (( err == 0 ))
 }
 
 authorize() {
@@ -47,6 +53,7 @@ authorize() {
 }
 
 get_access_token() {
+    [[ $refresh_token ]] || return 1
     request \
         -d refresh_token="$refresh_token" \
         -d client_id="$client_id" \
@@ -55,6 +62,7 @@ get_access_token() {
         "$token_uri" |
     jq -r '.access_token' |
     IFS= read -r access_token
+    return "${PIPESTATUS[0]}"
 }
 
 port=4242
@@ -94,7 +102,7 @@ jq -r '.installed |
 
 [[ -r $refresh_token_file ]] && refresh_token=$(< "$refresh_token_file")
 
-[[ $refresh_token ]] || authorize || exit 1
+get_access_token || authorize || exit 1
 
 while true; do
     response=$(
@@ -105,10 +113,9 @@ while true; do
     )
 
     if [[ ! $response ]] || jq -e .error > /dev/null <<< "$response"; then
-        get_access_token
+        get_access_token || authorize || exit 1
     else
         printf "$format" "$(jq -r .resultSizeEstimate <<< "$response")"
+        sleep "$delay"
     fi
-
-    sleep "$delay"
 done
