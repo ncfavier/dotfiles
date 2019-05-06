@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# wallpaper - control the wallpaper
+
+case $1 in
+random)
+    feh --bg-fill "$(find "$(xdg-user-dir PICTURES)"/wallpapers -maxdepth 1 -type f | shuf -n 1)"
+    ;;
+esac

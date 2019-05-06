@@ -33,7 +33,7 @@ font='Dina'
 font_size=10
 
 X_font="xft:$font:pixelsize=$font_size, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12"
-bar_font=("$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "Biwidth:pixelsize=12" "wuncon siji:pixelsize=10")
+bar_font=("$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "Biwidth:pixelsize=12" "siji:pixelsize=10")
 firefox_font="${font@Q}, Biwidth"
 
 border_color=$color5

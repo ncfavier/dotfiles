@@ -33,5 +33,6 @@
     p = push
     pl = pull --rebase
     cl = clone
+    cl1 = clone --depth=1
     l = log --graph --oneline
     la = log --graph --oneline --all

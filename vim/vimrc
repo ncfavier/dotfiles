@@ -123,6 +123,7 @@ nnoremap          <Leader>n        :%s///gn<Return>
 noremap  <silent> <Leader>s        :sort<Return>
 noremap  <silent> <Leader>u        :if &mod<Bar>execute 'write !upload'<Bar>else<Bar>execute '!upload '.shellescape(@%)<Bar>endif<Return>
 noremap  <silent> <Leader>x        :execute '!chmod +x -- '.shellescape(@%)<Return>
+noremap  <silent> <Leader>d        :execute 'write !diff - '.shellescape(@%)<Return>
 
 if v:version >= 800
     noremap  <silent> <C-t> :ToggleTerm<Return>

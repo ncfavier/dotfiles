@@ -1,12 +1,13 @@
 #!/bin/bash
 #
 # git-sync - sync local repositories with a set of remotes
+# TODO: move remotes definitions to a config file
 
 declare -A should_sync
 for repo do should_sync[$repo]=1; done
 
 declare -A remotes=(
-    [~/git/terraria-setup]='git@gist.github.com:7ae6cadc980b0cfa6bd440d98168d919.git'
+    [~/git/aur/efont-unicode-bdf]='ssh://aur@aur.archlinux.org/efont-unicode-bdf.git'
     [~/.local/share/emojilib]='https://github.com/muan/emojilib'
 )
 
@@ -16,8 +17,8 @@ while read -r repo; do
     else
         dir=~/git/$repo
     fi
-    remotes[$dir]="gitea@git.monade.li:nai/$repo.git"
-done < <(curl -fsSL https://git.monade.li/api/v1/users/nai/repos | jq -r '.[].name')
+    remotes[$dir]="gitea@git.monade.li:n/$repo.git"
+done < <(curl -fsSL https://git.monade.li/api/v1/users/n/repos | jq -r '.[].name')
 
 for dir in "${!remotes[@]}"; do
     (( $# && ! should_sync[${dir##*/}] )) && continue

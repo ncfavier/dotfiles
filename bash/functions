@@ -225,10 +225,19 @@ what() {
 
 man() {
     if [[ $1 != -* && $2 == -* ]]; then
-        command man -P "less -j3 '+/^[[:space:]]*\\C'${2@Q}" "$1"
+        command man -P "less -+ij3 +'/^[[:space:]]*'${2@Q}" "$1"
     else
         command man "$@"
     fi
+}
+
+rfc() {
+    local -A codes=([ascii]=20 [udp]=768 [ip]=791 [icmp]=792 [tcp]=793 [arp]=826 [ftp]=959 [dns]=1034 [dns2]=1035 [ipoac]=1149 [imap2]=1176 [md5]=1321 [irc]=1459 [imap4]=1730 [netiquette]=1855 [private]=1918 [pop3]=1939 [http1]=1945 [http]=1945 [keywords]=2119 [dhcp]=2131 [tls1]=2246 [ipv6]=2460 [ipoac2]=2549 [irc2]=2810 [ircc]=2812 [ircs]=2813 [nat]=3022 [punycode]=3492 [utf8]=3629 [sasl]=4422 [sha]=4634 [smtp]=5321 [websocket]=6455 [oauth]=6749 [http2]=7540)
+    local i
+    for i do
+        [[ -v 'codes[$i]' ]] && i=${codes[$i]}
+        ${PAGER:-less} /usr/share/doc/rfc/txt/rfc"$i".txt
+    done
 }
 
 # EFI
