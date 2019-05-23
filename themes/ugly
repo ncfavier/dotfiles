@@ -32,11 +32,11 @@ fi
 font='Dina'
 font_size=10
 
-X_font="xft:$font:pixelsize=$font_size, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12"
+X_font="xft:$font:pixelsize=$font_size, xft:lucy tewi:10, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12"
 bar_font=("$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "Biwidth:pixelsize=12" "siji:pixelsize=10")
 firefox_font="${font@Q}, Biwidth"
 
-border_color=$color5
-border_width=8
+border_color=$color0
+border_width=1
 window_gap=16
 padding=16

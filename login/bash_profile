@@ -20,10 +20,6 @@ name=$(getent passwd "$USER" | cut -d: -f5 | cut -d, -f1 | cut -d' ' -f1)
 name=${name:-$(git config user.name | cut -d' ' -f1)}
 name=${name:-$USER}
 
-printf '\nHello %s%s%s, I am %s%s%s.\n\n' \
-    "$(tput setaf 5)" "$name" "$(tput sgr0)" \
-    "$(tput setaf 6)" "$HOSTNAME" "$(tput sgr0)"
-
 # Startup
 
 if [[ ! $DISPLAY && $(tty) == */tty1 ]]; then

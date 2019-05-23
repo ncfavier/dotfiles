@@ -4,7 +4,7 @@
 
 # General config
 bspc config focused_border_color "$border_color"
-bspc config normal_border_color "$background"
+bspc config normal_border_color "$color8"
 bspc config presel_feedback_color "$border_color"
 bspc config border_width "$border_width"
 bspc config window_gap "$window_gap"
@@ -18,7 +18,6 @@ bspc config pointer_action3 resize_corner
 # Desktops
 bspc monitor -d 1 2 3 4 5 6 web chat files
 bspc desktop web -l monocle
-for side in left right; do bspc config -d chat "$side"_padding 200; done
 
 # Rules
 bspc rule -r '*:*'

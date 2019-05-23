@@ -2,10 +2,10 @@
 #
 # emoji - emoji picker using rofi
 
+shopt -s lastpipe
+
 emojis=~/.local/share/emojilib/emojis.json
 
 jq -r 'to_entries[] | .value.char + " " + .key' "$emojis" |
-rofi -dmenu -p emoji -matching normal -i -font 'serif 14' -lines 10 | {
-    read -r emoji _
-    clip -n "$emoji"
-}
+rofi -dmenu -p emoji -matching normal -i -lines 10 |
+read -r emoji _ && clip -n "$emoji"

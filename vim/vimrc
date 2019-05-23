@@ -71,6 +71,8 @@ try
           \ { 'type': 'dir',   'header': ['Recent files in '.getcwd()] },
           \ { 'type': 'files', 'header': ['Recent files']              },
         \ ]
+
+        Plug 'AndrewRadev/id3.vim'
     call plug#end()
 catch
 endtry
