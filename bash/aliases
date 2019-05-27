@@ -39,5 +39,5 @@ alias wg0='wg-quick@wg0'
 alias xlog='>&"$XLOGFD" 2>&1 '
 
 while read -r hostname; do
-    alias ".$hostname=ssh $hostname "
+    alias "@$hostname=ssh $hostname "
 done < <(compgen -A hostname)

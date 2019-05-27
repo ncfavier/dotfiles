@@ -12,8 +12,8 @@ here: $(shell hostname)
 .PHONY: cerise
 cerise: personal
 
-.PHONY: citron
-citron: personal
+.PHONY: lambda
+lambda: personal
 
 .PHONY: limonade
 limonade: server
@@ -40,7 +40,7 @@ server: themes login bash ascii scripts misc vim git weechat yay
 .PHONY: themes
 themes: ~/.theme
 
-~/.theme: themes/current
+~/.theme: themes/current.sh
 	install -Dm 644 $< $@
 
 # login
@@ -277,8 +277,8 @@ yay: ~/.config/yay/config.json
 	install -Dm 644 $< $@
 
 #
-# Miscellaneous
+# Templating
 #
 
-%:: %.template scripts/templum themes/current xdg/user-dirs.dirs
-	scripts/templum -s themes/current -o $@ $<
+%:: %.template scripts/templum themes/current.sh xdg/user-dirs.dirs
+	scripts/templum -s themes/current.sh -o $@ $<

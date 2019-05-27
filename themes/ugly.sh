@@ -5,8 +5,8 @@ color3='#ff0085'
 color4='#00bcff'
 color5='#ff00a5'
 color6='#33afd9'
-color7='#727c7e'
-color8='#bbbbcc'
+color7='#bbbbcc'
+color8='#525c5e'
 color9='#ff9fe0'
 color10='#25dca0'
 color11='#ff0085'
@@ -15,9 +15,11 @@ color13='#ff0085'
 color14='#336f99'
 color15='#ffffff'
 
-dark=0
+dark=1
 
 if (( dark )); then
+    color7='#525c5e'
+    color8='#333333'
     background=$color0
     foreground=$color15
     background_alt=$color8
@@ -33,7 +35,7 @@ font='Dina'
 font_size=10
 
 X_font="xft:$font:pixelsize=$font_size, xft:lucy tewi:10, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12"
-bar_font=("$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "Biwidth:pixelsize=12" "siji:pixelsize=10")
+bar_font=("$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "siji:pixelsize=10" "lucy tewi:pixelsize=10" "Biwidth:pixelsize=12")
 firefox_font="${font@Q}, Biwidth"
 
 border_color=$color0

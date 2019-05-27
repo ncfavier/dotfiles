@@ -14,7 +14,7 @@ desktop_label() {
         chat) printf ;;
         files) printf ;;
         # *) printf '%s' "$item";;
-        *) printf '+';;
+        *) printf '~';;
     esac
 }
 
@@ -196,16 +196,15 @@ while read -rn 1 event; do
                     item=$(desktop_label "$item")
                     pad item
                     item="%{A:bspc desktop -f $desktop:}%{A2:bspc node -d $desktop -f:}$item%{A}%{A}"
-                    [[ $desktop =~ ^[[:alpha:]]+$ ]] &&
-                        item="%{A3:le $desktop:}$item%{A}" ||
+                    if [[ $desktop =~ ^[[:alpha:]]+$ ]]; then
+                        item="%{A3:le $desktop:}$item%{A}"
+                    else
                         item="%{A3:bspc desktop -f $desktop; le terminal:}$item%{A}"
+                    fi
                     case $type in
-                        f) item="%{F$foreground_alt}$item%{F-}";;
-                        F) item="%{F$background}$item%{F-}";;
-                        u|U) item="%{F$color5}$item%{F-}";;
-                    esac
-                    case $type in
-                        F|O|U) item="%{B$background_alt}$item%{B-}";;
+                        F|O|U) item="%{B$background_alt}$item%{B-}";;&
+                        f|F) item="%{F$foreground_alt}$item%{F-}";;&
+                        u|U) item="%{F$color5}$item%{F-}";;&
                     esac
                     wm+=$item
                 fi
@@ -216,7 +215,7 @@ while read -rn 1 event; do
             trunc title 50
             escape title
             if [[ $title ]]; then
-                title="%{T4}%{T-} $title"
+                title=" $title"
                 pad title
                 title="%{A:bspc node -t ~floating:}%{A2:bspc node -c:}%{A3:bspc desktop -l next:}$title%{A}%{A}%{A}"
             fi
@@ -311,13 +310,16 @@ while read -rn 1 event; do
             IFS=: read -r ssid wireguard
             network=
             if [[ $ssid ]]; then
-                ssid=${ssid/$home_ssid/home}
-                trunc ssid 15
-                escape ssid
-                network=" $ssid"
+                if [[ $ssid == $home_ssid ]]; then
+                    network=
+                else
+                    trunc ssid 15
+                    escape ssid
+                    network=" $ssid"
+                fi
                 network="%{A:le wifi:}%{A3:sudo systemctl restart netctl-auto@'*':}$network%{A}%{A}"
                 if [[ $wireguard ]]; then
-                    network="%{A3:sudo systemctl restart wg-quick@'*':}%{T4}%{T-}%{A}$network"
+                    network="%{A3:sudo systemctl restart wg-quick@'*':}%{A}$network"
                 fi
                 pad network
             fi
@@ -371,7 +373,7 @@ done |
 #
 
 lemonbar -g x32 \
-         -a 100 \
+         -a 255 \
          -B "$background" \
          -F "$foreground" \
          "${font_args[@]}" |

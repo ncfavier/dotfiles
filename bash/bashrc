@@ -13,20 +13,23 @@ stty -ixon
 
 # Variables
 
+declare -A greek_alphabet=([alpha]=α [beta]=β [gamma]=γ [delta]=δ [epsilon]=ε [zeta]=ζ [eta]=η [theta]=θ [iota]=ι [kappa]=κ [lambda]=λ [mu]=μ [nu]=ν [xi]=ξ [omicron]=ο [pi]=π [rho]=ρ [sigma]=σ [tau]=τ [upsilon]=υ [phi]=φ [chi]=χ [psi]=ψ [omega]=ω)
+hostname_short=${greek_alphabet[$HOSTNAME]:-$HOSTNAME}
+
 HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE=ls:l:ll:la
 HISTSIZE=5000
-PS1='\[\e[0;1m\]\h \[\e[35m\]$(pwd_short)\[\e[0m\] \$ '
+PS1='\[\e[0m\]$hostname_short \[\e[35m\]$(pwd_short)\[\e[0m\] \$ '
 PS2='\[\e[0m\]> '
 
 # Set the window title
 
-PROMPT_COMMAND+=${PROMPT_COMMAND:+; }'printf '\''\033]0;%s@%s:%s\007'\'' "$USER" "${HOSTNAME%%.*}" "${PWD/#"$HOME"/\~}"'
+PROMPT_COMMAND='printf '\''\033]0;%s@%s:%s\007'\'' "$USER" "$hostname_short" "$(pwd_short)"'
 
 # Alarm for long running commands
 
 if [[ $term != *linux* ]]; then
-    trap '(( AT_PROMPT )) && { AT_PROMPT=0 SECONDS_LAST=$SECONDS; }' debug
+    trap '(( AT_PROMPT )) && AT_PROMPT=0 SECONDS_LAST=$SECONDS' debug
     PROMPT_COMMAND+=${PROMPT_COMMAND:+; }'(( SECONDS - SECONDS_LAST >= 3 )) && printf \\a; AT_PROMPT=1'
 fi
 
@@ -42,9 +45,8 @@ fi
 
 if [[ -v BASH_STARTUP ]]; then
     eval "$BASH_STARTUP"
-else
-    if command -v ascii > /dev/null; then
-        ascii whale | lolcat -o "$(( RANDOM % (760 - 400) + 400 ))"
-        echo
-    fi
+# else
+#     if command -v ascii > /dev/null; then
+#         ascii tea | lolcat -o "$(( RANDOM % (760 - 400) + 400 ))"
+#     fi
 fi
