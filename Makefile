@@ -9,14 +9,14 @@
 .PHONY: here
 here: $(shell hostname)
 
-.PHONY: cerise
-cerise: personal
+.PHONY: delta
+delta: personal
 
 .PHONY: lambda
 lambda: personal
 
-.PHONY: limonade
-limonade: server
+.PHONY: sigma
+sigma: server
 
 #
 # Meta-bundles

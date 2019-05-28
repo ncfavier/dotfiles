@@ -1,3 +1,4 @@
+alias -- -u=--user
 alias C='LC_ALL=C'
 alias comm='comm --output-delimiter=$'\''\t\t'\'
 alias cxa='clip | xargs'
@@ -25,10 +26,10 @@ alias o='xdg-open'
 alias ocaml='rlwrap ocaml'
 alias rlwrap='rlwrap '
 alias sbcl='rlwrap sbcl'
-alias sd='systemctl'
+alias sd='systemctl '
 alias sda='systemctl start '
 alias sde='systemctl edit '
-alias sdluf='systemctl list-units --failed'
+alias sdluf='systemctl list-units --failed '
 alias sdo='systemctl stop '
 alias sdr='systemctl restart '
 alias sds='systemctl status '
@@ -39,5 +40,5 @@ alias wg0='wg-quick@wg0'
 alias xlog='>&"$XLOGFD" 2>&1 '
 
 while read -r hostname; do
-    alias "@$hostname=ssh $hostname "
+    alias "@$hostname=ssh -q $hostname "
 done < <(compgen -A hostname)
