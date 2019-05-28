@@ -4,12 +4,14 @@ pwd_short() {
     set +x
     local pwd=$PWD user home component i prefix
     if [[ $pwd == "$HOME"?(/*) ]]; then
-        pwd=${pwd/#"$HOME"/'~'}
+        printf '~'
+        pwd=${pwd#"$HOME"}
     else
         while IFS= read -r user; do
             eval "home=~$user"
             if [[ $home == @(/home/*|/root|/var/*|/srv/*) && $pwd == "$home"?(/*) ]]; then
-                pwd=${pwd/#"$home"/'~'"$user"}
+                printf '~%s' "$user"
+                pwd=${pwd#"$home"}
                 break
             fi
         done < <(compgen -u)
