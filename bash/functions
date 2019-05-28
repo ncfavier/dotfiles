@@ -1,17 +1,18 @@
 # Files
 
 pwd_short() {
-    set +x # avoid polluting xtrace output in interactive shells
+    set +x
     local pwd=$PWD user home component i prefix
     if [[ $pwd == "$HOME"?(/*) ]]; then
         pwd=${pwd/#"$HOME"/'~'}
     else
-        while IFS=: read -r user _ _ _ _ home _; do
+        while IFS= read -r user; do
+            eval "home=~$user"
             if [[ $home == @(/home/*|/root|/var/*|/srv/*) && $pwd == "$home"?(/*) ]]; then
                 pwd=${pwd/#"$home"/'~'"$user"}
                 break
             fi
-        done < <(getent passwd)
+        done < <(compgen -u)
     fi
     while [[ $pwd == */* ]]; do
         component=${pwd%%/*}
