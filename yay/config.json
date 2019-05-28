@@ -1,5 +1,5 @@
 {
-	"buildDir": "/home/naim/.cache/yay/",
+	"buildDir": "/home/n/.cache/yay/",
 	"editor": "",
 	"makepkgbin": "makepkg",
 	"pacmanbin": "pacman",
