@@ -19,7 +19,7 @@ hostname_short=${greek_alphabet[${HOSTNAME%%.*}]:-${HOSTNAME%%.*}}
 HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE=ls:l:ll:la
 HISTSIZE=5000
-PS1='\[\e[0m\]$hostname_short \[\e[1;35m\]$(pwd_short)\[\e[0m\] \$ '
+PS1='\[\e[0m\]$hostname_short \[\e[35m\]$(pwd_short)\[\e[0m\] \$ '
 PS2='\[\e[0m\]> '
 
 # Set the window title
