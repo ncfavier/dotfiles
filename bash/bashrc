@@ -30,7 +30,7 @@ PROMPT_COMMAND='printf '\''\033]0;%s@%s:%s\007'\'' "$USER" "$hostname_short" "$(
 
 if [[ $term != *linux* ]]; then
     trap '(( AT_PROMPT )) && AT_PROMPT=0 SECONDS_LAST=$SECONDS' debug
-    PROMPT_COMMAND+=${PROMPT_COMMAND:+; }'(( SECONDS - SECONDS_LAST >= 3 )) && printf \\a; AT_PROMPT=1'
+    PROMPT_COMMAND+=${PROMPT_COMMAND:+; }'(( SECONDS - SECONDS_LAST >= 3 )) && { (( SECONDS_ELAPSED = SECONDS - SECONDS_LAST )); printf \\a; }; AT_PROMPT=1'
 fi
 
 # Aliases

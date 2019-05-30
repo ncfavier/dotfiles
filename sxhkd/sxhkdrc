@@ -6,6 +6,9 @@ super + {_,shift} + r
 {XF86PowerOff,super + Escape}
     power
 
+super + g
+    if (( $(bspc config window_gap) )); then bspc config window_gap 0; else . ~/.theme && bspc config window_gap "$window_gap"; fi
+
 # Desktops
 
 super + {ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore,ccedilla,KP_End,KP_Down,KP_Next,KP_Left,KP_Begin,KP_Right,KP_Home,KP_Up,KP_Prior} + {_,shift}
@@ -81,7 +84,7 @@ super + {_,shift,ctrl} + space
     rofi -show {run,drun,window}
 
 super + {_,shift} + {Return,  KP_Enter,f,    w,  c,   e,     v,    i,   j}
-    le {_,-n}       {terminal,terminal,files,web,chat,editor,video,info,japanese}
+    le  {_,-n}      {terminal,terminal,files,web,chat,editor,video,info,japanese}
 
 super + m
     music
