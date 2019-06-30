@@ -135,11 +135,13 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
     fi
 
     # Backlight
-    udevadm monitor -u -s backlight |
-    while
-        printf 'B%s\n' "$(brightness)"
-        read -r
-    do :; done &
+    if backlight=(/sys/class/backlight/*); (( ${#backlight[@]} )); then
+        udevadm monitor -u -s backlight |
+        while
+            printf 'B%s\n' "$(brightness)"
+            read -r
+        do :; done &
+    fi
 
     # Sound
     stdbuf -oL alsactl monitor pulse |
