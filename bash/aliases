@@ -41,4 +41,5 @@ alias xlog='>&"$XLOGFD" 2>&1 '
 
 while read -r hostname; do
     alias "@$hostname=ssh -q $hostname "
+    alias "@@$hostname=ssh -qt $hostname "
 done < <(compgen -A hostname)

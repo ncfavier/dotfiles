@@ -1,6 +1,6 @@
 autofit=0x500
 background={{ "${background@Q}" }}
-sub-auto=all
+sub-auto=fuzzy
 
 [extension.gif]
 loop-file=inf

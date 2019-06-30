@@ -4,13 +4,13 @@ export PATH+=:~/.bin:~/.local/bin
 export VISUAL=vim
 export EDITOR=vim
 export PAGER=less
+export LESS=FRMK
 export GREP_COLOR='1;35'
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS='@im=fcitx'
 export XLOGFD
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd'
-export SYSTEMD_LESS='FRMK'
 
 [[ -f ~/.dircolors ]] && . <(dircolors ~/.dircolors)
 

@@ -280,38 +280,54 @@ pyv() {
 
 # Vultr
 
+vultr_json() {
+    vultr "$@" |
+    jq -Rn '
+        def fields: split("\t") | map(select(length > 0));
+        input | fields | map(ascii_downcase | gsub(" "; "_")) as $keys |
+        inputs | [$keys, fields] | transpose | map({(.[0]): .[1]}) | add'
+}
+
 vultr() {
-    local args=() sub=() name subid
-    local preset_paris=(-r 24)
-    local preset_350=(-p 200)
-    local preset_1000=(-p 202)
-    local preset_2000=(-p 203)
-    local preset_archiso=(-o 159 --iso=417463)
-    local preset_ubuntu=(-o 270)
-    [[ -f ~/.vultr ]] && . ~/.vultr
+    local args=() arg id
+    local preset_5=(-p 201) preset_10=(-p 202) preset_20=(-p 203)
+    local preset_archiso=(-o 159 --iso=547601) preset_ubuntu=(-o 270)
+    [[ -v VULTR_API_KEY ]] || [[ -f ~/.vultr ]] && . ~/.vultr
     for arg do
-        sub=()
         case $arg in
-            NAME=*)
-                subid=$(command vultr server list | awk -F'\t+' -v name="${arg#NAME=}" 'NR > 1 && $4 == name { print $1; exit }')
-                [[ $subid ]] && sub=("$subid")
-                ;;
-            SNAPSHOT=*)
-                snapshotid=$(command vultr snapshot list | awk -F'\t+' -v description="${arg#SNAPSHOT=}" 'NR > 1 && $2 == description { print $1; exit }')
-                [[ $snapshotid ]] && sub=("$snapshotid")
-                ;;
-            SCRIPT=*)
-                scriptid=$(command vultr script list | awk -F'\t+' -v name="${arg#SCRIPT=}" 'NR > 1 && $2 == name { print $1; exit }')
-                [[ $scriptid ]] && sub=("$scriptid")
-                ;;
-            %*)
-                local -n preset=preset_${arg#%}
-                if [[ ${preset@a} == *a* ]]; then
-                    sub=("${preset[@]}")
-                fi
-                ;;
+        @*)
+            if read -r id < <(vultr_json server list | jq -r --arg name "${arg#@}" 'select(.name == $name).subid'); then
+                args+=("$id")
+                continue
+            fi
+            ;;
+        ISO=*)
+            if read -r id < <(vultr_json iso | jq -r --arg name "${arg#*=}" 'select(.filename == $name).isoid'); then
+                args+=(-o 159 --iso="$id")
+                continue
+            fi
+            ;;
+        SCRIPT=*)
+            if read -r id < <(vultr_json script list | jq -r --arg name "${arg#*=}" 'select(.name == $name).scriptid'); then
+                args+=("$id")
+                continue
+            fi
+            ;;
+        REGION=*)
+            if read -r id < <(vultr_json regions | jq -r --arg name "${arg#*=}" 'select((.name | ascii_downcase) == ($name | ascii_downcase)).dcid'); then
+                args+=(-r "$id")
+                continue
+            fi
+            ;;
+        %*)
+            local -n preset=preset_${arg#%}
+            if [[ -v preset ]]; then
+                args+=("${preset[@]}")
+                continue
+            fi
+            ;;
         esac
-        args+=("${sub[@]:-$arg}")
+        args+=("$arg")
     done
     command vultr "${args[@]}"
 }

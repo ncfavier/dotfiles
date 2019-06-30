@@ -5,6 +5,6 @@
 case $(printf '%s\n' shutdown reboot suspend logout | rofi -dmenu -p action -lines 4 -width 200) in
     shutdown) sudo poweroff;;
     reboot) sudo reboot;;
-    suspend) sudo suspend;;
+    suspend) sudo systemctl suspend;;
     logout) bspc quit;;
 esac

@@ -4,6 +4,8 @@
 
 case $1 in
 random)
-    feh --bg-fill "$(find "$(xdg-user-dir PICTURES)"/wallpapers -maxdepth 1 -type f | shuf -n 1)"
+    IFS= read -rd '' wallpaper < <(find "$(xdg-user-dir PICTURES)"/wallpapers -maxdepth 1 -type f -print0 | shuf -zn 1)
+    printf '%s\n' "$wallpaper"
+    feh --bg-fill "$wallpaper"
     ;;
 esac

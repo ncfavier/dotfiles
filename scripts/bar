@@ -66,7 +66,7 @@ print_time() {
 # Variables
 
 battery=(/sys/class/power_supply/BAT*)
-home_ssid='Bbox-3641FF2F*'
+home_ssid='NEUF_89B4'
 default_layout=fr
 
 padding='  '
