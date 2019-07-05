@@ -2,6 +2,7 @@ color_popup.pl
 highmon.pl
 perlexec.pl
 autosort.py
+colorize_nicks.py
 go.py
 grep.py
 spurdo.py
