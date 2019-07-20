@@ -28,6 +28,11 @@ refresh_sxhkd() {
     pkill -usr1 -x sxhkd
 }
 
+refresh_compton() {
+    pkill compton
+    compton -b
+}
+
 refresh_terminals() {
     sequences=
     for i in {0..15}; do
@@ -47,7 +52,7 @@ refresh_terminals() {
 
 refresh_firefox() {
     local port=6642 profile=default fifo line len json
-    [[ -L ~/.mozilla/firefox/"$profile"/lock ]] || return
+    [[ -L ~/.mozilla/firefox/$profile/lock ]] || return
     fifo=$(mktemp -u) &&
     mkfifo "$fifo" &&
     firefox --start-debugger-server "$port" || return 1
