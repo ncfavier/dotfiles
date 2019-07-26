@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# efi - manage efi variables using efibootmgr
+# efi - manage EFI Linux entries using efibootmgr
 
 shopt -s nullglob
 
@@ -8,43 +8,45 @@ efibootmgr() {
     sudo efibootmgr -q "$@"
 }
 
-. ~/.config/efi || exit 1
+add_entry() (
+    [[ $(type -t "entry_$id") == function ]] || return
 
-for id in "${order[@]}"; do
-    declare -n entry=entry_$id
-    [[ -v entry[@] ]] || continue
+    "entry_$id"
 
-    label=${entry[label]}
-    name=${entry[name]-Custom}
+    : "${name?}" "${label=$name}"
 
-    if [[ ${entry[kernel]} ]]; then
-        kernel=${entry[kernel]}
-    else
-        kernel=(/boot/vmlinuz*-"${entry[label]}")
+    if [[ ! $kernel ]]; then
+        kernel=(/boot/vmlinuz*-"$name")
 
         if (( ! ${#kernel[@]} )); then
-            echo "Could not find a kernel for '${entry[label]}'." >&2
-            exit 1
+            echo "Could not find a kernel for $name." >&2
+            return 1
         fi
     fi
 
     kernel=/${kernel#/boot/}
 
-    case ${entry[root]} in
-        label)    root=LABEL=$label;;
-        partuuid) root=PARTUUID=$(lsblk -no PARTUUID /dev/disk/by-label/"$label");;
-        *)        root=${entry[root]};;
+    case $root in
+    LABEL)
+        root=LABEL=$name;;
+    PARTLABEL)
+        root=PARTLABEL=$name;;
     esac
 
-    cmdline="root=$root rw ${entry[cmdline]} ${global_cmdline[*]}"
+    cmdline=("${initrd[@]/#/initrd=}" root="$root" "${flags[@]}" "${global_flags[@]}")
 
     efibootmgr --bootnum "$id" --delete-bootnum 2> /dev/null
-    efibootmgr --bootnum "$id" \
-               --create \
-               --disk "${esp[0]}" --part "${esp[1]}" \
-               --label "$name" \
+    efibootmgr --bootnum "$id" --create \
+               --disk "${esp::-1}" --part "${esp: -1}" \
+               --label "$label" \
                --loader "$kernel" \
                --unicode "${cmdline[*]}"
+)
+
+. ~/.config/efi.sh || exit 1
+
+for id in "${order[@]}"; do
+    add_entry "$id"
 done
 
 (IFS=,; efibootmgr -o "${order[*]}")
