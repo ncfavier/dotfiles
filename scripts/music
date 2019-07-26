@@ -25,7 +25,7 @@ else
     filter=()
     declare -A filter_has=()
 
-    mpc list artist | mapfile -t artists
+    mpc list artist | readarray -t artists
 
     {
         (( ${#artists[@]} > 1 )) && echo all
@@ -39,7 +39,7 @@ else
         filter_has[artist]=1
     fi
 
-    mpc list album "${filter[@]}" | mapfile -t albums
+    mpc list album "${filter[@]}" | readarray -t albums
 
     {
         (( ${#albums[@]} > 1 )) && echo all

@@ -72,7 +72,7 @@ flast() {
 
 duh() {
     local lines=() total_size size file width=15 bar
-    mapfile -t lines < <(command du -abd 1 "$@")
+    readarray -t lines < <(command du -abd 1 "$@")
     read -r total_size _ <<< "${lines[-1]}"
     printf '%s\n' "${lines[@]::${#lines[@]}-1}" | sort -nrk 1,1 | while read -r size file; do
         bar=
@@ -105,7 +105,7 @@ clipcmd_helper () {
     local cmd
     local -a lines
     read -r _ _ cmd < <(history 1)
-    mapfile lines < <(LC_ALL=en_US.UTF-8 eval "$cmd" 2>&1)
+    readarray lines < <(LC_ALL=en_US.UTF-8 eval "$cmd" 2>&1)
     printf %s "${lines[@]}"
     {
         printf '$ %s\n' "$cmd"

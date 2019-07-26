@@ -42,7 +42,6 @@ if $TERM =~ 'rxvt'
     let &t_SR = "\<Esc>[3 q"
 endif
 
-colorscheme default
 highlight LineNr ctermfg=8
 
 " Plugins
