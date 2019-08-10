@@ -23,7 +23,7 @@ sigma: server
 #
 
 .PHONY: all
-all: themes login bash ascii scripts misc vim git weechat mpd x redshift compton fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm xdg gtk firefox df yay
+all: themes login bash ascii scripts misc vim git weechat ghc mpd x redshift compton fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm xdg gtk firefox df yay
 
 .PHONY: personal
 personal: all
@@ -117,6 +117,14 @@ weechat: $(patsubst weechat/%, ~/.weechat/%, $(wildcard weechat/*.conf)) \
 ~/.weechat/python/%: weechat/scripts/%
 	install -Dm 644 $< $@
 	mkdir -p ~/.weechat/python/autoload && ln -rsf $@ ~/.weechat/python/autoload/$*
+
+# ghc
+
+.PHONY: ghc
+ghc: ~/.ghci
+
+~/.%: ghc/%
+	install -Dm 644 $< $@
 
 # mpd
 

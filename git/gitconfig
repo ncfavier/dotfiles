@@ -1,18 +1,29 @@
 [core]
     pager = less -+X
+
 [credential]
     helper = store
+
 [user]
     name = Naïm Favier
     email = fnaim42@gmail.com
+
+[sendemail]
+    smtpEncryption = tls
+    smtpServer = smtp.gmail.com
+    smtpUser = fnaim42@gmail.com
+    smtpServerPort = 587
+
 [color "status"]
     added = green bold
     changed = red bold
     untracked = red bold
+
 [color "diff"]
     meta = cyan
     new = green
     old = red
+
 [alias]
     i = init
     s = status

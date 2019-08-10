@@ -33,7 +33,7 @@ add_entry() (
         root=PARTLABEL=$name;;
     esac
 
-    cmdline=("${initrd[@]/#/initrd=}" root="$root" "${flags[@]}" "${global_flags[@]}")
+    cmdline=("${initrd[@]/#/initrd=}" root="$root" rw "${flags[@]}" "${global_flags[@]}")
 
     efibootmgr --bootnum "$id" --delete-bootnum 2> /dev/null
     efibootmgr --bootnum "$id" --create \

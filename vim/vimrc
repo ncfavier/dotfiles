@@ -26,12 +26,15 @@ set smartindent
 set softtabstop=4
 set splitbelow
 set splitright
+set suffixes+=.hi
 set t_md=
 set tabstop=4
 set title
 set ttimeoutlen=10
 set ttymouse=urxvt
 set whichwrap=b,s,<,>,[,]
+set wildignore+=.o,.hi
+set wildignorecase
 
 set visualbell
 set t_vb=
@@ -50,6 +53,7 @@ try
     call plug#begin('~/.vim/plugged')
         Plug 'scrooloose/nerdtree'
         let NERDTreeMinimalUI = 1
+        let NERDTreeRespectWildIgnore = 1
 
         Plug 'scrooloose/nerdcommenter'
         let NERDSpaceDelims = 1
@@ -107,7 +111,7 @@ noremap  <silent> <C-l>            :set number!<Return>
 noremap  <silent> <C-c>            :call NERDComment(0, 'toggle')<Return>
 noremap  <silent> <C-n>            :NERDTreeToggle<Return>
 noremap           <C-p>            :find<Space>
-cnoremap          <C-p>            <Home>vert s<End>
+cnoremap          <C-p>            <C-u>vert sfind<Space>
 noremap           <C-Left>         <C-w>h
 noremap           <C-Right>        <C-w>l
 noremap           <C-Down>         <C-w>j
@@ -141,6 +145,7 @@ autocmd BufWritePost $MYVIMRC source $MYVIMRC
 
 " Commands
 
+command! Reload source $MYVIMRC
 command! ToggleTerm call ToggleTerm()
 command! -nargs=* -bar AddImport call AddImport(<f-args>)
 command! SortImports 1/^import /,$?^import ?sort u /^import \+/ | nohlsearch
