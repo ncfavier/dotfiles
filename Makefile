@@ -1,7 +1,3 @@
-# TODO: packages
-# TODO: dependencies
-# TODO: combine rules
-
 #
 # Machines
 #
@@ -10,10 +6,10 @@
 here: $(shell hostname)
 
 .PHONY: delta
-delta: personal
+delta: station
 
 .PHONY: lambda
-lambda: personal
+lambda: station
 
 .PHONY: sigma
 sigma: server
@@ -25,8 +21,8 @@ sigma: server
 .PHONY: all
 all: themes login bash ascii scripts misc vim git weechat ghc mpd x redshift compton fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm xdg gtk firefox df yay
 
-.PHONY: personal
-personal: all
+.PHONY: station
+station: all
 
 .PHONY: server
 server: themes login bash ascii scripts misc vim git weechat yay
