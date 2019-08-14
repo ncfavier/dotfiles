@@ -1,24 +1,27 @@
 #!/bin/bash
 #
 # git-sync - sync local repositories with a set of remotes
-# TODO: move remotes definitions to a config file
+# TODO: move remote definitions to a config file
 
 declare -A should_sync
 for repo do should_sync[$repo]=1; done
 
 declare -A remotes=(
-    [~/git/aur/efont-unicode-bdf]='ssh://aur@aur.archlinux.org/efont-unicode-bdf.git'
     [~/.local/share/emojilib]='https://github.com/muan/emojilib'
 )
 
 while read -r repo; do
-    if [[ $repo == dotfiles ]]; then
-        dir=~/.dots
-    else
-        dir=~/git/$repo
-    fi
-    remotes[$dir]="gitea@git.monade.li:n/$repo.git"
-done < <(curl -fsSL https://git.monade.li/api/v1/users/n/repos | jq -r '.[].name')
+    name=${repo##*/} name=${name%.git}
+    case $name in
+        dotfiles) dir=~/.dots;;
+        *) dir=~/git/$name;;
+    esac
+    remotes[$dir]=monade.li:${repo%.git}
+done < <(ssh monade.li 'printf %s\\n /srv/git/*')
+
+while read -rn1 && read -r repo; do
+    remotes[~git/aur/$repo]="ssh://aur@aur.archlinux.org/$repo.git"
+done < <(ssh aur@aur.archlinux.org list-repos)
 
 for dir in "${!remotes[@]}"; do
     (( $# && ! should_sync[${dir##*/}] )) && continue
