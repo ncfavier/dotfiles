@@ -76,6 +76,8 @@ try
         \ ]
 
         Plug 'AndrewRadev/id3.vim'
+
+        Plug 'tpope/vim-sleuth'
     call plug#end()
 catch
 endtry

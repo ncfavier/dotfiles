@@ -36,6 +36,7 @@ font_size=10
 
 X_font="xft:$font:pixelsize=$font_size, xft:lucy tewi:10, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12"
 bar_font=("$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "siji:pixelsize=10" "lucy tewi:pixelsize=10" "Biwidth:pixelsize=12")
+rofi_font='DinaOTB 9'
 firefox_font="${font@Q}, Biwidth"
 
 border_color=$color0
