@@ -20,15 +20,16 @@ while read -r repo; do
 done < <(ssh monade.li 'printf %s\\n /srv/git/*')
 
 while read -rn1 && read -r repo; do
-    remotes[~git/aur/$repo]="ssh://aur@aur.archlinux.org/$repo.git"
+    remotes[~/git/aur/$repo]=aur@aur.archlinux.org:$repo
 done < <(ssh aur@aur.archlinux.org list-repos)
 
 for dir in "${!remotes[@]}"; do
-    (( $# && ! should_sync[${dir##*/}] )) && continue
+    (( ! $# || should_sync[${dir##*/}] )) || continue
     printf '%s %s\n' "$(tput bold; tput setaf 2)==>$(tput sgr0)" "$dir"
     if [[ -d $dir/.git ]]; then
         git -C "$dir" pull --rebase
     else
+        mkdir -p "$(dirname "$dir")"
         git clone "${remotes[$dir]}" "$dir"
     fi
 done
