@@ -8,8 +8,8 @@ here: $(shell hostname)
 .PHONY: delta
 delta: station
 
-.PHONY: lambda
-lambda: station
+.PHONY: monoid
+monoid: station
 
 .PHONY: sigma
 sigma: server
@@ -42,7 +42,7 @@ themes: ~/.theme
 # login
 
 .PHONY: login
-login: ~/.bash_profile ~/.hushlogin
+login: ~/.bash_profile ~/.hushlogin ~/.keymap
 
 ~/.%: login/%
 	install -Dm 644 $< $@
