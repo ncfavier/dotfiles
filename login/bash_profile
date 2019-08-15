@@ -27,5 +27,8 @@ if [[ ! $DISPLAY && $(tty) == */tty1 ]]; then
     exec startx >&"$XLOGFD" 2>&1
 else
     [[ -f ~/.bashrc ]] && . ~/.bashrc
-    [[ $(tty) == */tty* ]] && [[ -f ~/.keymap ]] && sudo loadkeys ~/.keymap
+    if [[ $(tty) == */tty* ]]; then
+        [[ -f ~/.keymap ]] && sudo loadkeys ~/.keymap
+        echo
+    fi
 fi

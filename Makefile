@@ -5,8 +5,8 @@
 .PHONY: here
 here: $(shell hostname)
 
-.PHONY: delta
-delta: station
+.PHONY: functor
+functor: station
 
 .PHONY: monoid
 monoid: station
