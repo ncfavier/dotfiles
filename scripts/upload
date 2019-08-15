@@ -8,7 +8,7 @@ build_url() {
 }
 
 host=up.monade.li
-uploads_dir=/srv/http/uploads
+uploads_dir=/srv/http/up
 remove=0 force=0
 
 while (( $# )); do
@@ -56,12 +56,13 @@ if [[ $destination == */* ]]; then
     ssh "$host" mkdir -p -- "$uploads_dir/${destination%/*}"
 fi
 
-if (( ! force )) && [[ $source =~ ^"$HOME"/((my|pictures|music|camera|uploads)/.+)$ ]]; then
-    case ${BASH_REMATCH[2]} in
-        pictures|uploads) base=/srv/http;;
-        *)                base=sync;;
+if (( ! force )) && [[ $source =~ ^"$HOME"/(my|pictures|music|camera|uploads)/(.+)$ ]]; then
+    case ${BASH_REMATCH[1]} in
+        pictures) base=/srv/http/pics;;
+        uploads)  base=/srv/http/up;;
+        *)        base=sync/${BASH_REMATCH[1]};;
     esac
-    ssh "$host" rsync -vrs --chmod=D755,F644 "$base/${BASH_REMATCH[1]}" "$uploads_dir/$destination" || exit 1
+    ssh "$host" rsync -vrs --chmod=D755,F644 "$base/${BASH_REMATCH[2]}" "$uploads_dir/$destination" || exit 1
 else
     rsync -Pvrs --chmod=D755,F644 "$source" "$host:$uploads_dir/$destination" || exit 1
 fi
