@@ -80,7 +80,7 @@ scripts: $(patsubst scripts/%, ~/.bin/%, $(wildcard scripts/*))
 # misc
 
 .PHONY: misc
-misc: ~/.nanorc ~/.toprc ~/.screenrc
+misc: ~/.nanorc ~/.toprc ~/.screenrc ~/.dircolors
 
 ~/.%: misc/%
 	install -Dm 644 $< $@
