@@ -25,7 +25,7 @@ all: themes login bash ascii scripts misc tmux vim git weechat ghc mpd x redshif
 station: all
 
 .PHONY: server
-server: themes login bash ascii scripts misc vim git weechat yay
+server: themes login bash ascii scripts misc tmux vim git weechat yay
 
 #
 # Bundles
