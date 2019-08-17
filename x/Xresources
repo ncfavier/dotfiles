@@ -34,7 +34,7 @@ Xft.lcdfilter: lcddefault
 URxvt.depth: 32
 URxvt.scrollBar: 0
 URxvt.iso14755: false
-URxvt.perl-ext-common: default,-searchable-scrollback,selection-to-clipboard,matcher,vtwheel
+URxvt.perl-ext-common: default,-searchable-scrollback,selection-to-clipboard,matcher
 URxvt.url-launcher: xdg-open
 URxvt.matcher.button: 1
 URxvt.urgentOnBell: 1

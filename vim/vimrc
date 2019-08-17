@@ -31,7 +31,7 @@ set t_md=
 set tabstop=4
 set title
 set ttimeoutlen=10
-set ttymouse=urxvt
+set ttymouse=xterm2
 set whichwrap=b,s,<,>,[,]
 set wildignore+=.o,.hi
 set wildignorecase
@@ -39,7 +39,8 @@ set wildignorecase
 set visualbell
 set t_vb=
 
-if $TERM =~ 'rxvt'
+if $TERM =~ '^rxvt'
+    set ttymouse=urxvt
     let &t_SI = "\<Esc>[5 q"
     let &t_EI = "\<Esc>[0 q"
     let &t_SR = "\<Esc>[3 q"

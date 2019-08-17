@@ -1,34 +1,28 @@
 [[ $- == *i* ]] || return
 
-# Options
+# Terminal settings
+
+stty -ixon
+
+# Shell settings
 
 set -b +H
 shopt -s autocd
 shopt -s globstar extglob
 shopt -s histappend
 
-# Terminal settings
-
-stty -ixon
-
 # Variables
-
-declare -A greek_alphabet=([alpha]=α [beta]=β [gamma]=γ [delta]=δ [epsilon]=ε [zeta]=ζ [eta]=η [theta]=θ [iota]=ι [kappa]=κ [lambda]=λ [mu]=μ [nu]=ν [xi]=ξ [omicron]=ο [pi]=π [rho]=ρ [sigma]=σ [tau]=τ [upsilon]=υ [phi]=φ [chi]=χ [psi]=ψ [omega]=ω)
-hostname_short=${greek_alphabet[${HOSTNAME%%.*}]:-${HOSTNAME%%.*}}
 
 HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE=ls:l:ll:la
 HISTSIZE=5000
-PS1='\[\e[0m\]\[\e[35m\]$(pwd_short)\[\e[0m\] \$ '
+PS1='\[\e[0m\]\h \[\e[35m\]$(pwd_short)\[\e[0m\] \$ '
 PS2='\[\e[0m\]> '
+PROMPT_COMMAND='printf '\''\033]0;%s@%s:%s\007'\'' "$USER" "$HOSTNAME" "$(pwd_short)"'
 
-# Set the window title
+# Alarm for long-running commands
 
-PROMPT_COMMAND='printf '\''\033]0;%s@%s:%s\007'\'' "$USER" "$hostname_short" "$(pwd_short)"'
-
-# Alarm for long running commands
-
-if [[ $term != *linux* ]]; then
+if [[ $TERM != *linux* ]]; then
     trap '(( AT_PROMPT )) && AT_PROMPT=0 SECONDS_LAST=$SECONDS' debug
     PROMPT_COMMAND+=${PROMPT_COMMAND:+; }'(( SECONDS - SECONDS_LAST >= 3 )) && { (( SECONDS_ELAPSED = SECONDS - SECONDS_LAST )); printf \\a; }; AT_PROMPT=1'
 fi

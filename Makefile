@@ -19,7 +19,7 @@ sigma: server
 #
 
 .PHONY: all
-all: themes login bash ascii scripts misc vim git weechat ghc mpd x redshift compton fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm xdg gtk firefox df yay
+all: themes login bash ascii scripts misc tmux vim git weechat ghc mpd x redshift compton fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm xdg gtk firefox df yay
 
 .PHONY: station
 station: all
@@ -83,6 +83,14 @@ scripts: $(patsubst scripts/%, ~/.bin/%, $(wildcard scripts/*))
 misc: ~/.nanorc ~/.toprc ~/.screenrc
 
 ~/.%: misc/%
+	install -Dm 644 $< $@
+
+# tmux
+
+.PHONY: tmux
+tmux: ~/.tmux.conf
+
+~/.%: tmux/%
 	install -Dm 644 $< $@
 
 # vim

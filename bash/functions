@@ -90,6 +90,16 @@ mountl() {
 
 # Streams
 
+grep() {
+    local color
+    if [[ -t 1 ]]; then
+        color=always
+    else
+        color=never
+    fi
+    command grep --color="$color" "$@" | less -FR
+}
+
 sponge() {
     local tmp
     tmp=$(mktemp) || return 1
@@ -230,7 +240,7 @@ what() {
 
 man() {
     if [[ $1 != -* && $2 == -* ]]; then
-        command man -P "less -+ij3 +'/^[[:space:]]*'${2@Q}" "$1"
+        command man -P "${MANPAGER:-less} +'/^[[:space:]]*'${2@Q}" "$1"
     else
         command man "$@"
     fi

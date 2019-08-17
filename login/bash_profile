@@ -4,7 +4,10 @@ export PATH+=:~/.bin:~/.local/bin
 export VISUAL=vim
 export EDITOR=vim
 export PAGER=less
-export LESS=FRMK
+export BROWSER=firefox
+export LESS='ij5FRMK --mouse --wheel-lines=4'
+export MANOPT='--no-hyphenation'
+export MANPAGER='less -+iF'
 export GREP_COLOR='1;35'
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
@@ -14,21 +17,15 @@ export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd'
 
 [[ -f ~/.dircolors ]] && . <(dircolors ~/.dircolors)
 
-# Greetings
-
-name=$(getent passwd "$USER" | cut -d: -f5 | cut -d, -f1 | cut -d' ' -f1)
-name=${name:-$(git config user.name | cut -d' ' -f1)}
-name=${name:-$USER}
-
 # Startup
 
 if [[ ! $DISPLAY && $(tty) == */tty1 ]]; then
     exec {XLOGFD}> ~/.Xlog
     exec startx >&"$XLOGFD" 2>&1
 else
-    [[ -f ~/.bashrc ]] && . ~/.bashrc
     if [[ $(tty) == */tty* ]]; then
         [[ -f ~/.keymap ]] && sudo loadkeys ~/.keymap
         echo
     fi
+    [[ -f ~/.bashrc ]] && . ~/.bashrc
 fi

@@ -13,3 +13,4 @@ set show-all-if-ambiguous On
 "\er": "\C-asudo \C-e"
 "\ec": "\C-a\ed"
 "\ev": "\C-a\edvim"
+"\el": "\C-e | less"
