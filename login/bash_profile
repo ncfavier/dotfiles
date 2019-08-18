@@ -7,7 +7,7 @@ export PAGER=less
 export BROWSER=firefox
 export LESS='ij5FRMK --mouse --wheel-lines=4'
 export MANOPT='--no-hyphenation'
-export MANPAGER='less -+iF'
+export MANPAGER='less -+F'
 export GREP_COLOR='1;35'
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx

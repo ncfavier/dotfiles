@@ -240,7 +240,7 @@ what() {
 
 man() {
     if [[ $1 != -* && $2 == -* ]]; then
-        command man -P "${MANPAGER:-less} +'/^[[:space:]]*'${2@Q}" "$1"
+        command man -P "${MANPAGER:-less} -+i +'/^[[:space:]]*'${2@Q}" "$1"
     else
         command man "$@"
     fi
