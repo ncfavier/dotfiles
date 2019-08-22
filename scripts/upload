@@ -58,7 +58,7 @@ fi
 
 if (( ! force )) && [[ $source =~ ^"$HOME"/(my|pictures|music|camera|uploads)/(.+)$ ]]; then
     case ${BASH_REMATCH[1]} in
-        pictures) base=/srv/http/pics;;
+        pictures) base=/srv/http/pics/pictures;;
         uploads)  base=/srv/http/up;;
         *)        base=sync/${BASH_REMATCH[1]};;
     esac

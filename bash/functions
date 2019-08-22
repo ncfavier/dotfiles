@@ -30,7 +30,18 @@ pwd_short() {
 }
 
 cd() {
-    builtin cd "$@" && ls
+    if [[ $1 == +([^/]):* ]]; then
+        local host=${1%%:*} path=${1#*:} path_escaped prefix rest
+        if [[ $path == '~'* ]]; then
+            IFS=/ read -r prefix rest <<< "$path"
+            path_escaped=$prefix${rest:+/${rest@Q}}
+        else
+            path_escaped=${path@Q}
+        fi
+        ssh -qt "$host" "cd $path_escaped && BASH_STARTUP=ls exec -l bash"
+    else
+        builtin cd "$@" && ls
+    fi
 }
 
 mkcd() {
@@ -105,6 +116,15 @@ sponge() {
     tmp=$(mktemp) || return 1
     cat > "$tmp"; cat -- "$tmp"
     rm -f -- "$tmp"
+}
+
+oneline() {
+    local line
+    while IFS= read -r line; do
+        tput el
+        printf '%s\r' "$line"
+    done
+    echo
 }
 
 unfold() {

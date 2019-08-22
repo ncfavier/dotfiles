@@ -5,7 +5,8 @@ export VISUAL=vim
 export EDITOR=vim
 export PAGER=less
 export BROWSER=firefox
-export LESS='ij5FRMK --mouse --wheel-lines=4'
+export LESS='ij3FRMK --mouse --wheel-lines=4'
+export SYSTEMD_LESS=$LESS
 export MANOPT='--no-hyphenation'
 export MANPAGER='less -+F'
 export GREP_COLOR='1;35'

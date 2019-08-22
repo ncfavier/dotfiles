@@ -1,3 +1,4 @@
+user_pref('browser.fixup.alternate.enabled', false);
 user_pref('browser.newtabpage.activity-stream.feeds.section.highlights', false);
 user_pref('browser.newtabpage.activity-stream.feeds.snippets', false);
 user_pref('browser.newtabpage.activity-stream.showSearch', false);
