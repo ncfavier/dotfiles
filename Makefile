@@ -14,6 +14,9 @@ monoid: station
 .PHONY: sigma
 sigma: server
 
+.PHONY: sas
+sas: themes login bash ascii scripts misc tmux vim git ghc x firefox
+
 #
 # Meta-bundles
 #

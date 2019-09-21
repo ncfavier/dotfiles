@@ -40,7 +40,11 @@ set visualbell
 set t_vb=
 
 if $TERM =~ '^rxvt'
-    set ttymouse=urxvt
+    if $TERM =~ '^urxvt\|^rxvt-unicode'
+        set ttymouse=urxvt
+    else
+        set ttymouse=xterm2
+    endif
     let &t_SI = "\<Esc>[5 q"
     let &t_EI = "\<Esc>[0 q"
     let &t_SR = "\<Esc>[3 q"
