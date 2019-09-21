@@ -83,7 +83,7 @@ flast() {
 
 duh() {
     local lines=() total_size size file width=15 bar
-    readarray -t lines < <(command du -abd 1 "$@")
+    readarray -t lines < <(command du -xabd 1 "$@")
     read -r total_size _ <<< "${lines[-1]}"
     printf '%s\n' "${lines[@]::${#lines[@]}-1}" | sort -nrk 1,1 | while read -r size file; do
         bar=
@@ -143,12 +143,15 @@ clipcmd_helper () {
     } | clip -n
 }; alias clipcmd='clipcmd_helper # '
 
-# SSH
-
-attassh() {
-    local host=$1 session=$2
-    ssh -t "$host" screen -r "$session"
+ix() {
+    if (( $# )); then
+        curl -fsSLF "f:1=@$1" ix.io
+    else
+        curl -fsSLF 'f:1=<-' ix.io
+    fi | tee >(clip)
 }
+
+# SSH
 
 sshesc() {
     local args=() interactive=0 cmd
@@ -170,6 +173,20 @@ sshesc() {
         shift
     done
     ssh "${args[@]}"
+}
+
+weechat_fifo() {
+    ssh sigma 'cat > ~/.weechat/weechat_fifo'
+}
+
+irc() {
+    case $1 in
+        np)
+            mpc current -f $'*/me is now playing \x02%title%\x0f by \x02%artist%\x0f' | weechat_fifo;;
+        *)
+            echo "Unknown action $1" >&2
+            return 1;;
+    esac
 }
 
 # Network
@@ -275,6 +292,22 @@ rfc() {
     done
 }
 
+.env() {
+    local -
+    set -a
+    . "$@"
+}
+
+sourceenv() { .env "$@"; }
+
+withenv() (
+    local env=$1 cmd=()
+    shift
+    cmd=("$@")
+    set -a
+    . "$env" && exec "${cmd[@]}"
+)
+
 # EFI
 
 efibootorder() {
@@ -360,4 +393,14 @@ vultr() {
         args+=("$arg")
     done
     command vultr "${args[@]}"
+}
+
+# Haskell
+
+haskell() {
+    if (( $# )); then
+        ghc -e "$*"
+    else
+        ghci
+    fi
 }

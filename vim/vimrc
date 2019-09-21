@@ -48,6 +48,8 @@ endif
 
 highlight LineNr ctermfg=8
 
+colorscheme pablo
+
 " Plugins
 
 try
@@ -67,14 +69,6 @@ try
         Plug 'tpope/vim-fugitive'
 
         Plug 'lilydjwg/colorizer'
-
-        Plug 'mhinz/vim-startify'
-        let startify_custom_header = split(system('toilet -f mono12 vim'), '\n')
-        let g:startify_files_number = 5
-        let g:startify_lists = [
-          \ { 'type': 'dir',   'header': ['Recent files in '.getcwd()] },
-          \ { 'type': 'files', 'header': ['Recent files']              },
-        \ ]
 
         Plug 'AndrewRadev/id3.vim'
 

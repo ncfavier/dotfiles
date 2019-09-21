@@ -35,6 +35,21 @@ fi
 
 [[ -f ~/.bash_functions ]] && . ~/.bash_functions
 
+command_not_found_handle() {
+    # TODO: user@host:path
+    case $1 in
+        @!*)
+            ssh -qt "${1#@!}" tmux -u attach ${2:+-t "$2"};;
+        @@*)
+            ssh -qt "${1#@@}" "${@:2}";;
+        @*)
+            ssh -q "${1#@}" "${@:2}";;
+        *)
+            unset command_not_found_handle
+            "$@";;
+    esac
+}
+
 # Startup
 
 if [[ -v BASH_STARTUP ]]; then

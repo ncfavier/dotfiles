@@ -2,7 +2,7 @@
 #
 # bar - bar script using lemonbar
 
-shopt -s nullglob
+shopt -s nullglob extglob lastpipe
 
 [[ -f ~/.theme ]] && . ~/.theme
 
@@ -154,15 +154,36 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
     # Network
     ip -o monitor link |
     while
-        ssid=
-        while read -r field value; do
-            if [[ $field == ssid ]]; then
-                printf -v ssid '%b' "$value"
-                break
-            fi
-        done < <(iw dev)
-        wireguard=$(ip -o link show type wireguard | awk -F'[ :]+' '{ print $2 }')
-        printf 'N%s:%s\n' "$ssid" "$wireguard"
+        wired=() wireless=() wireguard=()
+        sleep 0.3
+        ip -o address show up scope global |
+        while read -r _ interface _; do
+            case $interface in
+                en*|eth*) wired+=("$interface");;
+                wl*)      wireless+=("$interface");;
+                wg*)      wireguard+=("$interface");;
+            esac
+        done
+        parts=()
+        for interface in "${wired[@]}"; do
+            parts+=(D"$interface")
+        done
+        for interface in "${wireless[@]}"; do
+            ssid=
+            iw dev "$interface" info | while read -r field value; do
+                if [[ $field == ssid ]]; then
+                    printf -v ssid '%b' "$value"
+                    break
+                fi
+            done
+            parts+=(L"$interface,$ssid")
+        done
+        for interface in "${wireguard[@]}"; do
+            parts+=(G"$interface")
+        done
+        if (( ${#parts[@]} )); then
+            (IFS=:; printf 'N%s\n' "${parts[*]}")
+        fi
         read -r
     do :; done &
 
@@ -309,22 +330,28 @@ while read -rn 1 event; do
             sound="%{A:le volume:}%{A3:volume toggle:}%{A4:volume +2:}%{A5:volume -2:}$sound%{A}%{A}%{A}%{A}"
             ;;
         N) # is for network
-            IFS=: read -r ssid wireguard
+            IFS= read -r parts
             network=
-            if [[ $ssid ]]; then
-                if [[ $ssid == $home_ssid ]]; then
-                    network=
-                else
-                    trunc ssid 15
-                    escape ssid
-                    network=" $ssid"
-                fi
-                network="%{A:le wifi:}%{A3:sudo systemctl restart netctl-auto@'*':}$network%{A}%{A}"
-                if [[ $wireguard ]]; then
-                    network="%{A3:sudo systemctl restart wg-quick@'*':}%{A}$network"
-                fi
-                pad network
-            fi
+            while read -rn 1 type; do
+                case $type in
+                    D)
+                        read -d : interface
+                        network+="%{A3:sudo systemctl restart netctl-ifplugd@$interface:}%{A}"
+                        ;;
+                    L)
+                        IFS=, read -d : interface ssid
+                        # [[ $ssid == $home_ssid ]] && ssid=
+                        # trunc ssid 15
+                        # escape ssid
+                        network+="%{A:le wifi:}%{A3:sudo systemctl restart netctl-auto@$interface:}%{A}%{A}"
+                        ;;
+                    G)
+                        read -d : interface
+                        network+="%{A3:sudo systemctl restart wg-quick@$interface:}%{A}"
+                        ;;
+                esac
+            done <<< "$parts:"
+            pad network
             ;;
         G) # is for Gmail
             mail=

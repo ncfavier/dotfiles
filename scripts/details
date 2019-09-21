@@ -8,10 +8,10 @@
 
 # Variables
 
+os=$(. /etc/os-release && printf '%s' "$ID")
+
 kernel=$(uname -r)
 kernel=${kernel%%-*}
-
-os=$(. /etc/os-release && printf '%s' "$ID")
 
 packages=$(pacman -Qq | wc -l)
 
@@ -39,8 +39,8 @@ info() {
 }
 
 ascii triangle | lolcat -o 600
-info kernel "$kernel"
 info os "$os"
+info kernel "$kernel"
 info pkg "$packages"
 info shell "$shell"
 info wm "$wm"
