@@ -17,9 +17,8 @@ HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE=ls:l:ll:la
 HISTSIZE=5000
 PS1='\[\e[0m\]'${SSH_CONNECTION+'\h:'}'\[\e[1m\]\w\[\e[0m\] \$ '
-PSTITLE=${SSH_CONNECTION+'\h:'}'\w \$'
 PS2='\[\e[0m\]> '
-PROMPT_COMMAND='printf '\''\033]0;%s\007'\'' "${PSTITLE@P}"'
+PROMPT_COMMAND='printf '\''\033]0;%s\007'\'' "${SSH_CONNECTION+$HOSTNAME:}$(pwd_short)"'
 
 # Alarm for long-running commands
 
