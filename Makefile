@@ -99,10 +99,13 @@ tmux: ~/.tmux.conf
 # vim
 
 .PHONY: vim
-vim: ~/.vimrc
+vim: ~/.vimrc ~/.vim/colors/custom.vim
 
 ~/.vimrc: vim/vimrc
 	ln -srf $< $@
+
+~/.vim/colors/%: vim/%
+	install -Dm 644 $< $@
 
 # git
 
