@@ -5,7 +5,9 @@ export VISUAL=vim
 export EDITOR=vim
 export PAGER=less
 export BROWSER=firefox
-export LESS='ij3FRMK --mouse --wheel-lines=4'
+export LESS=ij3FRMK
+read -r _ less_version _ < <(LESS= less --version)
+(( less_version >= 551 )) && LESS+=' --mouse --wheel-lines=4'
 export SYSTEMD_LESS=$LESS
 export MANOPT='--no-hyphenation'
 export MANPAGER='less -+F'
