@@ -16,9 +16,10 @@ shopt -s histappend
 HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE=ls:l:ll:la
 HISTSIZE=5000
-PS1='\[\e[0m\]\h \[\e[35m\]$(pwd_short)\[\e[0m\] \$ '
+PS1='\[\e[0m\]'${SSH_CONNECTION+'\h:'}'\[\e[1m\]\w\[\e[0m\] \$ '
+PSTITLE=${SSH_CONNECTION+'\h:'}'\w \$'
 PS2='\[\e[0m\]> '
-PROMPT_COMMAND='printf '\''\033]0;%s@%s:%s\007'\'' "$USER" "$HOSTNAME" "$(pwd_short)"'
+PROMPT_COMMAND='printf '\''\033]0;%s\007'\'' "${PSTITLE@P}"'
 
 # Alarm for long-running commands
 

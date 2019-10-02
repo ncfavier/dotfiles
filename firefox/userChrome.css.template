@@ -148,7 +148,7 @@ toolbar {
     padding: 4px !important;
 }
 
-#navigator-toolbox::after {
+#navigator-toolbox {
     border: none !important;
 }
 

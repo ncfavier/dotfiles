@@ -180,11 +180,15 @@ weechat_fifo() {
 }
 
 irc() {
-    case $1 in
+    local cmd=$1
+    shift
+    case $cmd in
         np)
             mpc current -f $'*/me is now playing \x02%title%\x0f by \x02%artist%\x0f' | weechat_fifo;;
+        grep)
+            ssh sigma "cat ~/.weechat/logs/$1.weechatlog" | grep "${@:2}";;
         *)
-            echo "Unknown action $1" >&2
+            echo "Unknown action $cmd" >&2
             return 1;;
     esac
 }

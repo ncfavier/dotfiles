@@ -2,6 +2,27 @@
 
 silent! source $VIMRUNTIME/defaults.vim
 
+" Plugins
+
+try
+    call plug#begin('~/.vim/plugged')
+        Plug 'scrooloose/nerdtree'
+        let NERDTreeMinimalUI = 1
+        let NERDTreeRespectWildIgnore = 1
+        Plug 'scrooloose/nerdcommenter'
+        let NERDSpaceDelims = 1
+        let NERDDefaultAlign = 'left'
+        let NERDCommentEmptyLines = 1
+        let NERDToggleCheckAllLines = 1
+        Plug 'tpope/vim-surround'
+        Plug 'tpope/vim-fugitive'
+        Plug 'tpope/vim-sleuth'
+        Plug 'lilydjwg/colorizer'
+        Plug 'AndrewRadev/id3.vim'
+    call plug#end()
+catch
+endtry
+
 " Options
 
 set autoindent
@@ -27,7 +48,6 @@ set softtabstop=4
 set splitbelow
 set splitright
 set suffixes+=.hi
-set t_md=
 set tabstop=4
 set title
 set ttimeoutlen=10
@@ -45,41 +65,14 @@ if $TERM =~ '^rxvt'
     else
         set ttymouse=xterm2
     endif
+
+    " cursor shapes
     let &t_SI = "\<Esc>[5 q"
     let &t_EI = "\<Esc>[0 q"
     let &t_SR = "\<Esc>[3 q"
 endif
 
-highlight LineNr ctermfg=8
-
-colorscheme pablo
-
-" Plugins
-
-try
-    call plug#begin('~/.vim/plugged')
-        Plug 'scrooloose/nerdtree'
-        let NERDTreeMinimalUI = 1
-        let NERDTreeRespectWildIgnore = 1
-
-        Plug 'scrooloose/nerdcommenter'
-        let NERDSpaceDelims = 1
-        let NERDDefaultAlign = 'left'
-        let NERDCommentEmptyLines = 1
-        let NERDToggleCheckAllLines = 1
-
-        Plug 'tpope/vim-surround'
-
-        Plug 'tpope/vim-fugitive'
-
-        Plug 'lilydjwg/colorizer'
-
-        Plug 'AndrewRadev/id3.vim'
-
-        Plug 'tpope/vim-sleuth'
-    call plug#end()
-catch
-endtry
+colorscheme custom
 
 " Mappings
 
@@ -131,75 +124,52 @@ noremap  <silent> <Leader>u        :if &mod<Bar>execute 'write !upload'<Bar>else
 noremap  <silent> <Leader>x        :execute '!chmod +x -- '.shellescape(@%)<Return>
 noremap  <silent> <Leader>d        :execute 'write !diff - '.shellescape(@%)<Return>
 
-if v:version >= 800
-    noremap  <silent> <C-t> :ToggleTerm<Return>
-    tnoremap <silent> <C-t> <C-w>:ToggleTerm<Return>
-endif
-
 " Autocommands
 
+" quit if NERDTree is the last buffer open
 autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | quit | endif
+
+" set filetype to bash when editing bash dotfiles
 autocmd BufNewFile,BufRead ~/.dots/bash/* call dist#ft#SetFileTypeSH("bash")
+
+" delete trailing whitespace on write
 autocmd BufWritePre * %s/\s\+$//e
+
+" auto-chmod files with a shebang
 autocmd BufWritePost * if getline(1) =~ '^#!' && !executable(expand('%:p')) | silent execute '!chmod +x -- '.shellescape(@%) | endif
+
+" source vimrc after writing it
 autocmd BufWritePost $MYVIMRC source $MYVIMRC
 
 " Commands
 
 command! Reload source $MYVIMRC
 command! ToggleTerm call ToggleTerm()
-command! -nargs=* -bar AddImport call AddImport(<f-args>)
-command! SortImports 1/^import /,$?^import ?sort u /^import \+/ | nohlsearch
 
-" Functions
+" Terminal
 
-function! ToggleTerm()
-    if &buftype == 'terminal'
-        close
-        return
-    endif
+if v:version >= 800
+    noremap  <silent> <C-t> :ToggleTerm<Return>
+    tnoremap <silent> <C-t> <C-w>:ToggleTerm<Return>
 
-    let terminal_windows = filter(getwininfo(), 'v:val.terminal')
-    if !empty(terminal_windows)
-        execute terminal_windows[0].winnr.'wincmd w'
-        return
-    endif
+    function! ToggleTerm()
+        if &buftype == 'terminal'
+            close
+            return
+        endif
 
-    let terminal_buffers = filter(getbufinfo(), 'getbufvar(v:val.bufnr, ''&buftype'') == ''terminal''')
-    if !empty(terminal_buffers)
-        execute 'botright sbuffer' terminal_buffers[0].bufnr
-        return
-    endif
+        let terminal_windows = filter(getwininfo(), 'v:val.terminal')
+        if !empty(terminal_windows)
+            execute terminal_windows[0].winnr.'wincmd w'
+            return
+        endif
 
-    botright terminal ++close ++kill=term ++norestore
-endfunction
+        let terminal_buffers = filter(getbufinfo(), 'getbufvar(v:val.bufnr, ''&buftype'') == ''terminal''')
+        if !empty(terminal_buffers)
+            execute 'botright sbuffer' terminal_buffers[0].bufnr
+            return
+        endif
 
-function! AddImport(...)
-    if !exists('$IMPORTPATH')
-        echoerr 'IMPORTPATH not set'
-        return
-    endif
-
-    let $TYPENAME = get(a:, 1, expand('<cword>'))
-    let types = systemlist('IFS=: read -ra jars <<< "$IMPORTPATH"; for f in "${jars[@]}"; do jar -tf "$f" 2> /dev/null; done | sed -n ''/\<''"$TYPENAME"''\.class$/{s/\.class$//;s,/,.,g;p}''')
-
-    if len(types) == 0
-        return
-    elseif len(types) == 1
-        let type = types[0]
-    else
-        for i in range(len(types))
-            echo i types[i]
-        endfor
-        let type = get(types, input('Which type do you want to import? '))
-    endif
-
-    let v:errmsg = ''
-    silent! $?^import
-    if v:errmsg != ''
-        silent! $?^package
-        normal o
-    endif
-
-    put ='import '.type.';'
-endfunction
+        botright terminal ++close ++kill=term ++norestore
+    endfunction
+endif

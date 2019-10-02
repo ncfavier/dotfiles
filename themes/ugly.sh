@@ -1,4 +1,4 @@
-color0='#080b12'
+color0='#000000'
 color1='#ff0f79'
 color2='#25dca0'
 color3='#ff0085'
@@ -15,11 +15,9 @@ color13='#ff0085'
 color14='#336f99'
 color15='#ffffff'
 
-dark=0
+dark=1
 
 if (( dark )); then
-    color7='#525c5e'
-    color8='#333333'
     background=$color0
     foreground=$color15
     background_alt=$color8
@@ -39,7 +37,6 @@ bar_font=("$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "siji:p
 rofi_font='DinaOTB 9'
 firefox_font="'$font', Biwidth"
 
-border_color=$color0
 border_width=1
 window_gap=16
 padding=16

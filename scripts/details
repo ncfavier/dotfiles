@@ -2,48 +2,41 @@
 #
 # details - display system info
 
+shopt -s lastpipe
+
 [[ $1 == -v ]] || exec 2> /dev/null
 
 [[ -f ~/.theme ]] && . ~/.theme
 
-# Variables
-
-os=$(. /etc/os-release && printf '%s' "$ID")
-
-kernel=$(uname -r)
-kernel=${kernel%%-*}
-
-packages=$(pacman -Qq | wc -l)
-
-shell=${SHELL##*/}
-
-id=$(xprop -root _NET_SUPPORTING_WM_CHECK | grep -o '0x\w*')
-wm=$(xprop -id "$id" _NET_WM_NAME | cut -d \" -f 2)
-wm=${wm,,}
-
-term=$(xprop -id "$WINDOWID" WM_CLASS | cut -d \" -f 4)
-term=${term,,}
-
-font=${font##* }
-font=${font,,}
-
-# Display
-
 space=10
 sep=' '
-bold=$(tput bold)
-reset=$(tput sgr0)
+bold=$(tput bold) reset=$(tput sgr0)
 
-info() {
-    [[ $2 ]] && printf '%s%*s%s%s%s\n' "$bold" "$space" "$1" "$reset" "$sep" "$2"
+print() {
+    [[ $2 ]] && printf '%s%*s%s%s%s\n' "$bold" "$space" "$1" "$reset" "${3:-$sep}" "$2"
 }
 
-ascii triangle | lolcat -o 600
-info os "$os"
-info kernel "$kernel"
-info pkg "$packages"
-info shell "$shell"
-info wm "$wm"
-info term "$term"
-info font "$font"
+echo
+print "$USER" "$HOSTNAME" @
+echo
+
+(. /etc/os-release && print os "$ID")
+
+kernel=$(uname -r)
+print kernel "${kernel%%-*}"
+
+print packages "$(pacman -Qq | wc -l)"
+
+print shell "${SHELL##*/}"
+
+xprop -root -notype ' $0\n' _NET_SUPPORTING_WM_CHECK | read -r _ id
+xprop -id "$id" ' $0\n' _NET_WM_NAME | IFS+='"' read -r _ wm
+print wm "${wm,,}"
+
+xprop -id "$WINDOWID" ' $1\n' WM_CLASS | IFS+='"' read -r _ term
+print term "${term,,}"
+
+font=${font##* }
+print font "${font,,}"
+
 echo

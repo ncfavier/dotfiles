@@ -7,7 +7,10 @@ super + {_,shift} + r
     power
 
 super + g
-    if (( $(bspc config window_gap) )); then bspc config window_gap 0; else . ~/.theme && bspc config window_gap "$window_gap"; fi
+    if (( $(bspc config -d focused window_gap) )); then bspc config -d focused window_gap 0; bspc config -d focused border_width 0; else . ~/.theme; bspc config -d focused window_gap "$window_gap"; bspc config -d focused border_width "$border_width"; fi
+
+super + shift + l
+    i3lock -c 000000
 
 # Desktops
 
