@@ -8,8 +8,8 @@ here: $(shell hostname)
 .PHONY: functor
 functor: station
 
-.PHONY: monoid
-monoid: station
+.PHONY: mono
+mono: station
 
 .PHONY: sigma
 sigma: server
@@ -131,7 +131,7 @@ weechat: $(patsubst weechat/%, ~/.weechat/%, $(wildcard weechat/*.conf)) \
 # ghc
 
 .PHONY: ghc
-ghc: ~/.ghci
+ghc: ~/.ghci ~/.haskeline
 
 ~/.%: ghc/%
 	install -Dm 644 $< $@

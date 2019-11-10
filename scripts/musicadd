@@ -141,7 +141,7 @@ for file in "${files[@]}"; do
         "$destdir/${artist//\//-} - ${album//\//-} - ${track:+${track//\//-} - }${title//\//-}.mp3"
 done
 
-mpc update
+mpc -q update
 
 echo "Done!"
 rm -r -- "$tmpdir"

@@ -109,6 +109,10 @@ toolbar {
     color: var(--green) !important;
 }
 
+#tracking-protection-icon-container {
+    border-inline-end: none !important;
+}
+
 #urlbar {
     background: var(--bg) !important;
     color: var(--fg) !important;
@@ -184,4 +188,8 @@ toolbar {
 
 .search-one-offs {
     display: none !important;
+}
+
+.toolbarbutton-animatable-box, .toolbarbutton-1 {
+    fill: var(--fg) !important;
 }

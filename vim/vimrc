@@ -19,6 +19,7 @@ try
         Plug 'tpope/vim-sleuth'
         Plug 'lilydjwg/colorizer'
         Plug 'AndrewRadev/id3.vim'
+        Plug 'nerdypepper/vim-colors-plain', { 'branch': 'duotone' }
     call plug#end()
 catch
 endtry
@@ -72,7 +73,7 @@ if $TERM =~ '^rxvt'
     let &t_SR = "\<Esc>[3 q"
 endif
 
-colorscheme custom
+colorscheme plain
 
 " Mappings
 
@@ -140,6 +141,9 @@ autocmd BufWritePost * if getline(1) =~ '^#!' && !executable(expand('%:p')) | si
 
 " source vimrc after writing it
 autocmd BufWritePost $MYVIMRC source $MYVIMRC
+
+" upload to ix.io on write
+autocmd BufWriteCmd http://ix.io/* write !curl -F 'f:1=<-' ix.io | tee >(clip)
 
 " Commands
 

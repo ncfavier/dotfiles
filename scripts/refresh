@@ -59,14 +59,17 @@ refresh_firefox() {
     < "$fifo" nc -N localhost "$port" |
     while read -rd : len && read -rd '' -n "$len" json; do
         printf '%s\n' "$json"
+        printf '<== %s\n' "$json" >&2
     done |
     jq -cn --unbuffered --arg userChrome "$(< ~/.mozilla/firefox/"$profile"/chrome/userChrome.css)" \
         '{to: "root", type: "getProcess"},
-         limit(1; inputs | {to: (.form.styleSheetsActor//empty), type: "getStyleSheets"}),
-         limit(1; inputs | {to: (.styleSheets[]? | select(.href//empty | endswith("userChrome.css")).actor), type: "update", text: $userChrome, transition: "true"}),
+         limit(1; inputs | {to: (.form.actor//empty), type: "getTarget"}),
+         limit(1; inputs | {to: (.process.styleSheetsActor//empty), type: "getStyleSheets"}),
+         limit(1; inputs | {to: .styleSheets[]? | select(.href//empty | endswith("userChrome.css")).actor, type: "update", text: $userChrome, transition: "true"}),
          (inputs | select(.type == "styleApplied") | halt)' |
     while IFS= read -r json; do
         printf '%s:%s\n' "$(( ${#json} + 1 ))" "$json"
+        printf '==> %s\n' "$json" >&2
     done > "$fifo"
     rm -- "$fifo"
 }

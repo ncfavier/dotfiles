@@ -276,7 +276,7 @@ what() {
         path=$(type -p "$thing")
         thing=${path:-/usr/bin/$thing}
     fi
-    pacman -Fo "$thing"
+    pacman -F "$thing"
 }
 
 man() {

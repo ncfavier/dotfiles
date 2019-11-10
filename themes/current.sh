@@ -1,1 +1,1 @@
-ugly.sh
+mono.sh
