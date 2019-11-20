@@ -28,9 +28,9 @@ refresh_sxhkd() {
     pkill -usr1 -x sxhkd
 }
 
-refresh_compton() {
-    pkill compton
-    compton -b
+refresh_picom() {
+    pkill picom
+    picom -b
 }
 
 refresh_terminals() {

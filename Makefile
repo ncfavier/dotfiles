@@ -22,7 +22,7 @@ sas: themes login bash ascii scripts misc tmux vim git ghc x firefox
 #
 
 .PHONY: all
-all: themes login bash ascii scripts misc tmux vim git weechat ghc mpd x redshift compton fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm xdg gtk firefox df yay
+all: themes login bash ascii scripts misc tmux vim git weechat ghc mpd x redshift picom fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm xdg gtk firefox df yay
 
 .PHONY: station
 station: all
@@ -160,12 +160,12 @@ redshift: ~/.config/redshift.conf
 ~/.config/%: redshift/%
 	install -Dm 644 $< $@
 
-# compton
+# picom
 
-.PHONY: compton
-compton: ~/.config/compton.conf
+.PHONY: picom
+picom: ~/.config/picom.conf
 
-~/.config/%: compton/%
+~/.config/%: picom/%
 	install -Dm 644 $< $@
 
 # fcitx

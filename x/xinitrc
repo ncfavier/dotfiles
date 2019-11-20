@@ -14,7 +14,7 @@ sxhkd &
 refresh wallpaper
 
 # Compositing manager
-compton -b &
+picom -b &
 
 # Blue light filter
 redshift &
