@@ -1,19 +1,6 @@
 theme=dual
-dark=1
 
 . ~/.dots/themes/"$theme".sh
-
-if (( dark )); then
-    background=$color0
-    foreground=$color15
-    background_alt=$base3
-    foreground_alt=$base4
-else
-    background=$color15
-    foreground=$color0
-    background_alt='#eeeeee'
-    foreground_alt='#cccccc'
-fi
 
 font='Dina'
 font_size=10

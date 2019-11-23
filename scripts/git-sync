@@ -6,10 +6,9 @@
 declare -A should_sync
 for repo do should_sync[$repo]=1; done
 
-declare -A remotes=(
-    [~/.local/share/emojilib]='https://github.com/muan/emojilib'
-)
+declare -A remotes=()
 
+# git.monade.li
 while read -r repo; do
     name=${repo##*/} name=${name%.git}
     case $name in
@@ -19,9 +18,19 @@ while read -r repo; do
     remotes[$dir]=monade.li:${repo%.git}
 done < <(ssh monade.li 'printf %s\\n /srv/git/*')
 
+# GitHub
+while read -r name && read -r url; do
+    remotes[~/git/$name]=$url
+done < <(curl -fsSL https://api.github.com/users/niiiil/repos |
+         jq -r '.[] | .name, .ssh_url//.clone_url')
+
+# AUR
 while read -rn1 && read -r repo; do
     remotes[~/git/aur/$repo]=aur@aur.archlinux.org:$repo
 done < <(ssh aur@aur.archlinux.org list-repos)
+
+# Misc
+remotes[~/.local/share/emojilib]='https://github.com/muan/emojilib'
 
 for dir in "${!remotes[@]}"; do
     (( ! $# || should_sync[${dir##*/}] )) || continue

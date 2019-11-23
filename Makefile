@@ -91,7 +91,7 @@ tmux: ~/.tmux.conf
 # vim
 
 .PHONY: vim
-vim: ~/.vimrc ~/.vim/colors/custom.vim
+vim: ~/.vimrc ~/.vim/colors/dual.vim
 
 ~/.vimrc: vim/vimrc
 	ln -srf $< $@
