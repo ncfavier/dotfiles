@@ -186,7 +186,9 @@ irc() {
         np)
             mpc current -f $'*/me is now playing \x02%title%\x0f by \x02%artist%\x0f' | weechat_fifo;;
         grep)
-            ssh sigma "cat ~/.weechat/logs/$1.weechatlog" | grep "${@:2}";;
+            local where=$1
+            shift
+            ssh sigma "grep --color=always ${*@Q} ~/.weechat/logs/$where.weechatlog" | less -FR;;
         *)
             echo "Unknown action $cmd" >&2
             return 1;;

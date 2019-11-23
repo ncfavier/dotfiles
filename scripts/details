@@ -6,7 +6,7 @@ shopt -s lastpipe
 
 [[ $1 == -v ]] || exec 2> /dev/null
 
-[[ -f ~/.theme ]] && . ~/.theme
+. theme
 
 space=10
 sep=' '

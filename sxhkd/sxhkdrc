@@ -7,7 +7,14 @@ super + {_,shift} + r
     power
 
 super + g
-    if (( $(bspc config -d focused window_gap) )); then bspc config -d focused window_gap 0; bspc config -d focused border_width 0; else . ~/.theme; bspc config -d focused window_gap "$window_gap"; bspc config -d focused border_width "$border_width"; fi
+    if (( $(bspc config -d focused window_gap) )); then \
+        bspc config -d focused window_gap 0; \
+        bspc config -d focused border_width 0; \
+    else \
+        . theme; \
+        bspc config -d focused window_gap "$window_gap"; \
+        bspc config -d focused border_width "$border_width"; \
+    fi
 
 super + shift + l
     i3lock -c 000000
@@ -86,7 +93,7 @@ XF86MonBrightness{Down,Up}
 super + {_,shift,ctrl} + space
     rofi -show {run,drun,window}
 
-super + {_,shift} + {Return,  KP_Enter,f,    w,  c,   e,     v,    i,   j}
+super + {_,shift} + {Return,  KP_Enter,f,    w,  c,   e,     v,    i,   j       }
     le  {_,-n}      {terminal,terminal,files,web,chat,editor,video,info,japanese}
 
 super + m

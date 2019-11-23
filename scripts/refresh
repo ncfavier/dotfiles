@@ -72,7 +72,7 @@ refresh_firefox() {
     rm -- "$fifo"
 }
 
-[[ -f ~/.theme ]] && . ~/.theme
+. theme
 
 if (( $# )); then
     for a do

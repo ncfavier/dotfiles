@@ -15,32 +15,24 @@ mono: station
 sigma: server
 
 .PHONY: sas
-sas: themes login bash ascii scripts misc tmux vim git ghc x firefox
+sas: login bash ascii scripts misc tmux vim git ghc x firefox
 
 #
 # Meta-bundles
 #
 
 .PHONY: all
-all: themes login bash ascii scripts misc tmux vim git weechat ghc mpd x redshift picom fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm xdg gtk firefox df yay
+all: login bash ascii scripts misc tmux vim git weechat ghc mpd x redshift picom fcitx fontconfig bspwm sxhkd dunst feh mpv pcmanfm xdg gtk firefox df yay
 
 .PHONY: station
 station: all
 
 .PHONY: server
-server: themes login bash ascii scripts misc tmux vim git weechat yay
+server: login bash ascii scripts misc tmux vim git weechat yay
 
 #
 # Bundles
 #
-
-# themes
-
-.PHONY: themes
-themes: ~/.theme
-
-~/.theme: themes/current.sh
-	install -Dm 644 $< $@
 
 # login
 
@@ -298,5 +290,7 @@ yay: ~/.config/yay/config.json
 # Templating
 #
 
-%:: %.template scripts/templum themes/current.sh xdg/user-dirs.dirs
-	scripts/templum -s themes/current.sh -o $@ $<
+THEME := $(shell . scripts/theme && echo "$$theme")
+
+%:: %.template scripts/templum scripts/theme themes/$(THEME).sh xdg/user-dirs.dirs
+	scripts/templum -s scripts/theme -o $@ $<

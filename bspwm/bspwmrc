@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ -f ~/.theme ]] && . ~/.theme
+. theme
 
 # General config
 bspc config focused_border_color "$color8"

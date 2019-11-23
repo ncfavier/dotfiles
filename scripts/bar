@@ -4,7 +4,7 @@
 
 shopt -s nullglob extglob lastpipe
 
-[[ -f ~/.theme ]] && . ~/.theme
+. theme
 
 # Functions
 

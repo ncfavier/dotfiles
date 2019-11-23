@@ -14,22 +14,3 @@ color12='#52AFD2'
 color13='#9C6EAD'
 color14='#57C3A9'
 color15='#EFEFEF'
-
-dark=1
-
-if (( dark )); then
-    background='#1C1C1C'
-    foreground=$color8
-else
-    background=$color15
-    foreground=$color0
-fi
-
-accent=$color13
-
-font='xft:Fixed:pixelsize=12, xft:Biwidth:pixelsize=12, xft:lucy tewi:pixelsize=11, xft:Symbola'
-bar_font=('Fixed:pixelsize=12' 'Fixed:bold:pixelsize=12' 'Biwidth:pixelsize=12' 'wuncon siji:pixelsize=10')
-
-border_width=1
-window_gap=16
-padding=16

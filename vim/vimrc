@@ -9,17 +9,28 @@ try
         Plug 'scrooloose/nerdtree'
         let NERDTreeMinimalUI = 1
         let NERDTreeRespectWildIgnore = 1
+
         Plug 'scrooloose/nerdcommenter'
         let NERDSpaceDelims = 1
         let NERDDefaultAlign = 'left'
         let NERDCommentEmptyLines = 1
         let NERDToggleCheckAllLines = 1
+
         Plug 'tpope/vim-surround'
+
         Plug 'tpope/vim-fugitive'
+
         Plug 'tpope/vim-sleuth'
+
         Plug 'lilydjwg/colorizer'
+
         Plug 'AndrewRadev/id3.vim'
+
         Plug 'nerdypepper/vim-colors-plain', { 'branch': 'duotone' }
+
+        Plug 'junegunn/vim-easy-align'
+        xmap ga <Plug>(EasyAlign)
+        nmap ga <Plug>(EasyAlign)
     call plug#end()
 catch
 endtry
