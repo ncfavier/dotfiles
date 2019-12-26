@@ -14,3 +14,5 @@ color12='#39a7a2'
 color13='#7e62b3'
 color14='#6096bf'
 color15='#e2e2e2'
+
+dark=1

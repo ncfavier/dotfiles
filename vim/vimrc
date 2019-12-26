@@ -84,7 +84,7 @@ if $TERM =~ '^rxvt'
     let &t_SR = "\<Esc>[3 q"
 endif
 
-colorscheme dual
+colorscheme default
 
 " Mappings
 

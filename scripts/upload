@@ -65,7 +65,7 @@ fi
 (( remove )) && rm -- "$source"
 
 url=$(build_url "$destination")
-printf '%s\n' "$url" | tee >(clip -n)
+printf '%s\n' "$url" | tee >(clip)
 
 if [[ $(dunstify -t 10000 -A open,open -i network-server "uploaded $basename" "to $url") == open ]]; then
     exec xdg-open "$url"

@@ -140,7 +140,7 @@ clipcmd_helper () {
     {
         printf '$ %s\n' "$cmd"
         printf %s "${lines[@]}"
-    } | clip -n
+    } | clip
 }; alias clipcmd='clipcmd_helper # '
 
 ix() {
@@ -313,6 +313,15 @@ withenv() (
     set -a
     . "$env" && exec "${cmd[@]}"
 )
+
+mk() {
+    local dir=$PWD
+    until [[ -e $dir/Makefile ]]; do
+        dir=$(dirname "$dir")
+        [[ $dir == / ]] && return 1
+    done
+    make -f "$dir/Makefile" "$@"
+}
 
 # EFI
 

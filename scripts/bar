@@ -70,6 +70,7 @@ home_ssid='NEUF_89B4'
 default_layout=fr
 
 padding='  '
+bold=3
 
 font_args=()
 for f in "${bar_font[@]}"; do
@@ -255,7 +256,7 @@ while read -rn 1 event; do
                 date_format="%a %-d"
                 time_format="%H:%M"
             fi
-            printf -v clock " %($date_format %%{T2}$time_format%%{T-})T" -1
+            printf -v clock " %($date_format %%{T$bold}$time_format%%{T-})T" -1
             pad clock
             clock="%{A:pkill -USR1 -P $$ -f $0 -o:}%{A3:urxvt -name calendar -g 64x9 -hold +bc -e cal -3:}$clock%{A}%{A}"
             ;;
@@ -375,7 +376,7 @@ while read -rn 1 event; do
                     if [[ $song_artist ]]; then
                         trunc song_artist 20
                         escape song_artist
-                        song="%{T2}$song_artist%{T-} - $song"
+                        song="%{T$bold}$song_artist%{T-} - $song"
                     fi
                 else
                     trunc song_file 50

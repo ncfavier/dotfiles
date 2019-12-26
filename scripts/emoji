@@ -8,4 +8,4 @@ emojis=~/.local/share/emojilib/emojis.json
 
 jq -r 'to_entries[] | .value.char + " " + .key' "$emojis" |
 rofi -dmenu -p emoji -matching normal -i -lines 10 |
-read -r emoji _ && clip -n "$emoji"
+read -r emoji _ && clip "$emoji"

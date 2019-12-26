@@ -15,7 +15,4 @@ color13='#FF0088'
 color14='#00EEFF'
 color15='#FFFFFF'
 
-background=$color0
-foreground=$color15
-background_alt=$color7
-foreground_alt=$color8
+dark=1

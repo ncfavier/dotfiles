@@ -1,15 +1,31 @@
-theme=dual
+theme=off-world
 
 . ~/.dots/themes/"$theme".sh
+
+if (( dark )); then
+    color7='#303030'
+    color8='#555555'
+    background=$color0
+    foreground=$color15
+    background_alt=$color7
+    foreground_alt=$color8
+else
+    color7='#cccccc'
+    color8='#eeeeee'
+    background=$color15
+    foreground=$color0
+    background_alt=$color8
+    foreground_alt=$color7
+fi
 
 font='Dina'
 font_size=10
 
 X_font="xft:$font:pixelsize=$font_size, xft:lucy tewi:10, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12"
-bar_font=("$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "siji:pixelsize=10" "lucy tewi:pixelsize=10" "Biwidth:pixelsize=12")
+bar_font=("siji:pixelsize=10" "$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "lucy tewi:pixelsize=10" "Biwidth:pixelsize=12")
 rofi_font='DinaOTB 9'
 firefox_font="'$font', Biwidth"
 
-border_width=1
+border_width=0
 window_gap=16
 padding=16

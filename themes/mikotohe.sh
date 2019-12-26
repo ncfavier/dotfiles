@@ -1,4 +1,4 @@
-color0='#373C4A'
+color0='#080808'
 color1='#8F3648'
 color2='#00A35B'
 color3='#D1CAA6'
@@ -14,3 +14,5 @@ color12='#52AFD2'
 color13='#9C6EAD'
 color14='#57C3A9'
 color15='#EFEFEF'
+
+dark=1

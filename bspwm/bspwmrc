@@ -3,8 +3,8 @@
 . theme
 
 # General config
-bspc config focused_border_color "$color8"
-bspc config normal_border_color "$background"
+bspc config focused_border_color "$background"
+bspc config normal_border_color "$foreground_alt"
 bspc config presel_feedback_color "$foreground"
 bspc config border_width "$border_width"
 bspc config window_gap "$window_gap"
