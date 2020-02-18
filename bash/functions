@@ -99,6 +99,18 @@ mountl() {
     sudo mount LABEL="$label" /mnt/"$label"
 }
 
+_df() {
+    command df -h "$@"
+}
+
+df() {
+    if (( $# )); then
+        _df "$@"
+    else
+        _df / /home
+    fi
+}
+
 # Streams
 
 grep() {
@@ -176,7 +188,7 @@ sshesc() {
 }
 
 weechat_fifo() {
-    ssh sigma 'cat > ~/.weechat/weechat_fifo'
+    ssh monade.li 'cat > ~/.weechat/weechat_fifo'
 }
 
 irc() {
@@ -188,7 +200,7 @@ irc() {
         grep)
             local where=$1
             shift
-            ssh sigma "grep --color=always ${*@Q} ~/.weechat/logs/$where.weechatlog" | less -FR;;
+            ssh monade.li "grep --color=always ${*@Q} ~/.weechat/logs/$where.weechatlog" | less -FR;;
         *)
             echo "Unknown action $cmd" >&2
             return 1;;

@@ -19,6 +19,14 @@ super + g
 super + shift + l
     i3lock -c 000000
 
+super + b
+    if pgrep -x bar > /dev/null; then \
+        killall -q bar; \
+        bspc config top_padding 0; \
+    else \
+        bar & \
+    fi
+
 # Desktops
 
 super + {ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore,ccedilla,KP_End,KP_Down,KP_Next,KP_Left,KP_Begin,KP_Right,KP_Home,KP_Up,KP_Prior} + {_,shift}

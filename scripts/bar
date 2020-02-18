@@ -155,32 +155,26 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
     # Network
     ip -o monitor link |
     while
-        wired=() wireless=() wireguard=()
         sleep 0.3
-        ip -o address show up scope global |
-        while read -r _ interface _; do
-            case $interface in
-                en*|eth*) wired+=("$interface");;
-                wl*)      wireless+=("$interface");;
-                wg*)      wireguard+=("$interface");;
-            esac
-        done
         parts=()
-        for interface in "${wired[@]}"; do
-            parts+=(D"$interface")
-        done
-        for interface in "${wireless[@]}"; do
-            ssid=
-            iw dev "$interface" info | while read -r field value; do
-                if [[ $field == ssid ]]; then
-                    printf -v ssid '%b' "$value"
-                    break
-                fi
-            done
-            parts+=(L"$interface,$ssid")
-        done
-        for interface in "${wireguard[@]}"; do
-            parts+=(G"$interface")
+        ip -o address show up scope global |
+        awk '!seen[$2]++ { print $2 }' |
+        while read -r interface; do
+            case $interface in
+            en*|eth*)
+                parts+=("D$interface");;
+            wl*)
+                ssid=
+                iw dev "$interface" info | while read -r field value; do
+                    if [[ $field == ssid ]]; then
+                        printf -v ssid '%b' "$value"
+                        break
+                    fi
+                done
+                parts+=("L$interface,$ssid");;
+            wg*)
+                parts+=("G$interface");;
+            esac
         done
         if (( ${#parts[@]} )); then
             (IFS=:; printf 'N%s\n' "${parts[*]}")
@@ -409,9 +403,7 @@ lemonbar -g x32 \
          "${font_args[@]}" |
 
 #
-# Bash
+# Eval
 #
 
-while read -r; do
-    eval "$REPLY" &
-done
+bash

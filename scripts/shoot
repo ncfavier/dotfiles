@@ -90,7 +90,7 @@ if (( video )); then
     trap 'rm -f -- "$tmpvideo"' exit
     ffmpeg -y -video_size "$geometry" -framerate 30 -f x11grab -i :0.0"$offset" -c:v libx264 -crf 0 -preset ultrafast "$tmpvideo"
 
-    dunstify -t 10000 -i camera "encoding..." "to $target" &
+    dunstify -t 10000 -i camera "Encoding..." "to $target" &
 
     # Second encoding: lossless, slow, webm
     ffmpeg -y -i "$tmpvideo" -c:v libvpx-vp9 -lossless 1 "$target"
@@ -107,7 +107,7 @@ fi
 
 # Notify
 
-if [[ $(dunstify -t 10000 -A open,open -I "$thumbnail" "shot saved" "as $target") == open ]]; then
+if [[ $(dunstify -t 10000 -A open,open -I "$thumbnail" "Shot saved" "as $target") == open ]]; then
     exec xdg-open "$target" &> /dev/null
 fi &
 

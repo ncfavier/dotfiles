@@ -20,9 +20,7 @@ try
 
         Plug 'tpope/vim-fugitive'
 
-        Plug 'tpope/vim-sleuth'
-
-        Plug 'niiiil/colorizer'
+        Plug 'ncfavier/colorizer'
 
         Plug 'AndrewRadev/id3.vim'
 
@@ -31,6 +29,12 @@ try
         Plug 'junegunn/vim-easy-align'
         xmap ga <Plug>(EasyAlign)
         nmap ga <Plug>(EasyAlign)
+
+        Plug 'plasticboy/vim-markdown'
+        let vim_markdown_folding_disabled = 1
+        let vim_markdown_math = 1
+        let vim_markdown_frontmatter = 1
+        let vim_markdown_new_list_item_indent = 0
     call plug#end()
 catch
 endtry
@@ -84,7 +88,7 @@ if $TERM =~ '^rxvt'
     let &t_SR = "\<Esc>[3 q"
 endif
 
-colorscheme default
+colorscheme dual
 
 " Mappings
 
@@ -124,15 +128,15 @@ noremap           <C-Down>         <C-w>j
 noremap           <C-Up>           <C-w>k
 noremap  <silent> <C-s>            :update<Return>
 noremap  <silent> <Leader><Leader> :map <Leader><Return>
-noremap           <Leader>mm       :make<Return>
-noremap           <Leader>mi       :make install<Return>
-noremap           <Leader>mc       :make clean<Return>
-noremap           <Leader>m<Space> :make<Space>
+noremap           <Leader>mm       :!make<Return>
+noremap           <Leader>mi       :!make install<Return>
+noremap           <Leader>mc       :!make clean<Return>
+noremap           <Leader>m<Space> :!make<Space>
 noremap           <Leader>i        :AddImport<Bar>SortImports<Return>
 nnoremap          <Leader>r        :%s///g<Bar>''<Left><Left><Left><Left><Left>
 nnoremap          <Leader>n        :%s///gn<Return>
 noremap  <silent> <Leader>s        :sort<Return>
-noremap  <silent> <Leader>u        :if &mod<Bar>execute 'write !upload'<Bar>else<Bar>execute '!upload '.shellescape(@%)<Bar>endif<Return>
+noremap  <silent> <Leader>u        :write !upload<Return>
 noremap  <silent> <Leader>x        :execute '!chmod +x -- '.shellescape(@%)<Return>
 noremap  <silent> <Leader>d        :execute 'write !diff - '.shellescape(@%)<Return>
 

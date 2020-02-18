@@ -36,26 +36,23 @@ fi
 [[ -f ~/.bash_functions ]] && . ~/.bash_functions
 
 command_not_found_handle() {
-    # TODO: user@host:path
-    case $1 in
-        @!*)
-            ssh -qt "${1#@!}" tmux -u attach ${2:+-t "$2"};;
-        @@*)
-            ssh -qt "${1#@@}" "${@:2}";;
-        @*)
-            ssh -q "${1#@}" "${@:2}";;
-        *)
-            unset command_not_found_handle
-            "$@";;
-    esac
+    local target tmux session
+    # TODO: port
+    if [[ $1 =~ ^([^@]*@[^!]+)(!(.*))?$ ]]; then
+        target=${BASH_REMATCH[1]#'@'}
+        tmux=${BASH_REMATCH[2]}
+        session=${BASH_REMATCH[3]}
+        if [[ $tmux ]]; then
+            ssh -t "$target" "tmux -u attach${session:+ -t ${session@Q}}"
+        else
+            ssh -t "$target" "${@:2}"
+        fi
+    else
+        unset command_not_found_handle
+        "$@"
+    fi
 }
 
 # Startup
 
-if [[ -v BASH_STARTUP ]]; then
-    eval "$BASH_STARTUP"
-# else
-#     if command -v ascii > /dev/null; then
-#         ascii tea | lolcat -o "$(( RANDOM % (760 - 400) + 400 ))"
-#     fi
-fi
+[[ -v BASH_STARTUP ]] && eval "$BASH_STARTUP"

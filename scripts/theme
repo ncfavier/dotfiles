@@ -23,7 +23,7 @@ font_size=10
 
 X_font="xft:$font:pixelsize=$font_size, xft:lucy tewi:10, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12"
 bar_font=("siji:pixelsize=10" "$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "lucy tewi:pixelsize=10" "Biwidth:pixelsize=12")
-rofi_font='DinaOTB 9'
+rofi_font='DinaOTB 8'
 firefox_font="'$font', Biwidth"
 
 border_width=0

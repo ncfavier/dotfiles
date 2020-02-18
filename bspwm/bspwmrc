@@ -22,7 +22,7 @@ bspc desktop web -l monocle
 # Rules
 bspc rule -r '*:*'
 for class in feh mpv File-roller Deluge{,-gtk} Fcitx-config-gtk3 Lxappearance Pavucontrol \
-             URxvt:{info,wifi,calendar} Rofi Qemu-system-x86_64; do
+             URxvt:{info,wifi,calendar,floating} Rofi Qemu-system-x86_64; do
     bspc rule -a "$class" state=floating
 done
 bspc rule -a firefox:Navigator desktop=web follow=on

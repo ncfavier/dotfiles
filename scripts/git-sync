@@ -21,7 +21,7 @@ done < <(ssh monade.li 'printf %s\\n /srv/git/*')
 # GitHub
 while read -r name && read -r url; do
     remotes[~/git/$name]=$url
-done < <(curl -fsSL https://api.github.com/users/niiiil/repos |
+done < <(curl -fsSL https://api.github.com/users/ncfavier/repos |
          jq -r '.[] | .name, .ssh_url//.clone_url')
 
 # AUR

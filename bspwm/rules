@@ -10,7 +10,3 @@ name=${name%\"}
 if [[ $(bspc query -N -n focused.automatic) ]] ; then
     bspc query -T -n | jq -r '"split_dir=" + (.rectangle | if .width > .height then "east" else "south" end)'
 fi
-
-case ${class,,},$name in
-    "pcmanfm,Exécuter le fichier") echo state=floating;;
-esac
