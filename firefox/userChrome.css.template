@@ -8,7 +8,7 @@
         --green: {{ "$color2" }};
         --blue: {{ "$color4" }};
         --font: {{ "$firefox_font" }};
-        --font-size: 12px;
+        --font-size: 10px;
 
         --toolbar-non-lwt-bgcolor: var(--bg) !important;
         --toolbar-non-lwt-bgimage: none !important;
@@ -136,6 +136,10 @@
 
     .urlbar-icon[open] {
         background: var(--bg-active) !important;
+    }
+
+    .urlbarView-tags, .urlbarView-url, .urlbarView-title:not(:empty) ~ .urlbarView-action {
+        font-size: var(--font-size) !important;
     }
 
     #pageActionButton,

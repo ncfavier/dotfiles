@@ -1,0 +1,10 @@
+#!/bin/bash
+
+wallpaper=$(shuf -n 1 -e ~/pictures/horizontal/* ~/pictures/tileable/*)
+
+case $wallpaper in
+    ~/pictures/horizontal/*)
+        feh --bg-fill "$wallpaper";;
+    ~/pictures/tileable/*)
+        feh --bg-tile "$wallpaper";;
+esac
