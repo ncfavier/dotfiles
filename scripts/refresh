@@ -29,8 +29,7 @@ refresh_sxhkd() {
 }
 
 refresh_picom() {
-    pkill picom
-    picom -b
+    pkill -usr1 -x picom
 }
 
 refresh_terminals() {
