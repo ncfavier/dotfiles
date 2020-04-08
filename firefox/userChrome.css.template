@@ -134,8 +134,12 @@
         background-color: var(--bg-hover) !important;
     }
 
-    .urlbar-icon[open] {
-        background: var(--bg-active) !important;
+    /* .urlbar-icon[open] { */
+    /*     background: var(--bg-active) !important; */
+    /* } */
+
+    #urlbar:not(.megabar), #urlbar.megabar > #urlbar-background, #searchbar {
+        border: none !important;
     }
 
     .urlbarView-tags, .urlbarView-url, .urlbarView-title:not(:empty) ~ .urlbarView-action {
@@ -159,29 +163,29 @@
         border: none !important;
     }
 
-    #PopupAutoCompleteRichResult {
-        background: var(--bg) !important;
-        color: var(--fg) !important;
-        font-family: var(--font) !important;
-        font-size: var(--font-size) !important;
-        border: none !important;
-    }
-
-    .autocomplete-richlistitem {
-        min-height: 25px !important;
-        color: var(--fg-inactive) !important;
-        font-family: var(--font) !important;
-        font-size: var(--font-size) !important;
-    }
-
-    .autocomplete-richlistitem[selected] {
-        background: transparent !important;
-        color: var(--fg) !important;
-    }
-
-    .autocomplete-richlistitem:hover {
-        background: var(--bg-hover) !important;
-    }
+    /* #PopupAutoCompleteRichResult { */
+    /*     background: var(--bg) !important; */
+    /*     color: var(--fg) !important; */
+    /*     font-family: var(--font) !important; */
+    /*     font-size: var(--font-size) !important; */
+    /*     border: none !important; */
+    /* } */
+    /*  */
+    /* .autocomplete-richlistitem { */
+    /*     min-height: 25px !important; */
+    /*     color: var(--fg-inactive) !important; */
+    /*     font-family: var(--font) !important; */
+    /*     font-size: var(--font-size) !important; */
+    /* } */
+    /*  */
+    /* .autocomplete-richlistitem[selected] { */
+    /*     background: transparent !important; */
+    /*     color: var(--fg) !important; */
+    /* } */
+    /*  */
+    /* .autocomplete-richlistitem:hover { */
+    /*     background: var(--bg-hover) !important; */
+    /* } */
 
     .ac-separator,
     .ac-url,
