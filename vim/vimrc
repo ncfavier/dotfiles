@@ -63,13 +63,13 @@ set smartindent
 set softtabstop=4
 set splitbelow
 set splitright
-set suffixes+=.hi
+set suffixes+=.hi,.dyn_hi,.dyn_o,.cmi,.cmo
 set tabstop=4
 set title
 set ttimeoutlen=10
 set ttymouse=xterm2
 set whichwrap=b,s,<,>,[,]
-set wildignore+=.o,.hi
+set wildignore+=**/dist-newstyle/**
 set wildignorecase
 
 set visualbell
@@ -88,7 +88,7 @@ if $TERM =~ '^rxvt'
     let &t_SR = "\<Esc>[3 q"
 endif
 
-colorscheme dual
+colorscheme peachpuff
 
 " Mappings
 

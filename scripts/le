@@ -18,7 +18,7 @@ case $1 in
         urxvt &
         ;;
     chat|irc)
-        focus urxvt -i chat || { urxvt -name chat -title chat -e ssh -qt sigma tmux -u attach -t weechat & }
+        focus urxvt -i chat || { LANG=en_US.UTF-8 MOSH_TITLE_NOPREFIX=y urxvt -name chat -title chat -e mosh monade.li -- tmux attach -t weechat & }
         ;;
     text|editor)
         focus urxvt -n '* - vim' || { urxvt -name editor -e vim & }

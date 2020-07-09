@@ -1,6 +1,22 @@
-theme=off-world
+#!/bin/bash
+color0='#000507'
+color8='#404040'
+color1='#ff00dd'
+color9=$color1
+color2='#20f0df'
+color10=$color2
+color3=$color1
+color11=$color1
+color4=$color2
+color12=$color4
+color5=$color1
+color13=$color5
+color6=$color4
+color14=$color4
+color7='#ffffff'
+color15='#ffffff'
 
-. ~/.dots/themes/"$theme".sh
+dark=0
 
 if (( dark )); then
     color7='#303030'
@@ -11,7 +27,7 @@ if (( dark )); then
     foreground_alt=$color8
 else
     color7='#cccccc'
-    color8='#eeeeee'
+    color8='#e9e9e9'
     background=$color15
     foreground=$color0
     background_alt=$color8

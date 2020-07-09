@@ -53,11 +53,11 @@ elif [[ $destination != *.* ]]; then
 fi
 
 if [[ $destination == */* ]]; then
-    ssh "$host" mkdir -p -- "$uploads_dir/${destination%/*}"
+    printf 'mkdir -p -- %q\n' "$uploads_dir/${destination%/*}" | ssh "$host" bash
 fi
 
 if (( ! force )) && [[ $source == "$HOME"/@(my|pictures|music|camera|uploads)/* ]]; then
-    ssh "$host" rsync -vrs --chmod=D755,F644 "${source#"$HOME"/}" "$uploads_dir/$destination" || exit 1
+    printf 'rsync -vrs --chmod=D755,F644 ~/%q %q\n' "${source#"$HOME"/}" "$uploads_dir/$destination" | ssh "$host" bash || exit 1
 else
     rsync -Pvrs --chmod=D755,F644 "$source" "$host:$uploads_dir/$destination" || exit 1
 fi

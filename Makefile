@@ -290,7 +290,5 @@ yay: ~/.config/yay/config.json
 # Templating
 #
 
-THEME := $(shell . scripts/theme && echo "$$theme")
-
-%:: %.template scripts/templum scripts/theme themes/$(THEME).sh xdg/user-dirs.dirs
+%:: %.template scripts/templum scripts/theme xdg/user-dirs.dirs
 	scripts/templum -s scripts/theme -o $@ $<

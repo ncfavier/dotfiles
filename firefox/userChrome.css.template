@@ -16,6 +16,11 @@
         --tabs-border-color: transparent !important;
     }
 
+    ::selection {
+        background-color: {{ "$color4" }};
+        color: white;
+    }
+
     toolbar {
         --tab-min-height: 28px !important;
         --tabs-border-color: transparent !important;
@@ -126,6 +131,10 @@
         transition: border-color 0.1s ease-in-out;
     }
 
+    #urlbar:not(:-moz-lwtheme):not([focused="true"]) > #urlbar-background, #searchbar:not(:-moz-lwtheme):not(:focus-within) {
+        border: none !important;
+    }
+
     #urlbar *|*.textbox-input::-moz-placeholder {
         color: transparent !important;
     }
@@ -139,6 +148,7 @@
     /* } */
 
     #urlbar:not(.megabar), #urlbar.megabar > #urlbar-background, #searchbar {
+        background-color: var(--bg) !important;
         border: none !important;
     }
 

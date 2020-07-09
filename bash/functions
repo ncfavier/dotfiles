@@ -200,7 +200,7 @@ irc() {
         grep)
             local where=$1
             shift
-            ssh monade.li "grep --color=always ${*@Q} ~/.weechat/logs/$where.weechatlog" | less -FR;;
+            ssh monade.li "cd ~/.weechat/logs && grep --color=always ${*@Q} $where.weechatlog" | less -FR;;
         *)
             echo "Unknown action $cmd" >&2
             return 1;;

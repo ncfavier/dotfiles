@@ -4,5 +4,5 @@ Name=img
 Exec=img
 Categories=Other;
 NoDisplay=true
-MimeType=image/png;image/jpeg
+MimeType=image/png;image/jpeg;image/webp
 Terminal=false

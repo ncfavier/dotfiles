@@ -43,7 +43,6 @@ URxvt.scrollTtyOutput: false
 URxvt.scrollWithBuffer: true
 URxvt.scrollTtyKeypress: true
 URxvt.skipBuiltinGlyphs: true
-URxvt.colorUL: _color14
 URxvt.keysym.Control-Up: \033[1;5A
 URxvt.keysym.Control-Down: \033[1;5B
 URxvt.keysym.Control-Left: \033[1;5D

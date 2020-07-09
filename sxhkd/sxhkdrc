@@ -55,6 +55,12 @@ super + {t,shift + t,s,l}
 super + y
     bspc node -g sticky
 
+super + h
+    bspc node -g hidden
+
+super + shift + h
+    bspc node any.hidden -g hidden=off
+
 super + less
     bspc node -l "$(bspc query -T -n | jq -r 'if .client.layer == "above" then "normal" else "below" end')"
 
