@@ -8,8 +8,8 @@ here: $(shell hostname)
 .PHONY: functor
 functor: station
 
-.PHONY: mono
-mono: station
+.PHONY: monoid
+monoid: station
 
 .PHONY: sigma
 sigma: server

@@ -86,7 +86,7 @@ if (( video )); then
     fi
 
     # First encoding: lossless, fast, matroska
-    tmpvideo=$(mktemp --suffix .mkv) || exit 1
+    tmpvideo=$(mktemp -p ~ --suffix .mkv) || exit 1
     trap 'rm -f -- "$tmpvideo"' exit
     ffmpeg -y -video_size "$geometry" -framerate 30 -f x11grab -i :0.0"$offset" -c:v libx264 -crf 0 -preset ultrafast "$tmpvideo"
 

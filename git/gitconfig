@@ -42,6 +42,7 @@
     co = checkout
     r = reset
     p = push
+    pa = push --all
     pl = pull --rebase
     cl = clone
     cl1 = clone --depth=1

@@ -121,6 +121,7 @@ grep() {
         color=never
     fi
     command grep --color="$color" "$@" | less -FR
+    return "${PIPESTATUS[0]}"
 }
 
 sponge() {

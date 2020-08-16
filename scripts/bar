@@ -186,7 +186,7 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
     gmail 'G%s\n' &
 
     # Music
-    mpc idleloop player |
+    mpc idleloop |
     while
         printf 'M\n'
         read -r
@@ -376,6 +376,9 @@ while read -rn 1 event; do
                     trunc song_file 50
                     escape song_file
                     song=$song_file
+                fi
+                if mpc status | grep -q 'random: *on'; then
+                    song=" $song"
                 fi
                 song=" $song"
                 pad song

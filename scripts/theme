@@ -26,7 +26,7 @@ if (( dark )); then
     background_alt=$color7
     foreground_alt=$color8
 else
-    color7='#cccccc'
+    color7='#aaaaaa'
     color8='#e9e9e9'
     background=$color15
     foreground=$color0
