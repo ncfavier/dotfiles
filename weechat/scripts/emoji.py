@@ -12,7 +12,7 @@ def emoji_cb(data, modifier, modifier_data, string):
                   unicode(string, 'utf-8'))
 
 if weechat.register("emoji",
-                    "Naïm Favier <fnaim42@gmail.com>",
+                    "Naïm Favier <n@monade.li>",
                     "0.0", "",
                     "Replace emojis with their :text_codes: in incoming messages",
                     "", ""):

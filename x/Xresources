@@ -50,6 +50,13 @@ URxvt.keysym.Control-Right: \033[1;5C
 URxvt.secondaryScreen: 1
 URxvt.secondaryScroll: 0
 
+! st
+st.font: Dina:pixelsize=10,Biwidth:pixelsize=12
+st.borderless: 1
+st.borderpx: 16
+st.cursorshape: 1
+st.cursorblinkontype: 0
+
 ! rofi
 rofi.modi: run,drun,window,ssh
 rofi.sidebar-mode: true

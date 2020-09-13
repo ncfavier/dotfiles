@@ -38,7 +38,7 @@ cd() {
         else
             path_escaped=${path@Q}
         fi
-        ssh -qt "$host" "cd $path_escaped && BASH_STARTUP=ls exec -l bash"
+        mosh "$host" -- bash -c "cd $path_escaped && BASH_STARTUP=ls exec -l bash"
     else
         builtin cd "$@" && ls
     fi
@@ -201,7 +201,7 @@ irc() {
         grep)
             local where=$1
             shift
-            ssh monade.li "cd ~/.weechat/logs && grep --color=always ${*@Q} $where.weechatlog" | less -FR;;
+            ssh monade.li "cd ~/.weechat/logs && rg -Np --color always ${*@Q} $where.weechatlog" | less -FR;;
         *)
             echo "Unknown action $cmd" >&2
             return 1;;
@@ -243,6 +243,17 @@ wg-toggle() {
     else
         sudo systemctl start wg-quick@"$interface"
     fi
+}
+
+wg-whitelist() {
+    local arg=$1
+    if [[ $arg != +([0-9]).+([0-9]).+([0-9]).+([0-9]) ]]; then
+        arg=($(dig +short "$arg"))
+    fi
+    for ip in "${arg[@]}"; do
+        sudo ip rule add from "$ip" lookup main
+        sudo ip rule add to "$ip" lookup main
+    done
 }
 
 # Misc

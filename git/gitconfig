@@ -6,13 +6,10 @@
 
 [user]
     name = Naïm Favier
-    email = fnaim42@gmail.com
+    email = n@monade.li
 
-[sendemail]
-    smtpEncryption = tls
-    smtpServer = smtp.gmail.com
-    smtpUser = fnaim42@gmail.com
-    smtpServerPort = 587
+[commit]
+    gpgsign = true
 
 [color "status"]
     added = green bold
@@ -43,7 +40,7 @@
     r = reset
     p = push
     pa = push --all
-    pl = pull --rebase
+    pl = pull --rebase --autostash
     cl = clone
     cl1 = clone --depth=1
     l = log --graph --oneline

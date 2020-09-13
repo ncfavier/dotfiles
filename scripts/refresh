@@ -51,7 +51,7 @@ refresh_terminals() {
 
 refresh_firefox() {
     local port=6642 profile=default fifo line len json
-    [[ -L ~/.mozilla/firefox/$profile/lock ]] || return
+    pgrep -f /usr/lib/firefox/firefox > /dev/null || return
     fifo=$(mktemp -u) &&
     mkfifo "$fifo" &&
     firefox --start-debugger-server "$port" || return 1

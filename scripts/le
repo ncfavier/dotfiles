@@ -18,7 +18,7 @@ case $1 in
         urxvt &
         ;;
     chat|irc)
-        focus urxvt -i chat || { LANG=en_US.UTF-8 MOSH_TITLE_NOPREFIX=y urxvt -name chat -title chat -e mosh monade.li -- tmux attach -t weechat & }
+        focus urxvt -i chat || { LANG=en_US.UTF-8 MOSH_TITLE_NOPREFIX=y urxvt -name chat -title chat -e mosh monade.li -- tmux -u attach -t weechat & }
         ;;
     text|editor)
         focus urxvt -n '* - vim' || { urxvt -name editor -e vim & }
@@ -27,7 +27,7 @@ case $1 in
         focus urxvt -i wifi || { urxvt -name wifi -title wifi -geometry 50x25 -e sudo wifi-menu & }
         ;;
     info|details)
-        BASH_STARTUP='details' urxvt -name info -geometry 23x19 &
+        BASH_STARTUP='details' urxvt -name info -geometry 23x12 &
         ;;
     web|browser)
         focus firefox || { firefox & }
@@ -36,7 +36,6 @@ case $1 in
         xdg-open 'https://mail.google.com/' &
         ;;
     files)
-        # focus urxvt -i files || { urxvt -name files -e ranger & }
         focus thunar || { thunar & }
         ;;
     video)

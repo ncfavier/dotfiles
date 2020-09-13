@@ -35,6 +35,8 @@ try
         let vim_markdown_math = 1
         let vim_markdown_frontmatter = 1
         let vim_markdown_new_list_item_indent = 0
+
+        Plug 'LnL7/vim-nix'
     call plug#end()
 catch
 endtry
@@ -63,7 +65,7 @@ set smartindent
 set softtabstop=4
 set splitbelow
 set splitright
-set suffixes+=.hi,.dyn_hi,.dyn_o,.cmi,.cmo
+set suffixes+=.hi,.dyn_hi,.dyn_o,.cmi,.cmo,.bcf,.fdb_latexmk,.fls,.pdf,.xdv,.aux,.blg,.bbl,.run.xml
 set tabstop=4
 set title
 set ttimeoutlen=10

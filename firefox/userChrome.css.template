@@ -147,9 +147,9 @@
     /*     background: var(--bg-active) !important; */
     /* } */
 
-    #urlbar:not(.megabar), #urlbar.megabar > #urlbar-background, #searchbar {
+    #urlbar-background, #searchbar {
         background-color: var(--bg) !important;
-        border: none !important;
+        /* border: none !important; */
     }
 
     .urlbarView-tags, .urlbarView-url, .urlbarView-title:not(:empty) ~ .urlbarView-action {

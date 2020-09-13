@@ -43,7 +43,9 @@ command_not_found_handle() {
         tmux=${BASH_REMATCH[2]}
         session=${BASH_REMATCH[3]}
         if [[ $tmux ]]; then
-            ssh -t "$target" "tmux -u attach${session:+ -t ${session@Q}}"
+            mosh "$target" -- tmux -u attach${session:+ -t "$session"}
+        elif (( $# == 1 )); then
+            mosh "$target"
         else
             ssh -t "$target" "${@:2}"
         fi

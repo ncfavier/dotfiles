@@ -13,11 +13,11 @@ sep=' '
 bold=$(tput bold) reset=$(tput sgr0)
 
 print() {
-    [[ $2 ]] && printf '%s%*s%s%s%s\n' "$bold" "$space" "$1" "$reset" "${3:-$sep}" "$2"
+    [[ $2 ]] && printf '%s%*s%s%s%s\n' "$bold" "$space" "$1" "$reset" "$sep" "$2"
 }
 
 echo
-print "$USER" "$HOSTNAME" @
+printf '%*s@%s\n' "$space" "$USER" "$HOSTNAME"
 echo
 
 (. /etc/os-release && print os "$ID")
