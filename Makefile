@@ -5,14 +5,14 @@
 .PHONY: here
 here: $(shell hostname)
 
-.PHONY: functor
-functor: station
+.PHONY: fu
+fu: station
 
 .PHONY: mo
 mo: station
 
-.PHONY: sigma
-sigma: server
+.PHONY: wo
+wo: server
 
 .PHONY: sas
 sas: login bash ascii scripts misc tmux vim git ghc x firefox

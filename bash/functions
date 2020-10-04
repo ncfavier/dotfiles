@@ -48,6 +48,10 @@ mkcd() {
     mkdir -p "$@" && builtin cd "$@"
 }
 
+mvcd() {
+    mv -i -- "$PWD" "$1" && builtin cd .
+}
+
 bck() {
     local f
     for f do

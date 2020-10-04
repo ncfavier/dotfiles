@@ -153,9 +153,9 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
     do :; done &
 
     # Network
-    ip -o monitor link |
+    ip -o monitor address |
     while
-        sleep 0.3
+        sleep 0.1
         parts=()
         ip -o address show up scope global |
         awk '!seen[$2]++ { print $2 }' |
@@ -176,9 +176,7 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
                 parts+=("G$interface");;
             esac
         done
-        if (( ${#parts[@]} )); then
-            (IFS=:; printf 'N%s\n' "${parts[*]}")
-        fi
+        (IFS=:; printf 'N%s\n' "${parts[*]}")
         read -r
     do :; done &
 
@@ -327,26 +325,28 @@ while read -rn 1 event; do
         N) # is for network
             IFS= read -r parts
             network=
-            while read -rn 1 type; do
-                case $type in
-                    D)
-                        read -d : interface
-                        network+="%{A3:sudo systemctl restart netctl-ifplugd@$interface:}%{A}"
-                        ;;
-                    L)
-                        IFS=, read -d : interface ssid
-                        # [[ $ssid == $home_ssid ]] && ssid=
-                        # trunc ssid 15
-                        # escape ssid
-                        network+="%{A:le wifi:}%{A3:sudo systemctl restart netctl-auto@$interface:}%{A}%{A}"
-                        ;;
-                    G)
-                        read -d : interface
-                        network+="%{A3:sudo systemctl restart wg-quick@$interface:}%{A}"
-                        ;;
-                esac
-            done <<< "$parts:"
-            pad network
+            if [[ $parts ]]; then
+                while read -rn 1 type; do
+                    case $type in
+                        D)
+                            read -d : interface
+                            network+="%{A3:sudo systemctl restart netctl-ifplugd@$interface:}%{A}"
+                            ;;
+                        L)
+                            IFS=, read -d : interface ssid
+                            # [[ $ssid == $home_ssid ]] && ssid=
+                            # trunc ssid 15
+                            # escape ssid
+                            network+="%{A:le wifi:}%{A3:sudo systemctl restart netctl-auto@$interface:}%{A}%{A}"
+                            ;;
+                        G)
+                            read -d : interface
+                            network+="%{A3:sudo systemctl restart wg-quick@$interface:}%{A}"
+                            ;;
+                    esac
+                done <<< "$parts:"
+                pad network
+            fi
             ;;
         G) # is for Gmail
             mail=
