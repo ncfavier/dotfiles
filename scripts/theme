@@ -3,7 +3,7 @@ color0='#000000'
 color8='#404040'
 color1='#ff00cc'
 color9=$color1
-color2='#4bdbdf'
+color2='#3bdbaf'
 color10=$color2
 color3=$color1
 color11=$color1
@@ -16,10 +16,10 @@ color14=$color4
 color7='#ffffff'
 color15='#ffffff'
 
-dark=0
+dark=1
 
 if (( dark )); then
-    color7='#222222'
+    color7='#444444'
     color8='#666666'
     background=$color0
     foreground=$color15
@@ -27,7 +27,7 @@ if (( dark )); then
     foreground_alt=$color8
 else
     color7='#cccccc'
-    color8='#eeeeee'
+    color8='#ececec'
     background=$color15
     foreground=$color0
     background_alt=$color8

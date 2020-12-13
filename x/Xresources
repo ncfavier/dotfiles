@@ -37,6 +37,8 @@ URxvt.iso14755: false
 URxvt.perl-ext-common: default,-searchable-scrollback,selection-to-clipboard,matcher
 URxvt.url-launcher: xdg-open
 URxvt.matcher.button: 1
+!URxvt.matcher.pattern.1: (?:https?:/\/|ftp:/\/|news:/\/|mailto:|file:/\/|\\bwww\\.)[\\w\\-\\@;\\/?:&=%\\$.+!*\\x27,~#]*(\\([\\w\\-\\@;\\/?:&=%\\$.+!*\\x27,~#]*\\)|[\\w\\-\\@;\\/?:&=%\$+*~#])+
+URxvt.matcher.pattern.1: (?:https?:/\/|ftp:/\/|news:/\/|mailto:|file:/\/|\\bwww\\.)([\\w\\-\\@;\\/?:&=%\\$.+!*\\x27,~#]*|\\([\\w\\-\\@;\\/?:&=%\\$.+!*\\x27,~#]*\\))*[\\w\\-\\@;\\/?:&=%\\$+*~]
 URxvt.urgentOnBell: 1
 URxvt.saveLines: 10000
 URxvt.scrollTtyOutput: false

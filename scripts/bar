@@ -11,10 +11,10 @@ shopt -s nullglob extglob lastpipe
 desktop_label() {
     case $1 in
         web) printf ;;
-        chat) printf ;;
+        mail) printf ;;
+        irc) printf ;;
         files) printf ;;
-        # *) printf '%s' "$item";;
-        *) printf '~';;
+        *) printf '>';;
     esac
 }
 
@@ -114,15 +114,15 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
     # Window title
     xtitle -sf 'T%s\n' &
 
+    # X keyboard layout
+    xkb-switch -W | sed -u 's/^/K/;s/(.*//' &
+
     while true; do
         # Clock
         printf 'C\n'
 
         # Fcitx
-        printf 'I%s\n' "$(fcitx-remote 2> /dev/null)"
-
-        # Keyboard layout
-        xkblayout-state print $'K%s\n'
+        #printf 'I%s\n' "$(fcitx-remote 2> /dev/null)"
 
         sleep 1
     done &
@@ -179,9 +179,6 @@ xdo above -t "$(xdo id -n root)" "$(xdo id -m -n lemonbar)" &
         (IFS=:; printf 'N%s\n' "${parts[*]}")
         read -r
     do :; done &
-
-    # Mail
-    gmail 'G%s\n' &
 
     # Music
     mpc idleloop |
@@ -346,15 +343,6 @@ while read -rn 1 event; do
                     esac
                 done <<< "$parts:"
                 pad network
-            fi
-            ;;
-        G) # is for Gmail
-            mail=
-            read -r count
-            if (( count )); then
-                mail="%{F$color5}%{F-} $count"
-                pad mail
-                mail="%{A:le mail:}$mail%{A}"
             fi
             ;;
         M) # is for music

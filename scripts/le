@@ -12,13 +12,13 @@ fi
 
 case $1 in
     '')
-        printf '%s\n' term chat text wifi info web mail files music video volume jap
+        printf '%s\n' term irc text wifi info web mail files music video volume jap
         ;;
     term|terminal)
         urxvt &
         ;;
-    chat|irc)
-        focus urxvt -i chat || { LANG=en_US.UTF-8 MOSH_TITLE_NOPREFIX=y urxvt -name chat -title chat -e mosh monade.li -- tmux -u attach -t weechat & }
+    irc)
+        focus urxvt -i irc || { urxvt -name irc -title irc -e ssh -qt monade.li tmux -L weechat attach & }
         ;;
     text|editor)
         focus urxvt -n '* - vim' || { urxvt -name editor -e vim & }
@@ -33,7 +33,8 @@ case $1 in
         focus firefox || { firefox & }
         ;;
     mail)
-        xdg-open 'https://mail.google.com/' &
+        #xdg-open 'https://mail.google.com/' &
+        focus thunderbird || { thunderbird & }
         ;;
     files)
         focus thunar || { thunar & }

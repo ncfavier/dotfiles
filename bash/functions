@@ -204,8 +204,9 @@ irc() {
             mpc current -f $'*/me is now playing \x02%title%\x0f by \x02%artist%\x0f' | weechat_fifo;;
         grep)
             local where=$1
+            [[ $where == */* ]] || where="$where/*"
             shift
-            ssh monade.li "cd ~/.weechat/logs && rg -Np --color always ${*@Q} $where.weechatlog" | less -FR;;
+            ssh monade.li "cd ~/irc-logs && rg -Np --color always ${*@Q} ''$where.weechatlog" | less -FR;;
         *)
             echo "Unknown action $cmd" >&2
             return 1;;
@@ -215,7 +216,11 @@ irc() {
 # Network
 
 myip() {
-    dig -4 +short myip.opendns.com @resolver1.opendns.com
+    dig -4 +short @resolver1.opendns.com myip.opendns.com a
+}
+
+myip6() {
+    dig -6 +short @resolver1.opendns.com myip.opendns.com aaaa
 }
 
 http() {

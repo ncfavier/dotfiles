@@ -1,5 +1,5 @@
 # X settings
-setxkbmap -option grp:shifts_toggle,compose:menu fr,us,ru,gr oss,,,
+setxkbmap -option grp:shifts_toggle,compose:menu,caps:escape_shifted_capslock fr,us,ru,gr oss,,,
 [[ -f ~/.Xmodmap ]] && xmodmap ~/.Xmodmap
 numlockx
 xset -b
@@ -21,9 +21,6 @@ redshift &
 
 # rofi fav list
 rofl &
-
-# xkcd watcher
-xkcd &
 
 # Polkit agent
 /usr/lib/mate-polkit/polkit-mate-authentication-agent-1 &

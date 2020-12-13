@@ -16,8 +16,9 @@ bspc config pointer_action2 resize_side
 bspc config pointer_action3 resize_corner
 
 # Desktops
-bspc monitor -d 1 2 3 4 5 6 web chat files
+bspc monitor -d 1 2 3 4 5 6 web mail irc files
 bspc desktop web -l monocle
+bspc desktop mail -l monocle
 
 # Rules
 bspc rule -r '*:*'
@@ -26,7 +27,8 @@ for class in feh mpv File-roller Deluge{,-gtk} Fcitx-config-gtk3 Lxappearance Pa
     bspc rule -a "$class" state=floating
 done
 bspc rule -a firefox:Navigator desktop=web follow=on
-bspc rule -a URxvt:chat desktop=chat follow=on
+bspc rule -a Thunderbird:'*' desktop=mail follow=on
+bspc rule -a URxvt:irc desktop=irc follow=on
 bspc rule -a URxvt:files desktop=files follow=on
 bspc rule -a Pcmanfm desktop=files follow=on
 bspc rule -a Thunar desktop=files follow=on
