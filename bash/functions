@@ -103,18 +103,6 @@ mountl() {
     sudo mount LABEL="$label" /mnt/"$label"
 }
 
-_df() {
-    command df -h "$@"
-}
-
-df() {
-    if (( $# )); then
-        _df "$@"
-    else
-        _df / /home
-    fi
-}
-
 # Streams
 
 grep() {

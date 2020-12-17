@@ -3,6 +3,7 @@
 # musicadd - download, process and add audio files to the music library
 
 shopt -s nullglob
+shopt -s lastpipe
 
 die() {
     (( $# > 0 )) && printf '%s\n' "$1" >&2
@@ -48,7 +49,7 @@ for src in "${srcs[@]}"; do
         basename=${srcfile##*/}
         editedfiles=()
 
-        if ask "Edit file $basename with Audacity?"; then
+        if ask "Edit file $basename with Audacity?" n; then
             editdir=$(mktemp --tmpdir="$tmpdir" -d "${basename%.*}-XXX")
             echo "Please save the resulting file(s) under: $editdir"
             echo "Starting Audacity..."
@@ -66,13 +67,15 @@ done
 
 (( ${#files[@]} > 0 )) || die "No files given."
 
-cover_src=
-if [[ ${srcs[0]} == http?(s)://*.bandcamp.com/* ]]; then
-    cover_src=$(curl -fsSL "${srcs[0]}" | xmllint --html --xpath 'string(//link[@rel="image_src"]/@href)' - 2> /dev/null)
+artist= album= cover_src=
+if [[ ${srcs[0]} == http?(s)://*bandcamp.com/* ]]; then
+    bandcamp_json=$(curl -fsSL "${srcs[0]}" | xmllint --html --xpath 'string(//script[@type="application/ld+json"])' - 2> /dev/null)
+    jq -r '.byArtist.name, .name, (.image | if type == "array" then .[0] else . end)' <<< "$bandcamp_json" |
+    { read -r artist; read -r album; read -r cover_src; }
 fi
 
-read -ep "Artist? " artist
-read -ep "Album? [$artist] " album
+read -ep "Artist? " ${artist:+-i "$artist"} artist
+read -ep "Album? [$artist] " ${album:+-i "$album"} album
 album=${album:-$artist}
 read -ep "Album cover? " ${cover_src:+-i "$cover_src"} cover_src
 
@@ -116,15 +119,20 @@ for file in "${files[@]}"; do
     track=
     basename=${file##*/}
     echo "File: $basename ($(( ++i ))/${#files[@]})"
-    read -ep "Title? " title
+    if [[ $bandcamp_json ]]; then
+        jq -r --argjson i "$i" '(if has("track") then .track.itemListElement[] | select(.position == $i).item else . end).name' <<< "$bandcamp_json" |
+        read -r title
+    fi
+    read -ep "Title? " ${title:+-i "$title"} title
     [[ $use_tracks ]] && read -ep "Track number? " -i "$i" track
 
+    ffprobe -loglevel error -show_format -print_format json "$file" |
+    jq -r '.format.tags | [(.artist, .album, .title, .track) + "\u0000"] | add' |
     for tag in artist album title track; do
         target=_
         [[ ${!tag} == @ ]] && target=$tag
         IFS= read -rd '' "$target"
-    done < <(ffprobe -loglevel error -show_format -print_format json "$file" |
-             jq -r '.format.tags | [(.artist, .album, .title, .track) + "\u0000"] | add')
+    done
 
     echo "Adding file to music directory..."
     ffmpeg -nostdin -loglevel error \
