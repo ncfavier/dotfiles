@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # rofl - edit rofi's history to put favourite entries on top
 

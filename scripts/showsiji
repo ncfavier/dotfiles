@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 xfd -rows 23 -columns 28 -fn "$(xlsfonts | awk -F- '$3 == "siji" && $8 == "10" { print; exit }')"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # git-sync - sync local repositories with a set of remotes
 # TODO: move remote definitions to a config file

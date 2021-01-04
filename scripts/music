@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # music - song picker using mpc and rofi
 
 shopt -s lastpipe nocasematch
 
 dmenu() {
-    rofi -dmenu -i -matching fuzzy -sorting-method fzf "$@"
+    rofi -dmenu -lines 15 -i -matching fuzzy -sorting-method fzf "$@"
 }
 
 mpc() {
@@ -61,9 +61,6 @@ else
         mpc add /
     fi
 
-    lines=$(mpc playlist | wc -l)
-    (( lines > 15 )) && lines=15
-
     format='%title%|%file%'
     no_filter=
     if [[ -v 'filter_has[album]' ]]; then
@@ -79,7 +76,7 @@ else
         (( no_filter )) && echo random
         mpc playlist -f "$format"
     } |
-    dmenu -p song -format d -lines "$lines" |
+    dmenu -p song -format d |
     read -r index || exit 1
 
     (( no_filter && index-- ))

@@ -55,4 +55,6 @@ command_not_found_handle() {
 
 # Startup
 
+eval "$(direnv hook bash)"
+
 [[ -v BASH_STARTUP ]] && eval "$BASH_STARTUP"

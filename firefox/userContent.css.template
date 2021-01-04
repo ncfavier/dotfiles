@@ -41,6 +41,22 @@
 }
 
 @-moz-document url-prefix(https://github.com/), url-prefix(https://gist.github.com/) {
+    /*body {
+        background-color: var(--bg) !important;
+    }
+
+    .bg-gray-light {
+        background-color: var(--bg) !important;
+    }
+
+    .Header {
+        background-color: var(--bg) !important;
+    }
+
+    .Box {
+        background-color: var(--bg) !important;
+    }*/
+
     .blob-num, .blob-code-inner {
         font-family: monospace !important;
         font-size: 13px !important;

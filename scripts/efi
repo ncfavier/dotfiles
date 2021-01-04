@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # efi - manage EFI Linux entries using efibootmgr
 

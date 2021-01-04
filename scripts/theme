@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 color0='#000000'
 color8='#404040'
 color1='#ff00cc'
 color9=$color1
-color2='#3bdbaf'
+color2='#3bbbbf'
 color10=$color2
 color3=$color1
 color11=$color1

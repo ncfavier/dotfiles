@@ -218,7 +218,7 @@ http() {
     if [[ -d $1 ]]; then
         read -rsp "Password? " password
         echo
-        caddy -conf=<(echo ":${port:-12345}"; echo browse; [[ $password ]] && echo "basicauth / naim $password") ${1+-root="$1"}
+        caddy -conf=<(echo ":${port:-12345}"; echo browse; [[ $password ]] && echo "basicauth / n $password") ${1+-root="$1"}
     elif [[ -x $1 ]]; then
         [[ $source == */* ]] || source=./$source
         tmpdir=$(mktemp --tmpdir -d http-XXXXX) || return 1

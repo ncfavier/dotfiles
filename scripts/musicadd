@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # musicadd - download, process and add audio files to the music library
 

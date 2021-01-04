@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 wallpaper=$(shuf -n 1 -e ~/pictures/horizontal/* ~/pictures/tileable/*)
 
