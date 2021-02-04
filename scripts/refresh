@@ -60,11 +60,15 @@ refresh_firefox() {
         printf '%s\n' "$json"
     done |
     jq -cn --unbuffered --arg userChrome "$(< ~/.mozilla/firefox/"$profile"/chrome/userChrome.css)" \
-        '{to: "root", type: "getProcess", id: 0},
-         limit(1; inputs | {to: (.processDescriptor.actor//empty), type: "getTarget"}),
-         limit(1; inputs | {to: (.process.styleSheetsActor//empty), type: "getStyleSheets"}),
-         limit(1; inputs | {to: .styleSheets[]? | select(.href//empty | endswith("userChrome.css")).actor, type: "update", text: $userChrome, transition: "true"}),
-         (inputs | select(.type == "styleApplied") | halt)' |
+        '{to: "root", type: "getProcess", id: 0}, (
+         limit(1; inputs | .processDescriptor.actor//empty) as $processDescriptor |
+         {to: $processDescriptor, type: "getTarget"}, (
+         limit(1; inputs | .process.styleSheetsActor//empty) as $styleSheetsActor |
+         {to: $styleSheetsActor, type: "getStyleSheets"}, (
+         limit(1; inputs | .styleSheets[]? | select(.href//empty | endswith("userChrome.css")).actor) as $styleSheetActor |
+         {to: $styleSheetsActor, type: "update", resourceId: $styleSheetActor, text: $userChrome, transition: "true"}, (
+         inputs | select(.type == "styleApplied") | halt
+         ))))' |
     while IFS= read -r json; do
         printf '%s:%s\n' "$(( ${#json} + 1 ))" "$json"
     done > "$fifo"

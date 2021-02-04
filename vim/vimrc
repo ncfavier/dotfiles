@@ -37,6 +37,8 @@ try
         let vim_markdown_new_list_item_indent = 0
 
         Plug 'LnL7/vim-nix'
+
+        Plug 'tpope/vim-sleuth'
     call plug#end()
 catch
 endtry
@@ -47,7 +49,7 @@ set autoindent
 set autoread
 set breakindent
 set clipboard=unnamedplus,exclude:cons\|linux
-set expandtab
+" set expandtab
 set exrc
 set formatoptions-=tro
 set hidden
@@ -61,8 +63,8 @@ set path=**
 set secure
 set shiftround
 set shiftwidth=0
-set smartindent
-set softtabstop=4
+" set smartindent
+" set softtabstop=4
 set splitbelow
 set splitright
 set suffixes+=.hi,.dyn_hi,.dyn_o,.cmi,.cmo,.bcf,.fdb_latexmk,.fls,.pdf,.xdv,.aux,.blg,.bbl,.run.xml,.lock

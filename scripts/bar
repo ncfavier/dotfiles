@@ -4,6 +4,10 @@
 
 shopt -s nullglob extglob lastpipe
 
+pidfile=$XDG_RUNTIME_DIR/bar.pid
+[[ -e $pidfile ]] && { pkill -P "$(< $pidfile)"; pkill lemonbar; }
+echo "$$" > "$pidfile"
+
 . theme
 
 # Functions
@@ -378,9 +382,8 @@ while read -rn 1 event; do
     # Rendering
 
     left=$wm$title
-    center=
     right=$song$mail$network$sound$brightness$im$keyboard$power$clock
-    printf '%%{l}%s%%{c}%s%%{r}%s\n' "$left" "$center" "$right"
+    printf '%s\n' "%{l}$left%{r}$right"
 done |
 
 #

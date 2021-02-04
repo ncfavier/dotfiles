@@ -296,7 +296,7 @@ what() {
         thing=$(realpath "$thing")
         [[ -d $thing ]] && thing+=/
     elif [[ $thing != */* ]]; then
-        path=$(type -p "$thing")
+        path=$(type -P "$thing")
         thing=${path:-/usr/bin/$thing}
     fi
     pacman -F "$thing"

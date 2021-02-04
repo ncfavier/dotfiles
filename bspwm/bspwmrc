@@ -37,9 +37,8 @@ bspc rule -a teeworlds state=fullscreen
 [[ -x ~/.config/bspwm/rules ]] && bspc config external_rules_command ~/.config/bspwm/rules
 
 # Bar
-killall -q bar
 bar &
 
 # Notification manager
-killall -q dunst
+pkill dunst
 dunst &

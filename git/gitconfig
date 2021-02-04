@@ -8,6 +8,9 @@
     name = Naïm Favier
     email = n@monade.li
 
+[init]
+	defaultBranch = master
+
 [commit]
     gpgsign = true
 

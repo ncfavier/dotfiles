@@ -4,11 +4,16 @@
 
 shopt -s nullglob
 
+tmsu info &> /dev/null && tmsu=1
+
 try_move() {
     local source=$1 destination=$2
     [[ -e $destination ]] && return 1
     printf '%s -> %s\n' "$source" "$destination"
-    mv -n -- "$source" "$destination"
+    mv -n -- "$source" "$destination" &&
+    if (( tmsu )); then
+        tmsu repair --manual "$source" "$destination"
+    fi
 }
 
 get_extension() {

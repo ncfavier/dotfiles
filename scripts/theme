@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-color0='#000000'
+color0='#000010'
 color8='#404040'
 color1='#ff00cc'
 color9=$color1

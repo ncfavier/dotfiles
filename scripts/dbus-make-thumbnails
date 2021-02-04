@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+# deps: python-pyxdg python-dbus python-gobject
+import sys
+import os
+import dbus
+from getopt import getopt
+from pathlib import Path
+from glob import glob
+from hashlib import md5
+from contextlib import suppress
+from xdg.BaseDirectory import xdg_cache_home
+from gi.repository import Gio
+
+sizes = ['large', 'normal']
+
+regen = 0
+dry_run = 0
+files = []
+
+def add_path(p):
+    if p.is_dir():
+        for child in p.iterdir():
+            add_path(child)
+    elif p.is_file() and not p.is_symlink():
+        files.append(p)
+
+opts, args = getopt(sys.argv[1:], ':rn')
+for o, _ in opts:
+    if o == '-r':
+        regen = 1
+    elif o == '-n':
+        dry_run = 1
+for p in args:
+    add_path(Path(p))
+
+uris = []
+mimes = []
+
+for path in files:
+    f = Gio.File.new_for_path(str(path))
+    u = f.get_uri()
+    if regen:
+        h = md5(u.encode()).hexdigest()
+        for size in sizes:
+            p = Path(f'{xdg_cache_home}/thumbnails/{size}/{h}.png')
+            p.unlink(missing_ok=True)
+    if not dry_run:
+        uris.append(u)
+        i = f.query_info(Gio.FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE, Gio.FileQueryInfoFlags.NONE)
+        mimes.append(i.get_content_type())
+
+if not dry_run:
+    bus = dbus.SessionBus()
+    thumbnailer = bus.get_object('org.freedesktop.thumbnails.Thumbnailer1', '/org/freedesktop/thumbnails/Thumbnailer1')
+    interface = dbus.Interface(thumbnailer, 'org.freedesktop.thumbnails.Thumbnailer1')
+    for size in sizes:
+        interface.Queue(uris, mimes, size, 'foreground', 0)
