@@ -65,8 +65,8 @@ refresh_firefox() {
          {to: $processDescriptor, type: "getTarget"}, (
          limit(1; inputs | .process.styleSheetsActor//empty) as $styleSheetsActor |
          {to: $styleSheetsActor, type: "getStyleSheets"}, (
-         limit(1; inputs | .styleSheets[]? | select(.href//empty | endswith("userChrome.css")).actor) as $styleSheetActor |
-         {to: $styleSheetsActor, type: "update", resourceId: $styleSheetActor, text: $userChrome, transition: "true"}, (
+         limit(1; inputs | .styleSheets[]? | select(.href//empty | endswith("userChrome.css")).actor) as $userChromeActor |
+         {to: $styleSheetsActor, type: "update", resourceId: $userChromeActor, text: $userChrome, transition: true}, (
          inputs | select(.type == "styleApplied") | halt
          ))))' |
     while IFS= read -r json; do
