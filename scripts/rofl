@@ -2,7 +2,7 @@
 #
 # rofl - edit rofi's history to put favourite entries on top
 
-apps=(urxvt pcmanfm firefox deluge gimp audacity lxappearance pavucontrol)
+apps=(alacritty pcmanfm firefox deluge gimp audacity lxappearance pavucontrol)
 
 for (( i = 0; i < ${#apps[@]}; i++ )) do
     (( priority = (${#apps[@]} - i) * 1000000 ))

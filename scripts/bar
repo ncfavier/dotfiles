@@ -251,7 +251,7 @@ while read -rn 1 event; do
             fi
             printf -v clock " %($date_format %%{T$bold}$time_format%%{T-})T" -1
             pad clock
-            clock="%{A:pkill -USR1 -P $$ -f $0 -o:}%{A3:urxvt -name calendar -g 64x9 -hold +bc -e cal -3:}$clock%{A}%{A}"
+            clock="%{A:pkill -USR1 -P $$ -f $0 -o:}%{A3:le calendar:}$clock%{A}%{A}"
             ;;
         P) # is for power
             read -r toggle

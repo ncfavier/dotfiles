@@ -60,7 +60,7 @@ st.cursorshape: 1
 st.cursorblinkontype: 0
 
 ! rofi
-rofi.modi: run,drun,window,ssh
+rofi.modi: drun,run,window,ssh
 rofi.sidebar-mode: true
 rofi.lines: 6
 rofi.width: 300

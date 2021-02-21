@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-color0='#000010'
+color0='#0b000d'
 color8='#404040'
 color1='#ff00cc'
 color9=$color1
@@ -38,9 +38,9 @@ font='Dina'
 font_size=10
 
 X_font="xft:$font:pixelsize=$font_size, xft:lucy tewi:pixelsize=10, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12"
-bar_font=("siji:pixelsize=10" "$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "lucy tewi:pixelsize=10" "Biwidth:pixelsize=12")
+bar_font=("siji:pixelsize=10" "$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "tewi:pixelsize=10" "Biwidth:pixelsize=12")
 rofi_font='DinaOTB 8'
-firefox_font="'$font', Biwidth"
+firefox_font=bitmap
 
 border_width=0
 window_gap=16

@@ -343,12 +343,12 @@ audio_output {
 #	mixer_type      "none"			# optional
 #}
 
-audio_output {
-    type "fifo"
-    name "Visualizer"
-    path "/tmp/mpd.fifo"
-    format "44100:16:2"
-}
+# audio_output {
+#     type "fifo"
+#     name "Visualizer"
+#     path "/tmp/mpd.fifo"
+#     format "44100:16:2"
+# }
 
 ###############################################################################
 

@@ -12,22 +12,22 @@ fi
 
 case $1 in
     '')
-        printf '%s\n' term irc text wifi info web mail files music video volume jap
+        printf '%s\n' term irc text wifi info web mail files music video volume jap cal
         ;;
     term|terminal)
-        urxvt &
+        alacritty &
         ;;
     irc)
-        focus urxvt -i irc || { urxvt -name irc -title irc -e ssh -qt monade.li tmux -L weechat attach & }
+        focus alacritty -i irc || { MOSH_TITLE_NOPREFIX=1 alacritty --class irc -e mosh monade.li -- tmux -L weechat attach & }
         ;;
     text|editor)
-        focus urxvt -n '* - vim' || { urxvt -name editor -e vim & }
+        focus alacritty -n '* - vim' || { alacritty --class editor -e vim & }
         ;;
     wifi)
-        focus urxvt -i wifi || { urxvt -name wifi -title wifi -geometry 50x25 -e sudo wifi-menu & }
+        focus alacritty -i wifi || { alacritty --class wifi --title wifi -o window.dimensions.columns=50 window.dimensions.lines=25 -e sudo wifi-menu & }
         ;;
     info|details)
-        BASH_STARTUP='details' urxvt -name info -geometry 23x12 &
+        BASH_STARTUP='details' alacritty --class info -o window.dimensions.columns=23 window.dimensions.lines=12 &
         ;;
     web|browser)
         focus firefox || { firefox & }
@@ -47,5 +47,8 @@ case $1 in
         ;;
     jap|japanese)
         pkill -x fcitx || { fcitx & }
+        ;;
+    cal|calendar)
+        alacritty --class calendar -o window.dimensions.columns=64 window.dimensions.lines=9 cursor.style=underline --hold -e cal -3
         ;;
 esac
