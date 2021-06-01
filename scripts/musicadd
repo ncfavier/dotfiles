@@ -18,10 +18,21 @@ ask() {
     [[ ${yn,,} == y* ]]
 }
 
-[[ -t 0 ]] || die "Not a terminal."
-
 destdir=$(xdg-user-dir MUSIC)
 cover_maxsize=800
+
+if [[ $1 == -n ]]; then
+    # Normalise
+    cd "$destdir" || exit
+    for f in *.mp3; do
+        n=$(ffprobe -loglevel error -show_entries format_tags -print_format json "$f" |
+            jq -r '.format.tags | "\(.artist) - \(.album)\(if .track then " - \(.track)" else "" end) - \(.title).mp3" | gsub("[\"\\/:*?<>|]"; "_")')
+        [[ $f != "$n" ]] && mv -i "$f" "$n"
+    done
+    exit
+fi
+
+[[ -t 0 ]] || die "Not a terminal."
 
 tmpdir=$(mktemp --tmpdir -d music-XXX) || die "Could not create temporary directory."
 trap 'echo; echo "Files kept in $tmpdir"' exit
@@ -117,8 +128,7 @@ i=0
 for file in "${files[@]}"; do
     title=
     track=
-    basename=${file##*/}
-    echo "File: $basename ($(( ++i ))/${#files[@]})"
+    echo "File: ${file##*/} ($(( ++i ))/${#files[@]})"
     if [[ $bandcamp_json ]]; then
         jq -r --argjson i "$i" '(if has("track") then .track.itemListElement[] | select(.position == $i).item else . end).name' <<< "$bandcamp_json" |
         read -r title
@@ -126,13 +136,15 @@ for file in "${files[@]}"; do
     read -ep "Title? " ${title:+-i "$title"} title
     [[ $use_tracks ]] && read -ep "Track number? " -i "$i" track
 
-    ffprobe -loglevel error -show_format -print_format json "$file" |
+    ffprobe -loglevel error -show_entries format_tags -print_format json "$file" |
     jq -r '.format.tags | [(.artist, .album, .title, .track) + "\u0000"] | add' |
     for tag in artist album title track; do
         target=_
         [[ ${!tag} == @ ]] && target=$tag
         IFS= read -rd '' "$target"
     done
+    basename="$artist - $album - ${track:+$track - }$title"
+    basename=${basename//[\"\\\/:*?<>|]/_} # "]}# vim's parser is confused
 
     echo "Adding file to music directory..."
     ffmpeg -nostdin -loglevel error \
@@ -146,7 +158,7 @@ for file in "${files[@]}"; do
         -metadata title="$title" \
         ${track:+-metadata track="$track"} \
         -metadata:s:v:0 comment='Cover (front)' \
-        "$destdir/${artist//\//-} - ${album//\//-} - ${track:+${track//\//-} - }${title//\//-}.mp3"
+        "$destdir/$basename.mp3"
 done
 
 mpc -q update

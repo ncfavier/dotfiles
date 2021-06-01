@@ -29,8 +29,8 @@ super + b
 
 # Desktops
 
-super + {ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore,ccedilla,KP_End,KP_Down,KP_Next,KP_Left,KP_Begin,KP_Right,KP_Home,KP_Up,KP_Prior} + {_,shift}
-    desktop=^{1-9,1-9}; bspc {desktop -f "$desktop",node -d "$desktop" -f}
+super + {ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore,ccedilla} + {_,shift}
+    desktop=^{1-9}; bspc {desktop -f "$desktop",node -d "$desktop" -f}
 
 super + {button4,button5,Left,Right} + {_,shift}
     desktop={prev,next,prev,next}; bspc {desktop -f "$desktop",node -d "$desktop" -f}
@@ -83,6 +83,12 @@ super + ctrl + {b,e,r,i}
     bspc node -{B,E,R 90,i}
 
 # Control
+
+super + {_,shift} + d
+    dunstctl {close,close-all}
+
+super + grave
+    dunstctl history-pop
 
 super + alt + {space,Left,Right,Down,Up,r,z,y,c,b,f,u}
     mpc {toggle,prev,next,volume -2,volume +2,repeat,random,single,clear,seek -3,seek +3,update}

@@ -8,6 +8,9 @@
     name = Naïm Favier
     email = n@monade.li
 
+[advice]
+	detachedHead = false
+
 [init]
 	defaultBranch = master
 

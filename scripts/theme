@@ -3,7 +3,7 @@ color0='#0b000d'
 color8='#404040'
 color1='#ff00cc'
 color9=$color1
-color2='#3bbbbf'
+color2='#4bebef'
 color10=$color2
 color3=$color1
 color11=$color1
@@ -26,7 +26,7 @@ if (( dark )); then
     background_alt=$color7
     foreground_alt=$color8
 else
-    color7='#cccccc'
+    color7='#aaaaaa'
     color8='#ececec'
     background=$color15
     foreground=$color0
@@ -40,7 +40,7 @@ font_size=10
 X_font="xft:$font:pixelsize=$font_size, xft:lucy tewi:pixelsize=10, xft:Biwidth:pixelsize=12, xft:Symbola:pixelsize=12"
 bar_font=("siji:pixelsize=10" "$font:pixelsize=$font_size" "$font:bold:pixelsize=$font_size" "tewi:pixelsize=10" "Biwidth:pixelsize=12")
 rofi_font='DinaOTB 8'
-firefox_font=bitmap
+firefox_font='Dina, Biwidth, Unifont, Twemoji, Symbola'
 
 border_width=0
 window_gap=16

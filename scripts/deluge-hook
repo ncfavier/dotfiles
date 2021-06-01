@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-if [[ $(dunstify -t 10000 -A open,open -i deluge "Torrent complete!" "$2") == open ]]; then
-    exec deluge
-fi &

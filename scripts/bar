@@ -24,7 +24,7 @@ desktop_label() {
 
 escape() {
     local -n var=$1
-    var=${var//\%/%%\{\}}
+    var=${var//\%/%%}
 }
 
 trunc() {
@@ -266,7 +266,7 @@ while read -rn 1 event; do
                 (( percentage > 100 )) && (( percentage = 100 ))
                 icon=$(icon_ramp "$percentage" -u          )
                 [[ $status == Charging ]] && icon+=
-                power="$icon $percentage%"
+                power="$icon $percentage%%"
                 if (( long_battery )); then
                     power+=" $status"
                     (( voltage = $(< "$battery"/voltage_now) / 1000 ))
@@ -309,7 +309,7 @@ while read -rn 1 event; do
             ;;
         B) # is for backlight
             read -r percentage
-            brightness="$(icon_ramp "$percentage"  10  50 ) $percentage%"
+            brightness="$(icon_ramp "$percentage"  10  50 ) $percentage%%"
             pad brightness
             brightness="%{A4:brightness +:}%{A5:brightness -:}$brightness%{A}%{A}"
             ;;
@@ -318,7 +318,7 @@ while read -rn 1 event; do
             if [[ $mute == yes ]]; then
                 sound=
             else
-                sound="$(icon_ramp "$percentage"  10  50 ) $percentage%"
+                sound="$(icon_ramp "$percentage"  10  50 ) $percentage%%"
             fi
             pad sound
             sound="%{A:le volume:}%{A3:volume toggle:}%{A4:volume +2:}%{A5:volume -2:}$sound%{A}%{A}%{A}%{A}"
@@ -369,8 +369,15 @@ while read -rn 1 event; do
                     escape song_file
                     song=$song_file
                 fi
-                if mpc status | grep -q 'random: *on'; then
+                if mpc status | grep -qi 'random: *on'; then
                     song=" $song"
+                fi
+                if mpc status | grep -qi 'repeat: *on'; then
+                    if mpc status | grep -qi 'single: *on'; then
+                        song="$song (repeat1)"
+                    else
+                        song="$song (repeat)"
+                    fi
                 fi
                 song=" $song"
                 pad song

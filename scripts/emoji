@@ -7,5 +7,5 @@ shopt -s lastpipe
 emojis=~/.local/share/emojilib/emojis.json
 
 jq -r 'to_entries[] | "\(.value.char) \(.key) (\(.value.keywords | join(", ")))"' "$emojis" |
-rofi -dmenu -p emoji -matching normal -i -lines 10 -width 500 |
+rofi -dmenu -p emoji -i -lines 10 -width 500 |
 read -r emoji _ && clip "$emoji"

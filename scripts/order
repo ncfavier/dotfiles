@@ -17,7 +17,7 @@ try_move() {
 }
 
 get_extension() {
-    [[ ${1#.} =~ (\.[[:alnum:]]{1,10})+$ ]] && printf '%s\n' "${BASH_REMATCH[0]}"
+    [[ ${1#.} =~ (\.([[:alpha:]][[:alnum:]]{,9}|7z))+$ ]] && printf '%s\n' "${BASH_REMATCH[0]}"
 }
 
 [[ -d $1 ]] || exit 1

@@ -66,6 +66,7 @@ rofi.lines: 6
 rofi.width: 300
 rofi.sort: true
 rofi.matching: fuzzy
+rofi.sorting-method: fzf
 rofi.padding: _padding
 rofi.bw: _border_width
 rofi.font: _rofi_font

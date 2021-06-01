@@ -3,6 +3,7 @@ set colored-stats On
 set completion-display-width 0
 set mark-symlinked-directories On
 set show-all-if-ambiguous On
+set page-completions Off
 
 "\e[1;5D": backward-word
 "\e[1;5C": forward-word
