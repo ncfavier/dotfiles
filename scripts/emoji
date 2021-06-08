@@ -4,8 +4,8 @@
 
 shopt -s lastpipe
 
-emojis=~/.local/share/emojilib/emojis.json
+emojis=~/.local/share/emojilib/dist/emoji-en-US.json
 
-jq -r 'to_entries[] | "\(.value.char) \(.key) (\(.value.keywords | join(", ")))"' "$emojis" |
+jq -r 'to_entries[] | "\(.key) (\(.value | join(" ")))"' "$emojis" |
 rofi -dmenu -p emoji -i -lines 10 -width 500 |
 read -r emoji _ && clip "$emoji"

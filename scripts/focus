@@ -1,67 +1,30 @@
 #!/usr/bin/env bash
-#
-# focus - focus windows by class, instance name or title (bspwm only)
 
-class=
-instance=
-name=
-
-while (( $# )); do
-    case $1 in
-        -c|--class)
-            shift
-            class=$1
-            ;;
-        -i|--instance)
-            shift
-            instance=$1
-            ;;
-        -n|--name)
-            shift
-            name=$1
-            ;;
-        *)
-            class=$1
-            ;;
-    esac
-    shift
-done
+shopt -s lastpipe
 
 wm_data=$(bspc wm -d)
-
-history=()
-seen=()
-
+nodes=()
+jq <<< "$wm_data" -r --arg class "$class" --arg instance "$instance" '
+    .monitors[].desktops[].root//empty |
+    recurse(.firstChild//empty, .secondChild//empty) |
+    select(.client != null) |
+    select($class == "" or (.client.className | test($class; "i"))) |
+    select($instance == "" or (.client.instanceName | test($instance; "i"))) |
+    .id
+' |
 while read -r node; do
-    if [[ ! -v 'seen[$node]' ]]; then
-        history+=("$node")
-        seen[$node]=1
-    fi
-done < <(jq <<< "$wm_data" '.focusHistory | reverse | .[].nodeId | select(. > 0)')
-
-if [[ $class || $instance ]]; then
-    declare -A className=() instanceName=()
-    jq_cb() {
-        className[$1]=$2
-        instanceName[$1]=$3
-    }
-    . <(jq <<< "$wm_data" -r '.monitors[].desktops[].root//empty | recurse(.firstChild//empty, .secondChild//empty) |
-                              ["jq_cb", .id, (.client | .className//"", .instanceName//"")] | @sh')
-fi
-
-for (( i = ${#history[@]} - 1; i >= 0; i-- )) do
-    node=${history[i]}
-    if [[ $class ]]; then
-        [[ ${className[$node],,} == ${class,,} ]] || continue
-    fi
-    if [[ $instance ]]; then
-        [[ ${instanceName[$node],,} == ${instance,,} ]] || continue
-    fi
-    if [[ $name ]]; then
-        title=$(xtitle "$node")
-        [[ ${title,,} == ${name,,} ]] || continue
-    fi
-    exec bspc node "$node" -f
+    [[ ! $title || $(xtitle "$node") =~ $title ]] && nodes+=("$node")
 done
 
-exit 1
+(( ${#nodes[@]} )) || exit
+
+jq <<< "$wm_data" -r '
+    .focusHistory |
+    reduce to_entries[] as {$key, value: {$nodeId}} (
+        $ARGS.positional | map({key: ., value: -1}) | from_entries;
+        (.[$nodeId | tostring]//empty) = $key
+    ) | to_entries | min_by(.value).key
+' --args "${nodes[@]}" |
+read -r node
+
+bspc node "$node" -f

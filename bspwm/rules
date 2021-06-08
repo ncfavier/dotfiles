@@ -1,12 +1,5 @@
 #!/usr/bin/env bash
 
-id=$1
-class=$2
-
-name=$(xprop -id "$id" WM_NAME)
-name=${name#*\"}
-name=${name%\"}
-
 if [[ $(bspc query -N -n focused.automatic) ]] ; then
     bspc query -T -n | jq -r '"split_dir=" + (.rectangle | if .width > .height then "east" else "south" end)'
 fi

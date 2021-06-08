@@ -1,54 +1,47 @@
 #!/usr/bin/env bash
-#
-# le - focus/launch stuff
+
+terminal() {
+    local instance title focus_title columns lines hold
+    [[ $instance ]] && class=alacritty instance="$instance" focus && return
+    [[ $focus_title ]] && class=alacritty title="$focus_title" focus && return
+    alacritty \
+        ${instance:+--class "$instance"} \
+        ${title:+--title "$title"} \
+        ${columns:+-o window.dimensions.columns="$columns"} \
+        ${lines:+-o window.dimensions.lines="$lines"} \
+        ${hold:+--hold} \
+        ${*:+-e "$@"}
+}
 
 # If -n is given, always create a new instance
 if [[ $1 == -n ]]; then
-    focus() {
-        return 1
-    }
+    focus() { return 1; }
     shift
 fi
 
 case $1 in
-    '')
-        printf '%s\n' term irc text wifi info web mail files music video volume jap cal
-        ;;
     term|terminal)
-        alacritty &
-        ;;
+        terminal &;;
     irc)
-        focus alacritty -i irc || { alacritty --class irc -e autossh -M 0 -- -qt monade.li tmux -L weechat attach & }
-        ;;
+        instance=irc terminal autossh -M 0 -- -qt monade.li tmux -L weechat attach &;;
     text|editor)
-        focus alacritty -n '* - vim' || { alacritty --class editor -e vim & }
-        ;;
+        focus_title='- VIM$' terminal vim &;;
     wifi)
-        focus alacritty -i wifi || { alacritty --class wifi --title wifi -o window.dimensions.columns=50 window.dimensions.lines=25 -e sudo wifi-menu & }
-        ;;
+        instance=wifi title=wifi columns=50 lines=25 terminal sudo wifi-menu &;;
     info|details)
-        BASH_STARTUP='details' alacritty --class info -o window.dimensions.columns=23 window.dimensions.lines=12 &
-        ;;
+        instance=info columns=23 lines=12 BASH_STARTUP=details terminal &;;
     web|browser)
-        focus firefox || { firefox & }
-        ;;
+        class=firefox focus || { firefox & };;
     mail)
-        #xdg-open 'https://mail.google.com/' &
-        focus thunderbird || { thunderbird & }
-        ;;
+        class=thunderbird focus || { thunderbird & };;
     files)
-        focus thunar || { thunar & }
-        ;;
+        class=thunar focus || { thunar & };;
     video)
-        focus mpv
-        ;;
+        class=mpv focus;;
     volume)
-        focus pavucontrol || { pavucontrol & }
-        ;;
+        class=pavucontrol focus || { pavucontrol & };;
     jap|japanese)
-        pkill -x fcitx || { fcitx & }
-        ;;
+        pkill -x fcitx || { fcitx & };;
     cal|calendar)
-        alacritty --class calendar -o window.dimensions.columns=64 window.dimensions.lines=9 cursor.style=underline --hold -e cal -3
-        ;;
+        instance=calendar title=calendar columns=64 lines=9 hold=1 terminal cal -3 &;;
 esac

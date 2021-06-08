@@ -21,19 +21,18 @@ bspc desktop web -l monocle
 bspc desktop mail -l monocle
 
 # Rules
-bspc rule -r '*:*'
+bspc rule -r '*'
 for class in feh mpv File-roller Deluge{,-gtk} Fcitx-config-gtk3 Lxappearance Pavucontrol \
-             '*':{info,wifi,calendar,floating} Rofi Qemu-system-x86_64; do
+             '*':{info,wifi,calendar,floating} Qemu-system-x86_64; do
     bspc rule -a "$class" state=floating
 done
-bspc rule -a firefox:Navigator desktop=web follow=on
-bspc rule -a Thunderbird:'*' desktop=mail follow=on
+bspc rule -a firefox desktop=web follow=on
+bspc rule -a Thunderbird desktop=mail follow=on
 bspc rule -a '*':irc desktop=irc follow=on
 bspc rule -a '*':files desktop=files follow=on
 bspc rule -a Pcmanfm desktop=files follow=on
 bspc rule -a Thunar desktop=files follow=on
 bspc rule -a '*':editor follow=on
-bspc rule -a teeworlds state=fullscreen
 [[ -x ~/.config/bspwm/rules ]] && bspc config external_rules_command ~/.config/bspwm/rules
 
 # Bar

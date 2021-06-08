@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
-wallpaper=$(shuf -n 1 -e ~/pictures/horizontal/* ~/pictures/tileable/*)
+pictures=$(xdg-user-dir PICTURES)
+wallpaper=$(find "$pictures/horizontal" "$pictures/tileable" -type f | shuf -n 1)
 
 case $wallpaper in
-    ~/pictures/horizontal/*)
-        feh --bg-fill "$wallpaper";;
-    ~/pictures/tileable/*)
-        feh --bg-tile "$wallpaper";;
+    $pictures/horizontal/*)
+        mode=fill;;
+    $pictures/tileable/*)
+        mode=tile;;
 esac
+
+feh --bg-"$mode" "$wallpaper"
